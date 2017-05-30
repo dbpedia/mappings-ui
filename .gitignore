@@ -1,0 +1,9 @@
+node_modules/*
+public/*
+test/artifacts/*
+.env
+
+##IntelliJ idea files
+.idea/*
+.idea-modules/*
+*.iws
