@@ -459,6 +459,107 @@ lab.experiment('Accounts Plugin (My) Update', () => {
     });
 });
 
+//Tests add/remove permissions
+lab.experiment('Accounts Plugin Update Permissions', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/93EP150D35/permissions',
+            payload: {
+                permissions: { SPACE_RACE: true }
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when update fails', (done) => {
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(Error('update failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it updates a document successfully', (done) => {
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, {});
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+});
+
+
+lab.experiment('Account Plugin Update Groups', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/93EP150D35/groups',
+            payload: {
+                groups: { sales: 'Sales' }
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when update fails', (done) => {
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(Error('update failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it updates a document successfully', (done) => {
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, {});
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+});
+
+
 
 lab.experiment('Accounts Plugin Link User', () => {
 

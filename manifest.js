@@ -68,6 +68,7 @@ const manifest = {
                     models: {
                         Account: './server/models/account',
                         AdminGroup: './server/models/admin-group',
+                        AccountGroup: './server/models/account-group',
                         Admin: './server/models/admin',
                         AuthAttempt: './server/models/auth-attempt',
                         Session: './server/models/session',
@@ -92,6 +93,12 @@ const manifest = {
         },
         {
             plugin: './server/api/admin-groups',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
+        {
+            plugin: './server/api/account-groups',
             options: {
                 routes: { prefix: '/api' }
             }

@@ -144,6 +144,90 @@ internals.applyRoutes = function (server, next) {
     });
 
 
+    //To modify account's permissions
+    server.route({
+        method: 'PUT',
+        path: '/accounts/{id}/permissions',
+        config: {
+            auth: {
+                strategy: 'session',
+                scope: 'admin'
+            },
+            validate: {
+                params: {
+                    id: Joi.string().invalid('111111111111111111111111')
+                },
+                payload: {
+                    permissions: Joi.object().required()
+                }
+            },
+            pre: [
+                AuthPlugin.preware.ensureAdminGroup('root')
+            ]
+        },
+        handler: function (request, reply) {
+
+            const id = request.params.id;
+            const update = {
+                $set: {
+                    permissions: request.payload.permissions
+                }
+            };
+
+            Account.findByIdAndUpdate(id, update, (err, account) => {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                reply(account);
+            });
+        }
+    });
+
+
+    server.route({
+        method: 'PUT',
+        path: '/accounts/{id}/groups',
+        config: {
+            auth: {
+                strategy: 'session',
+                scope: 'admin'
+            },
+            validate: {
+                params: {
+                    id: Joi.string().invalid('111111111111111111111111')
+                },
+                payload: {
+                    groups: Joi.object().required()
+                }
+            },
+            pre: [
+                AuthPlugin.preware.ensureAdminGroup('root')
+            ]
+        },
+        handler: function (request, reply) {
+
+            const id = request.params.id;
+            const update = {
+                $set: {
+                    groups: request.payload.groups
+                }
+            };
+
+            Account.findByIdAndUpdate(id, update, (err, account) => {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                reply(account);
+            });
+        }
+    });
+
+
+
     server.route({
         method: 'PUT',
         path: '/accounts/{id}',
@@ -229,6 +313,7 @@ internals.applyRoutes = function (server, next) {
     });
 
 
+    //Assigns user to an account
     server.route({
         method: 'PUT',
         path: '/accounts/{id}/user',

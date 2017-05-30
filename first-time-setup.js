@@ -39,6 +39,7 @@ Async.auto({
 
         const Account = require('./server/models/account');
         const AdminGroup = require('./server/models/admin-group');
+        const AccountGroup = require('./server/models/account-group');
         const Admin = require('./server/models/admin');
         const AuthAttempt = require('./server/models/auth-attempt');
         const Session = require('./server/models/session');
@@ -55,6 +56,7 @@ Async.auto({
                 Async.parallel([
                     Account.deleteMany.bind(Account, {}),
                     AdminGroup.deleteMany.bind(AdminGroup, {}),
+                    AccountGroup.deleteMany.bind(AccountGroup, {}),
                     Admin.deleteMany.bind(Admin, {}),
                     AuthAttempt.deleteMany.bind(AuthAttempt, {}),
                     Session.deleteMany.bind(Session, {}),
@@ -65,6 +67,11 @@ Async.auto({
             adminGroup: ['clean', function (dbResults, done) {
 
                 AdminGroup.create('Root', done);
+            }],
+
+            accountGroup: ['clean', function (dbResults, done) {
+
+                AccountGroup.create('AccountGroup1', done);
             }],
             admin: ['clean', function (dbResults, done) {
 
