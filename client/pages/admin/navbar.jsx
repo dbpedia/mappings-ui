@@ -76,6 +76,9 @@ class Navbar extends React.Component {
                             <li className={this.classForPath(/^\/admin\/admin-groups/)}>
                                 <Link to="/admin/admin-groups">Admin Groups</Link>
                             </li>
+                            <li className={this.classForPath(/^\/admin\/account-groups/)}>
+                                <Link to="/admin/account-groups">Account Groups</Link>
+                            </li>
                             <li className={this.classForPath(/^\/admin\/statuses/)}>
                                 <Link to="/admin/statuses">Statuses</Link>
                             </li>

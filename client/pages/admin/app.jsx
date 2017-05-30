@@ -4,6 +4,8 @@ const AccountSearch = require('./accounts/search/index.jsx');
 const AdminDetails = require('./admins/details/index.jsx');
 const AdminGroupDetails = require('./admin-groups/details/index.jsx');
 const AdminGroupSearch = require('./admin-groups/search/index.jsx');
+const AccountGroupDetails = require('./account-groups/details/index.jsx');
+const AccountGroupSearch = require('./account-groups/search/index.jsx');
 const AdminSearch = require('./admins/search/index.jsx');
 const Footer = require('./footer.jsx');
 const Home = require('./home.jsx');
@@ -34,6 +36,8 @@ const App = (
                 <Route path="/admin/admins/:id" component={AdminDetails} />
                 <Route exact path="/admin/admin-groups" component={AdminGroupSearch} />
                 <Route path="/admin/admin-groups/:id" component={AdminGroupDetails} />
+                <Route exact path="/admin/account-groups" component={AccountGroupSearch} />
+                <Route path="/admin/account-groups/:id" component={AccountGroupDetails} />
                 <Route exact path="/admin/statuses" component={StatusSearch} />
                 <Route path="/admin/statuses/:id" component={StatusDetails} />
                 <Route exact path="/admin/users" component={UserSearch} />
