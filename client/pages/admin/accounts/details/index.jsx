@@ -9,6 +9,9 @@ const ReactRouter = require('react-router-dom');
 const StatusForm = require('../../components/status-form.jsx');
 const Store = require('./store');
 const UserForm = require('./user-form.jsx');
+const GroupsForm = require('./groups-form.jsx');
+const PermissionsForm = require('./permissions-form.jsx');
+
 
 
 const Link = ReactRouter.Link;
@@ -23,8 +26,10 @@ class DetailsPage extends React.Component {
 
         super(props);
 
-        Actions.getDetails(this.props.match.params.id);
-        Actions.getStatusOptions();
+        Actions.getDetails(this.props.match.params.id); //Get profile details from backend
+        Actions.getStatusOptions(); //Get status from backend
+        Actions.getGroupOptions();  //Get groups from backend
+
 
         this.state = Store.getState();
     }
@@ -84,11 +89,11 @@ class DetailsPage extends React.Component {
                         <UserForm {...this.state.user} />
                     </div>
                     <div className="col-sm-4">
-                        <StatusForm
+                        {/*<StatusForm
                             {...this.state.status}
                             saveAction={Actions.newStatus.bind(Actions, id)}
                             successCloseAction={Actions.hideStatusSaveSuccess}
-                        />
+                        />*/}
                         <NoteForm
                             {...this.state.note}
                             saveAction={Actions.newNote.bind(Actions, id)}
@@ -100,6 +105,8 @@ class DetailsPage extends React.Component {
                             {...this.state.delete}
                             action={Actions.delete.bind(Actions, id, this.props.history)}
                         />
+                        <GroupsForm {...this.state.groups} />
+                        <PermissionsForm {...this.state.permissions} />
                     </div>
                 </div>
             </section>

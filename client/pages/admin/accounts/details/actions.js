@@ -6,6 +6,7 @@ const Store = require('./store');
 
 
 class Actions {
+
     static getDetails(id) {
 
         ApiActions.get(
@@ -17,12 +18,25 @@ class Actions {
         );
     }
 
+    static getGroupOptions() {
+
+        ApiActions.get(
+            '/api/account-groups',
+            undefined,
+            Store,
+            Constants.GET_GROUP_OPTIONS,
+            Constants.GET_GROUP_OPTIONS_RESPONSE
+        );
+    }
+
     static getStatusOptions() {
+
 
         const query = {
             pivot: 'Account',
             limit: 99
         };
+
 
         ApiActions.get(
             '/api/statuses',
@@ -77,6 +91,42 @@ class Actions {
 
         Store.dispatch({
             type: Constants.HIDE_USER_SAVE_SUCCESS
+        });
+    }
+
+    static saveGroups(id, data) {
+
+        ApiActions.put(
+            `/api/accounts/${id}/groups`,
+            data,
+            Store,
+            Constants.SAVE_GROUPS,
+            Constants.SAVE_GROUPS_RESPONSE
+        );
+    }
+
+    static hideGroupsSaveSuccess() {
+
+        Store.dispatch({
+            type: Constants.HIDE_GROUPS_SAVE_SUCCESS
+        });
+    }
+
+    static savePermissions(id, data) {
+
+        ApiActions.put(
+            `/api/accounts/${id}/permissions`,
+            data,
+            Store,
+            Constants.SAVE_PERMISSIONS,
+            Constants.SAVE_PERMISSIONS_RESPONSE
+        );
+    }
+
+    static hidePermissionsSaveSuccess() {
+
+        Store.dispatch({
+            type: Constants.HIDE_PERMISSIONS_SAVE_SUCCESS
         });
     }
 

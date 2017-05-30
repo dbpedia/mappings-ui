@@ -5,6 +5,8 @@ const Note = require('./reducers/note');
 const Redux = require('redux');
 const Status = require('./reducers/status');
 const User = require('./reducers/user');
+const Groups = require('./reducers/groups');
+const Permissions = require('./reducers/permissions');
 
 
 module.exports = Redux.createStore(
@@ -12,7 +14,12 @@ module.exports = Redux.createStore(
         delete: Delete,
         details: Details,
         note: Note,
+        groups: Groups,
+        permissions: Permissions,
         status: Status,
         user: User
     })
 );
+
+
+

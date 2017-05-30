@@ -61,9 +61,28 @@ lab.experiment('Admin Accounts Details Actions', () => {
     });
 
 
+    lab.test('it calls ApiActions.get from getGroupOptions', (done) => {
+
+        stub.ApiActions.get.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(data).to.be.undefined();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        Actions.getGroupOptions();
+    });
+
+
     lab.test('it calls ApiActions.get from getStatusOptions', (done) => {
 
         stub.ApiActions.get.mock = function (url, data, store, typeReq, typeRes, callback) {
+
 
             Code.expect(url).to.be.a.string();
             Code.expect(data).to.be.an.object();
@@ -163,6 +182,69 @@ lab.experiment('Admin Accounts Details Actions', () => {
         Actions.hideUserSaveSuccess();
     });
 
+    lab.test('it calls ApiActions.put from saveGroups', (done) => {
+
+        stub.ApiActions.put.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(url).to.include('abcxyz');
+            Code.expect(data).to.be.an.object();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        Actions.saveGroups('abcxyz', {});
+    });
+
+
+    lab.test('it calls dispatch from hideGroupsSaveSuccess', (done) => {
+
+        stub.Store.dispatch.mock = function (action) {
+
+            if (action.type === Constants.HIDE_GROUPS_SAVE_SUCCESS) {
+
+                done();
+            }
+        };
+
+        Actions.hideGroupsSaveSuccess();
+    });
+
+    lab.test('it calls ApiActions.put from savePermissions', (done) => {
+
+        stub.ApiActions.put.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(url).to.include('abcxyz');
+            Code.expect(data).to.be.an.object();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        Actions.savePermissions('abcxyz', {});
+    });
+
+
+    lab.test('it calls dispatch from hidePermissionsSaveSuccess', (done) => {
+
+        stub.Store.dispatch.mock = function (action) {
+
+            if (action.type === Constants.HIDE_PERMISSIONS_SAVE_SUCCESS) {
+
+                done();
+            }
+        };
+
+        Actions.hidePermissionsSaveSuccess();
+    });
 
     lab.test('it calls dispatch from newStatus (status not changed)', (done) => {
 

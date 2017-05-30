@@ -14,7 +14,8 @@ const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {
         getDetails: () => {},
-        getStatusOptions: () => {}
+        getStatusOptions: () => {},
+        getGroupOptions: () => {}
     }
 };
 const Page = Proxyquire('../../../../../../client/pages/admin/accounts/details/index.jsx', {

@@ -64,7 +64,7 @@ class Actions {
             (err, response) => {
 
                 if (!err) {
-                    history.push('/admin/account-groups');
+                    history.push('/admin/admin-groups');
 
                     window.scrollTo(0, 0);
                 }
