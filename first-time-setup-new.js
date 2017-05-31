@@ -66,31 +66,15 @@ Async.auto({
             }],
             adminGroup: ['clean', function (dbResults, done) {
 
-                AdminGroup.create('Root', done);
+                AccountGroup.create('Admin', done);
             }],
 
 
             accountGroup: ['clean', function (dbResults, done) {
 
-                AccountGroup.create('AccountGroup1', done);
+                AccountGroup.create('Regular Users', done);
             }],
-            admin: ['clean', function (dbResults, done) {
 
-                const document = {
-                    _id: Admin.ObjectId('111111111111111111111111'),
-                    name: {
-                        first: 'Root',
-                        middle: '',
-                        last: 'Admin'
-                    },
-                    timeCreated: new Date()
-                };
-
-                Admin.insertOne(document, (err, docs) => {
-
-                    done(err, docs && docs[0]);
-                });
-            }],
             user: ['clean', function (dbResults, done) {
 
                 Async.auto({
@@ -102,62 +86,43 @@ Async.auto({
                     }
 
                     const document = {
-                        _id: Admin.ObjectId('000000000000000000000000'),
+                        _id: Account.ObjectId('111111111111111111111111'),
                         isActive: true,
-                        username: 'root',
+                        username: 'admin',
+                        name: {
+                            first: 'paco',
+                            middle: 'martinez',
+                            last: 'soria'
+                        },
                         password: passResults.passwordHash.hash,
                         email: results.rootEmail.toLowerCase(),
                         timeCreated: new Date()
                     };
 
-                    User.insertOne(document, (err, docs) => {
+                    Account.insertOne(document, (err, docs) => {
 
                         done(err, docs && docs[0]);
                     });
                 });
             }],
-            adminMembership: ['admin', function (dbResults, done) {
-
-                const id = dbResults.admin._id.toString();
-                const update = {
-                    $set: {
-                        groups: {
-                            root: 'Root'
-                        }
-                    }
-                };
-
-                Admin.findByIdAndUpdate(id, update, done);
-            }],
-            linkUser: ['admin', 'user', function (dbResults, done) {
-
+            adminMembership: ['user', function (dbResults, done) {
+                console.log(dbResults);
                 const id = dbResults.user._id.toString();
                 const update = {
                     $set: {
-                        'roles.admin': {
-                            id: dbResults.admin._id.toString(),
-                            name: 'Root Admin'
+                        groups: {
+                            admin: 'Admin'
                         }
                     }
                 };
 
-                User.findByIdAndUpdate(id, update, done);
-            }],
-            linkAdmin: ['admin', 'user', function (dbResults, done) {
-
-                const id = dbResults.admin._id.toString();
-                const update = {
-                    $set: {
-                        user: {
-                            id: dbResults.user._id.toString(),
-                            name: 'root'
-                        }
-                    }
-                };
-
-                Admin.findByIdAndUpdate(id, update, done);
+                Account.findByIdAndUpdate(id, update, done);
             }]
+
+
         }, (err, dbResults) => {
+
+            console.log(dbResults);
 
             if (err) {
                 console.error('Failed to setup root user.');

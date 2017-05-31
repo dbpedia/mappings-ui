@@ -67,7 +67,7 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -103,7 +103,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -137,7 +137,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -174,7 +174,7 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {

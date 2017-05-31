@@ -1,31 +1,28 @@
 'use strict';
 const Account = require('../../../server/models/account');
-const User = require('../../../server/models/user');
 
 
-const user = new User({
-    username: 'stimpy',
-    roles: {
+
+
+const user = new Account({
+    _id: '535HOW35',
+    username: 'ren',
+    groups: { account: 'Account' },
+    _groups : {
         account: {
-            id: '5250W35',
-            name: 'Stimpson J Cat'
-        }
-    },
-    _roles: {
-        account: new Account({
-            _id: '5250W35',
-            name: {
-                first: 'Stimpson',
-                middle: 'J',
-                last: 'Cat'
+            _id: 'account',
+            name: 'Account',
+            permissions: {
+                SPACE_MADNESS: true,
+                UNTAMED_WORLD: false
             }
-        })
+        }
     }
 });
 
 
 module.exports = {
     user,
-    roles: user._roles,
-    scope: Object.keys(user.roles)
+    groups: user._groups,
+    scope: Object.keys(user.groups)
 };

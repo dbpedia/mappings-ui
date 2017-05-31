@@ -1,5 +1,4 @@
 'use strict';
-const AuthPlugin = require('../auth');
 const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
@@ -31,11 +30,11 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                //Todo: create ensureAccountGroup
-                AuthPlugin.preware.ensureAdminGroup('root')
+                ////AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
+
 
             const query = {};
             if (request.query.name) {
@@ -67,7 +66,7 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -102,7 +101,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -138,7 +137,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -183,7 +182,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -221,7 +220,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {

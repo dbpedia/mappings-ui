@@ -25,7 +25,8 @@ internals.applyRoutes = function (server, next) {
             if (request.params.glob !== 'logout' &&
                 request.auth.isAuthenticated) {
 
-                if (request.auth.credentials.user.roles.admin) {
+
+                if (request.auth.credentials.user.isMemberOf('admin')) {
                     return reply.redirect('/admin');
                 }
 

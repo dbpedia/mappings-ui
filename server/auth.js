@@ -10,7 +10,8 @@ const internals = {};
 internals.applyStrategy = function (server, next) {
 
     const Session = server.plugins['hapi-mongo-models'].Session;
-    const User = server.plugins['hapi-mongo-models'].User;
+    const Account = server.plugins['hapi-mongo-models'].Account;
+
 
     server.auth.strategy('session', 'cookie', {
         password: Config.get('/cookieSecret'),
@@ -34,23 +35,25 @@ internals.applyStrategy = function (server, next) {
                         return done();
                     }
 
-                    User.findById(results.session.userId, done);
+                    Account.findById(results.session.userId, done);
                 }],
-                roles: ['user', function (results, done) {
+                /*roles: ['user', function (results, done) {
 
                     if (!results.user) {
                         return done();
                     }
 
                     results.user.hydrateRoles(done);
-                }],
+                }],*/
+
+                //The scope of an user/account is their roles
                 scope: ['user', function (results, done) {
 
-                    if (!results.user || !results.user.roles) {
+                    if (!results.user || !results.user.groups) {
                         return done();
                     }
 
-                    done(null, Object.keys(results.user.roles));
+                    done(null, Object.keys(results.user.groups));
                 }]
             }, (err, results) => {
 
@@ -85,7 +88,8 @@ internals.preware = {
 
             reply();
         }
-    },
+    }
+    /*,
     ensureAdminGroup: function (groups) {
 
         return {
@@ -97,8 +101,9 @@ internals.preware = {
                 }
 
                 const groupFound = groups.some((group) => {
+                    console.log(request.auth.credentials);
 
-                    return request.auth.credentials.roles.admin.isMemberOf(group);
+                    return request.auth.credentials.user.isMemberOf(group);
                 });
 
                 if (!groupFound) {
@@ -110,7 +115,7 @@ internals.preware = {
                 reply();
             }
         };
-    }
+    }*/
 };
 
 

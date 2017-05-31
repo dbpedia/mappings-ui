@@ -13,7 +13,7 @@ const Path = require('path');
 const Proxyquire = require('proxyquire');
 const Session = require('../../server/models/session');
 const User = require('../../server/models/user');
-
+const Account = require('../../server/models/account');
 
 const lab = exports.lab = Lab.script();
 let server;
@@ -24,12 +24,13 @@ lab.beforeEach((done) => {
 
     stub = {
         Session: MakeMockModel(),
-        User: MakeMockModel()
+        Account: MakeMockModel(),
+        User: MakeMockModel
     };
 
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/session')] = stub.Session;
-    proxy[Path.join(process.cwd(), './server/models/user')] = stub.User;
+    proxy[Path.join(process.cwd(), './server/models/account')] = stub.Account;
 
     const ModelsPlugin = {
         register: Proxyquire('hapi-mongo-models', proxy),
@@ -77,7 +78,7 @@ lab.experiment('Auth Plugin', () => {
             callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
         };
 
-        stub.User.findById = function (username, callback) {
+        stub.Account.findById = function (username, callback) {
 
             callback(null, new User({ _id: '1D', username: 'ren' }));
         };
@@ -156,7 +157,7 @@ lab.experiment('Auth Plugin', () => {
             callback(null, new Session({ username: 'ren', key: 'baddog' }));
         };
 
-        stub.User.findByUsername = function (username, callback) {
+        stub.Account.findByUsername = function (username, callback) {
 
             callback();
         };
@@ -226,14 +227,14 @@ lab.experiment('Auth Plugin', () => {
     });
 
 
-    lab.test('it takes over when the required role is missing', (done) => {
+    lab.test('it takes over when the required group is missing', (done) => {
 
         stub.Session.findByCredentials = function (username, key, callback) {
 
             callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
         };
 
-        stub.User.findById = function (id, callback) {
+        stub.Account.findById = function (id, callback) {
 
             callback(null, new User({ _id: '1D', username: 'ren' }));
         };
@@ -272,31 +273,27 @@ lab.experiment('Auth Plugin', () => {
     });
 
 
-    lab.test('it continues through pre handler when role is present', (done) => {
+    lab.test('it continues through pre handler when group is present', (done) => {
 
         stub.Session.findByCredentials = function (username, key, callback) {
 
             callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
         };
 
-        stub.User.findById = function (id, callback) {
+        stub.Account.findById = function (id, callback) {
 
             const user = new User({
                 username: 'ren',
-                roles: {
-                    admin: {
-                        id: '953P150D35',
-                        name: 'Ren Höek'
-                    }
-                }
+                groups: { admin: 'Admin' }
             });
 
-            user._roles = {
+            user._groups =  {
                 admin: {
-                    _id: '953P150D35',
-                    name: {
-                        first: 'Ren',
-                        last: 'Höek'
+                    _id: 'admin',
+                    name: 'Admin',
+                    permissions: {
+                        SPACE_MADNESS: true,
+                        UNTAMED_WORLD: false
                     }
                 }
             };
@@ -338,145 +335,8 @@ lab.experiment('Auth Plugin', () => {
     });
 
 
-    lab.test('it takes over when the required group is missing', (done) => {
-
-        stub.Session.findByCredentials = function (username, key, callback) {
-
-            callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
-        };
-
-        stub.User.findById = function (id, callback) {
-
-            const user = new User({
-                username: 'ren',
-                roles: {
-                    admin: {
-                        id: '953P150D35',
-                        name: 'Ren Höek'
-                    }
-                }
-            });
-
-            user._roles = {
-                admin: new Admin({
-                    _id: '953P150D35',
-                    name: {
-                        first: 'Ren',
-                        last: 'Höek'
-                    }
-                })
-            };
-
-            callback(null, user);
-        };
-
-        server.route({
-            method: 'GET',
-            path: '/',
-            config: {
-                auth: {
-                    strategy: 'session',
-                    scope: 'admin'
-                },
-                pre: [
-                    AuthPlugin.preware.ensureAdminGroup('root')
-                ]
-            },
-            handler: function (request, reply) {
-
-                Code.expect(request.auth.credentials).to.be.an.object();
-
-                reply('ok');
-            }
-        });
-
-        const request = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                cookie: CookieAdmin
-            }
-        };
-
-        server.inject(request, (response) => {
-
-            Code.expect(response.result.message).to.match(/missing admin group membership/i);
-
-            done();
-        });
-    });
 
 
-    lab.test('it continues through pre handler when group is present', (done) => {
-
-        stub.Session.findByCredentials = function (username, key, callback) {
-
-            callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
-        };
-
-        stub.User.findById = function (id, callback) {
-
-            const user = new User({
-                username: 'ren',
-                roles: {
-                    admin: {
-                        id: '953P150D35',
-                        name: 'Ren Höek'
-                    }
-                }
-            });
-
-            user._roles = {
-                admin: new Admin({
-                    _id: '953P150D35',
-                    name: {
-                        first: 'Ren',
-                        last: 'Höek'
-                    },
-                    groups: {
-                        root: 'Root'
-                    }
-                })
-            };
-
-            callback(null, user);
-        };
-
-        server.route({
-            method: 'GET',
-            path: '/',
-            config: {
-                auth: {
-                    strategy: 'session',
-                    scope: 'admin'
-                },
-                pre: [
-                    AuthPlugin.preware.ensureAdminGroup(['sales', 'root'])
-                ]
-            },
-            handler: function (request, reply) {
-
-                Code.expect(request.auth.credentials).to.be.an.object();
-
-                reply('ok');
-            }
-        });
-
-        const request = {
-            method: 'GET',
-            url: '/',
-            headers: {
-                cookie: CookieAdmin
-            }
-        };
-
-        server.inject(request, (response) => {
-
-            Code.expect(response.result).to.match(/ok/i);
-
-            done();
-        });
-    });
 
 
     lab.test('it continues through pre handler when not acting the root user', (done) => {
@@ -486,26 +346,22 @@ lab.experiment('Auth Plugin', () => {
             callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
         };
 
-        stub.User.findById = function (id, callback) {
+        stub.Account.findById = function (id, callback) {
 
             const user = new User({
-                username: 'ren',
-                roles: {
-                    admin: {
-                        id: '953P150D35',
-                        name: 'Ren Höek'
-                    }
-                }
+                username: 'admin',
+                groups: { admin: 'Admin' }
             });
 
-            user._roles = {
-                admin: new Admin({
-                    _id: '953P150D35',
-                    name: {
-                        first: 'Ren',
-                        last: 'Höek'
+            user._groups =  {
+                admin: {
+                    _id: 'admin',
+                    name: 'Admin',
+                    permissions: {
+                        SPACE_MADNESS: true,
+                        UNTAMED_WORLD: false
                     }
-                })
+                }
             };
 
             callback(null, user);
@@ -555,27 +411,24 @@ lab.experiment('Auth Plugin', () => {
             callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
         };
 
-        stub.User.findById = function (id, callback) {
+        stub.Account.findById = function (id, callback) {
 
             const user = new User({
                 username: 'root',
-                roles: {
-                    admin: {
-                        id: '953P150D35',
-                        name: 'Root Admin'
-                    }
-                }
+                groups: { admin: 'Admin' }
             });
 
-            user._roles = {
-                admin: new Admin({
-                    _id: '953P150D35',
-                    name: {
-                        first: 'Root',
-                        last: 'Admin'
+            user._groups =  {
+                admin: {
+                    _id: 'admin',
+                    name: 'Admin',
+                    permissions: {
+                        SPACE_MADNESS: true,
+                        UNTAMED_WORLD: false
                     }
-                })
+                }
             };
+
 
             callback(null, user);
         };

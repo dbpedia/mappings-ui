@@ -7,20 +7,26 @@ const Uuid = require('uuid');
 
 
 class Session extends MongoModels {
+
     static generateKeyHash(callback) {
 
         const key = Uuid.v4();
 
+
         Async.auto({
             salt: function (done) {
 
+                //Todo: Bcrypt fails sometimes... Error (Native)
                 Bcrypt.genSalt(10, done);
+
             },
             hash: ['salt', function (results, done) {
+
 
                 Bcrypt.hash(key, results.salt, done);
             }]
         }, (err, results) => {
+
 
             if (err) {
                 return callback(err);
@@ -30,6 +36,8 @@ class Session extends MongoModels {
                 key,
                 hash: results.hash
             });
+
+
         });
     }
 

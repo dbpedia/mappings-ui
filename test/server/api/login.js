@@ -15,7 +15,7 @@ const Path = require('path');
 const Proxyquire = require('proxyquire');
 const Session = require('../../../server/models/session');
 const User = require('../../../server/models/user');
-
+const Account = require('../../../server/models/account');
 
 const lab = exports.lab = Lab.script();
 let request;
@@ -28,13 +28,15 @@ lab.before((done) => {
     stub = {
         AuthAttempt: MakeMockModel(),
         Session: MakeMockModel(),
-        User: MakeMockModel()
+        User: MakeMockModel(),
+        Account: MakeMockModel()
     };
 
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/auth-attempt')] = stub.AuthAttempt;
     proxy[Path.join(process.cwd(), './server/models/session')] = stub.Session;
     proxy[Path.join(process.cwd(), './server/models/user')] = stub.User;
+    proxy[Path.join(process.cwd(), './server/models/account')] = stub.Account;
 
     const ModelsPlugin = {
         register: Proxyquire('hapi-mongo-models', proxy),
@@ -128,7 +130,7 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(null, false);
         };
 
-        stub.User.findByCredentials = function (username, password, callback) {
+        stub.Account.findByCredentials = function (username, password, callback) {
 
             callback(Error('find by credentials failed'));
         };
@@ -153,7 +155,7 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(Error('create auth attempt failed'));
         };
 
-        stub.User.findByCredentials = function (username, password, callback) {
+        stub.Account.findByCredentials = function (username, password, callback) {
 
             callback();
         };
@@ -178,7 +180,7 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(null, new AuthAttempt({}));
         };
 
-        stub.User.findByCredentials = function (username, password, callback) {
+        stub.Account.findByCredentials = function (username, password, callback) {
 
             callback();
         };
@@ -205,9 +207,9 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(null, new AuthAttempt({}));
         };
 
-        stub.User.findByCredentials = function (username, password, callback) {
+        stub.Account.findByCredentials = function (username, password, callback) {
 
-            callback(null, new User({ _id: '1D', username: 'ren' }));
+            callback(null, new Account({ _id: '1D', username: 'ren' }));
         };
 
         stub.Session.create = function (username, callback) {
@@ -235,9 +237,9 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(null, new AuthAttempt({}));
         };
 
-        stub.User.findByCredentials = function (username, password, callback) {
+        stub.Account.findByCredentials = function (username, password, callback) {
 
-            callback(null, new User({ _id: '1D', username: 'ren' }));
+            callback(null, new Account({ _id: '1D', username: 'ren' }));
         };
 
         stub.Session.create = function (username, callback) {
@@ -274,7 +276,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
 
     lab.test('it returns an error when find one fails', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback(Error('find one failed'));
         };
@@ -289,7 +291,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
 
     lab.test('it returns early when find one misses', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
@@ -304,7 +306,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
 
     lab.test('it returns an error if any critical step fails', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             const user = {
                 _id: 'BL4M0'
@@ -313,7 +315,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
             callback(null, user);
         };
 
-        stub.User.findByIdAndUpdate = function (id, update, callback) {
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(Error('update failed'));
         };
@@ -326,9 +328,9 @@ lab.experiment('Login Plugin Forgot Password', () => {
     });
 
 
-    lab.test('it succussfully sends a reset password request', (done) => {
+    lab.test('it successfully sends a reset password request', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             const user = {
                 _id: 'BL4M0'
@@ -337,7 +339,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
             callback(null, user);
         };
 
-        stub.User.findByIdAndUpdate = function (id, update, callback) {
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(null, {});
         };
@@ -349,6 +351,7 @@ lab.experiment('Login Plugin Forgot Password', () => {
         };
 
         server.inject(request, (response) => {
+
 
             Code.expect(response.statusCode).to.equal(200);
 
@@ -380,7 +383,7 @@ lab.experiment('Login Plugin Reset Password', () => {
 
     lab.test('it returns an error when find one fails', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback(Error('find one failed'));
         };
@@ -395,7 +398,7 @@ lab.experiment('Login Plugin Reset Password', () => {
 
     lab.test('it returns a bad request when find one misses', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
@@ -410,7 +413,7 @@ lab.experiment('Login Plugin Reset Password', () => {
 
     lab.test('it returns an error if any critical step fails', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             const user = {
                 _id: 'BL4M0',
@@ -441,7 +444,7 @@ lab.experiment('Login Plugin Reset Password', () => {
 
     lab.test('it returns a bad request if the key does not match', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             const user = {
                 _id: 'BL4M0',
@@ -472,7 +475,7 @@ lab.experiment('Login Plugin Reset Password', () => {
 
     lab.test('it succussfully sets a password', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             const user = {
                 _id: 'BL4M0',
@@ -490,7 +493,7 @@ lab.experiment('Login Plugin Reset Password', () => {
             callback(null, true);
         };
 
-        stub.User.findByIdAndUpdate = function (id, update, callback) {
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(null, {});
         };

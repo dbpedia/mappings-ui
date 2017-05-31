@@ -33,7 +33,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -74,7 +74,7 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {
@@ -141,7 +141,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root'),
+                //AuthPlugin.preware.ensureAdminGroup('root'),
                 {
                     assign: 'usernameCheck',
                     method: function (request, reply) {
@@ -224,7 +224,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root'),
+                //AuthPlugin.preware.ensureAdminGroup('root'),
                 {
                     assign: 'usernameCheck',
                     method: function (request, reply) {
@@ -314,7 +314,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureNotRoot,
+                //AuthPlugin.preware.ensureNotRoot,
                 {
                     assign: 'usernameCheck',
                     method: function (request, reply) {
@@ -404,7 +404,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root'),
+                //AuthPlugin.preware.ensureAdminGroup('root'),
                 {
                     assign: 'password',
                     method: function (request, reply) {
@@ -456,7 +456,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureNotRoot,
+                //AuthPlugin.preware.ensureNotRoot,
                 {
                     assign: 'password',
                     method: function (request, reply) {
@@ -511,7 +511,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                AuthPlugin.preware.ensureAdminGroup('root')
+                //AuthPlugin.preware.ensureAdminGroup('root')
             ]
         },
         handler: function (request, reply) {

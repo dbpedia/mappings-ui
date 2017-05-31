@@ -10,11 +10,13 @@ const lab = exports.lab = Lab.script();
 const mongoUri = Config.get('/hapiMongoModels/mongodb/uri');
 const mongoOptions = Config.get('/hapiMongoModels/mongodb/options');
 const stub = {
-    AccountGroup: {}
+    AccountGroup: {},
+    bcrypt: {}
 };
 
 const Account = Proxyquire('../../../server/models/account', {
-    './account-group': stub.AccountGroup
+    './account-group': stub.AccountGroup,
+    bcrypt: stub.bcrypt
 });
 const AccountGroup = require('../../../server/models/account-group');
 
@@ -45,9 +47,44 @@ lab.experiment('Account Class Methods', () => {
     });
 
 
+
+    lab.test('it creates a password hash combination', (done) => {
+
+        Account.generatePasswordHash('bighouseblues', (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.an.object();
+            Code.expect(result.password).to.be.a.string();
+            Code.expect(result.hash).to.be.a.string();
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when password hash fails', (done) => {
+
+        const realGenSalt = stub.bcrypt.genSalt;
+        stub.bcrypt.genSalt = function (rounds, callback) {
+
+            callback(Error('bcrypt failed'));
+        };
+
+        Account.generatePasswordHash('bighouseblues', (err, result) => {
+
+            Code.expect(err).to.be.an.object();
+            Code.expect(result).to.not.exist();
+
+            stub.bcrypt.genSalt = realGenSalt;
+
+            done();
+        });
+    });
+
+
     lab.test('it returns a new instance when create succeeds', (done) => {
 
-        Account.create('Ren Höek', (err, result) => {
+        Account.create('Ren Höek','renhoek','pass','mail@mail.com', (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(Account);
@@ -57,9 +94,11 @@ lab.experiment('Account Class Methods', () => {
     });
 
 
+
+
     lab.test('it correctly sets the middle name when create is called', (done) => {
 
-        Account.create('Stimpson J Cat', (err, account) => {
+        Account.create('Stimpson J Cat', 'stimpson','pass','mail@mail.com', (err, account) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(account).to.be.an.instanceOf(Account);
@@ -81,7 +120,7 @@ lab.experiment('Account Class Methods', () => {
             callback(Error('insert failed'));
         };
 
-        Account.create('Stimpy Cat', (err, result) => {
+        Account.create('Stimpy Cat','stimpy','pass','mail@mail.com', (err, result) => {
 
             Code.expect(err).to.be.an.object();
             Code.expect(result).to.not.exist();
@@ -92,26 +131,117 @@ lab.experiment('Account Class Methods', () => {
         });
     });
 
+    lab.test('it returns a result when finding by credentials', (done) => {
+
+        Async.auto({
+            user: function (cb) {
+
+                Account.create('Stimpy Cat','stimpy', 'thebigshot', 'stimpy@ren.show', cb);
+            },
+            username: ['user', function (results, cb) {
+
+                Account.findByCredentials(results.user.username, results.user.password, cb);
+            }],
+            email: ['user', function (results, cb) {
+
+                Account.findByCredentials(results.user.email, results.user.password, cb);
+            }]
+        }, (err, results) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(results.user).to.be.an.instanceOf(Account);
+            Code.expect(results.username).to.be.an.instanceOf(Account);
+            Code.expect(results.email).to.be.an.instanceOf(Account);
+
+            done();
+        });
+    });
+
+    lab.test('it returns nothing for find by credentials when password match fails', (done) => {
+
+        const realFindOne = Account.findOne;
+        Account.findOne = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(null, { username: 'toastman', password: 'letmein' });
+        };
+
+        const realCompare = stub.bcrypt.compare;
+        stub.bcrypt.compare = function (key, source, callback) {
+
+            callback(null, false);
+        };
+
+        Account.findByCredentials('toastman', 'doorislocked', (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.not.exist();
+
+            Account.findOne = realFindOne;
+            stub.bcrypt.compare = realCompare;
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns early when finding by login misses', (done) => {
+
+        const realFindOne = Account.findOne;
+        Account.findOne = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback();
+        };
+
+        Account.findByCredentials('stimpy', 'dog', (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.not.exist();
+
+            Account.findOne = realFindOne;
+
+            done();
+        });
+    });
+
+    lab.test('it returns an error when finding by login fails', (done) => {
+
+        const realFindOne = Account.findOne;
+        Account.findOne = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(Error('find one failed'));
+        };
+
+        Account.findByCredentials('stimpy', 'dog', (err, result) => {
+
+            Code.expect(err).to.be.an.object();
+            Code.expect(result).to.not.exist();
+
+            Account.findOne = realFindOne;
+
+            done();
+        });
+    });
 
     lab.test('it returns a result when finding by username', (done) => {
 
         Async.auto({
             account: function (cb) {
 
-                Account.create('Stimpson J Cat', cb);
+                Account.create('Stimpson J Cat','stimpy', 'pass','mail@mail.com',cb);
             },
-            accountUpdated: ['account', function (results, cb) {
+            accountCreated: ['account', function (results, cb) {
 
-                const fieldsToUpdate = {
-                    $set: {
-                        user: {
-                            id: '95EP150D35',
-                            name: 'stimpy'
-                        }
-                    }
-                };
 
-                Account.findByIdAndUpdate(results.account._id, fieldsToUpdate, cb);
+                Account.findById(results.account._id,cb);
             }]
         }, (err, results) => {
 
@@ -120,6 +250,35 @@ lab.experiment('Account Class Methods', () => {
             }
 
             Account.findByUsername('stimpy', (err, account) => {
+
+                Code.expect(err).to.not.exist();
+                Code.expect(account).to.be.an.instanceOf(Account);
+
+                done();
+            });
+        });
+    });
+
+
+    lab.test('it returns a result when finding by email', (done) => {
+
+        Async.auto({
+            account: function (cb) {
+
+                Account.create('Stimpson J Cat','stimpy', 'pass','test@mail.com',cb);
+            },
+            accountCreated: ['account', function (results, cb) {
+
+
+                Account.findById(results.account._id,cb);
+            }]
+        }, (err, results) => {
+
+            if (err) {
+                return done(err);
+            }
+
+            Account.findByEmail('test@mail.com', (err, account) => {
 
                 Code.expect(err).to.not.exist();
                 Code.expect(account).to.be.an.instanceOf(Account);
@@ -151,6 +310,7 @@ lab.experiment('Account Instance Methods', () => {
             done(err);
         });
     });
+
 
 
     lab.test('it returns false when groups are not found', (done) => {

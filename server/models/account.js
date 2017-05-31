@@ -2,43 +2,134 @@
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const AccountGroup = require('./account-group');
-
+const Bcrypt = require('bcrypt');
 const Async = require('async');
 const NoteEntry = require('./note-entry');
-const StatusEntry = require('./status-entry');
 
 
 class Account extends MongoModels {
-    static create(name, callback) {
 
-        const nameParts = name.trim().split(/\s/);
+    static generatePasswordHash(password, callback) {
 
-        const document = {
-            name: {
-                first: nameParts.shift(),
-                middle: nameParts.length > 1 ? nameParts.shift() : '',
-                last: nameParts.join(' ')
+        Async.auto({
+            salt: function (done) {
+
+                Bcrypt.genSalt(10, done);
             },
-            timeCreated: new Date()
-        };
+            hash: ['salt', function (results, done) {
 
-        this.insertOne(document, (err, docs) => {
+                Bcrypt.hash(password, results.salt, done);
+            }]
+        }, (err, results) => {
 
             if (err) {
                 return callback(err);
             }
 
-            callback(null, docs[0]);
+            callback(null, {
+                password,
+                hash: results.hash
+            });
         });
     }
 
+
+    //Receives the completa nem, username, password and email
+    static create(completename,username, password, email, callback) {
+
+        const self = this;
+
+        const nameParts = completename.trim().split(/\s/);
+
+        Async.auto({
+            passwordHash: this.generatePasswordHash.bind(this, password),
+            newUser: ['passwordHash', function (results, done) {
+
+                const document = {
+                    isActive: true,
+                    username: username.toLowerCase(),
+                    name: {
+                        first: nameParts.shift(),
+                        middle: nameParts.length > 1 ? nameParts.shift() : '',
+                        last: nameParts.join(' ')
+                    },
+                    password: results.passwordHash.hash,
+                    email: email.toLowerCase(),
+                    timeCreated: new Date()
+                };
+
+                self.insertOne(document, done);
+            }]
+        }, (err, results) => {
+
+            if (err) {
+                return callback(err);
+            }
+
+            //Clean out of memory
+            results.newUser[0].password = results.passwordHash.password;
+
+            callback(null, results.newUser[0]);
+        });
+    }
+
+
     static findByUsername(username, callback) {
 
-        const query = { 'user.name': username.toLowerCase() };
+        const query = { 'username': username.toLowerCase() };
 
         this.findOne(query, callback);
     }
 
+    static findByEmail(email, callback) {
+
+        const query = { 'email': email.toLowerCase() };
+
+        this.findOne(query, callback);
+    }
+
+    static findByCredentials(username, password, callback) {
+
+        const self = this;
+
+        Async.auto({
+            user: function (done) {
+
+                const query = {
+                    isActive: true
+                };
+
+                if (username.indexOf('@') > -1) {
+                    query.email = username.toLowerCase();
+                }
+                else {
+                    query.username = username.toLowerCase();
+                }
+
+                self.findOne(query, done);
+            },
+            passwordMatch: ['user', function (results, done) {
+
+                if (!results.user) {
+                    return done(null, false);
+                }
+
+                const source = results.user.password;
+                Bcrypt.compare(password, source, done);
+            }]
+        }, (err, results) => {
+
+            if (err) {
+                return callback(err);
+            }
+
+            if (results.passwordMatch) {
+                return callback(null, results.user);
+            }
+
+            callback();
+        });
+    }
 
     constructor(attrs) {
 
@@ -132,10 +223,10 @@ Account.collection = 'accounts';
 
 Account.schema = Joi.object().keys({
     _id: Joi.object(),
-    user: Joi.object().keys({
-        id: Joi.string().required(),
-        name: Joi.string().lowercase().required()
-    }),
+    isActive: Joi.boolean().default(true),
+    username: Joi.string().token().lowercase().required(),
+    password: Joi.string(),
+    email: Joi.string().email().lowercase().required(),
     name: Joi.object().keys({
         first: Joi.string().required(),
         middle: Joi.string().allow(''),
@@ -143,22 +234,23 @@ Account.schema = Joi.object().keys({
     }),
     groups: Joi.object().description('{ groupId: name, ... }'),
     permissions: Joi.object().description('{ permission: boolean, ... }'),
-    status: Joi.object().keys({
-        current: StatusEntry.schema,
-        log: Joi.array().items(StatusEntry.schema)
-    }),
     notes: Joi.array().items(NoteEntry.schema),
     verification: Joi.object().keys({
         complete: Joi.boolean(),
         token: Joi.string()
     }),
-    timeCreated: Joi.date()
+    timeCreated: Joi.date(),
+    resetPassword: Joi.object().keys({
+        token: Joi.string().required(),
+        expires: Joi.date().required()
+    })
 });
 
 
 Account.indexes = [
-    { key: { 'user.id': 1 } },
-    { key: { 'user.name': 1 } }
+    { key: { _id: 1 } },
+    { key: { username: 1, unique:1 } },
+    { key: { email:1, unique:1 } }
 ];
 
 

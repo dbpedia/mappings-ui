@@ -13,7 +13,7 @@ internals.applyRoutes = function (server, next) {
 
     const AuthAttempt = server.plugins['hapi-mongo-models'].AuthAttempt;
     const Session = server.plugins['hapi-mongo-models'].Session;
-    const User = server.plugins['hapi-mongo-models'].User;
+    const Account = server.plugins['hapi-mongo-models'].Account;
 
 
     server.route({
@@ -53,7 +53,7 @@ internals.applyRoutes = function (server, next) {
                     const username = request.payload.username;
                     const password = request.payload.password;
 
-                    User.findByCredentials(username, password, (err, user) => {
+                    Account.findByCredentials(username, password, (err, user) => {
 
                         if (err) {
                             return reply(err);
@@ -102,12 +102,14 @@ internals.applyRoutes = function (server, next) {
             const credentials = request.pre.session._id.toString() + ':' + request.pre.session.key;
             const authHeader = 'Basic ' + new Buffer(credentials).toString('base64');
 
+            //Todo: return GROUPS instead of roles
+            //Todo: Later, we will also return specific permissions... First approach only admin and regular-users groups
             const result = {
                 user: {
                     _id: request.pre.user._id,
                     username: request.pre.user.username,
                     email: request.pre.user.email,
-                    roles: request.pre.user.roles
+                    groups: request.pre.user.groups
                 },
                 session: request.pre.session,
                 authHeader
@@ -136,7 +138,7 @@ internals.applyRoutes = function (server, next) {
                         email: request.payload.email
                     };
 
-                    User.findOne(conditions, (err, user) => {
+                    Account.findOne(conditions, (err, user) => {
 
                         if (err) {
                             return reply(err);
@@ -153,14 +155,18 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+
             const mailer = request.server.plugins.mailer;
 
             Async.auto({
                 keyHash: function (done) {
 
                     Session.generateKeyHash(done);
+
                 },
                 user: ['keyHash', function (results, done) {
+
+
 
                     const id = request.pre.user._id.toString();
                     const update = {
@@ -172,9 +178,11 @@ internals.applyRoutes = function (server, next) {
                         }
                     };
 
-                    User.findByIdAndUpdate(id, update, done);
+                    Account.findByIdAndUpdate(id, update, done);
                 }],
                 email: ['user', function (results, done) {
+
+
 
                     const emailOptions = {
                         subject: 'Reset your ' + Config.get('/projectName') + ' password',
@@ -190,6 +198,8 @@ internals.applyRoutes = function (server, next) {
                     mailer.sendEmail(emailOptions, template, context, done);
                 }]
             }, (err, results) => {
+
+
 
                 if (err) {
                     return reply(err);
@@ -221,7 +231,7 @@ internals.applyRoutes = function (server, next) {
                         'resetPassword.expires': { $gt: Date.now() }
                     };
 
-                    User.findOne(conditions, (err, user) => {
+                    Account.findOne(conditions, (err, user) => {
 
                         if (err) {
                             return reply(err);
@@ -251,7 +261,7 @@ internals.applyRoutes = function (server, next) {
                         return reply(Boom.badRequest('Invalid email or key.'));
                     }
 
-                    User.generatePasswordHash(request.payload.password, done);
+                    Account.generatePasswordHash(request.payload.password, done);
                 }],
                 user: ['passwordHash', function (results, done) {
 
@@ -265,7 +275,7 @@ internals.applyRoutes = function (server, next) {
                         }
                     };
 
-                    User.findByIdAndUpdate(id, update, done);
+                    Account.findByIdAndUpdate(id, update, done);
                 }]
             }, (err, results) => {
 

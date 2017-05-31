@@ -7,6 +7,7 @@ const Slug = require('slug');
 class AccountGroup extends MongoModels {
 
 
+
     static create(name, callback) {
 
         const document = {
