@@ -428,7 +428,7 @@ lab.experiment('Accounts Plugin Update', () => {
 
         request = {
             method: 'PUT',
-            url: '/accounts/93EP150D35',
+            url: '/accounts/592fe4c8ff79c6347b1db038',
             payload: {
                 name: {
                     first: 'Muddy',
@@ -1017,6 +1017,33 @@ lab.experiment('Account Plugin Update Groups', () => {
         });
     });
 
+
+    lab.test('when removing all groups, the account group is set', (done) => {
+
+
+        const request2 = {
+            method: 'PUT',
+            url: '/accounts/93EP150D35/groups',
+            payload: {
+                groups: { }
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null,  update  );
+        };
+
+        server.inject(request2, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result.$set.groups).to.equal( { account: 'Account' } );
+
+            done();
+        });
+    });
 
     lab.test('it returns an error when trying to update root groups', (done) => {
 

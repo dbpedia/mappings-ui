@@ -74,7 +74,10 @@ lab.experiment('Admin Accounts Details Reducer', () => {
                         first: 'Ren',
                         middle: '',
                         last: 'Hoek'
-                    }
+                    },
+                    email: 'mail@mail.com',
+                    username: 'renhoek',
+                    isActive: false
                 }
             }
         });
@@ -85,6 +88,9 @@ lab.experiment('Admin Accounts Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+        Code.expect(state.username).to.equal('renhoek');
+        Code.expect(state.isActive).to.equal(false);
 
         done();
     });
@@ -100,7 +106,10 @@ lab.experiment('Admin Accounts Details Reducer', () => {
                     first: 'Ren',
                     middle: '',
                     last: 'Hoek'
-                }
+                },
+                email: 'mail@mail.com',
+                username: 'renhoek',
+                isActive: false
             }
         });
 
@@ -110,6 +119,9 @@ lab.experiment('Admin Accounts Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+        Code.expect(state.username).to.equal('renhoek');
+        Code.expect(state.isActive).to.equal(false);
 
         done();
     });

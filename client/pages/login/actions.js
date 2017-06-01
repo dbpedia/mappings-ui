@@ -37,7 +37,7 @@ class Actions {
                     if (query.returnUrl) {
                         window.location.href = query.returnUrl;
                     }
-                    else if (response.user.roles.admin) {
+                    else if (response.user.groups.admin) {
                         window.location.href = '/admin';
                     }
                     else {

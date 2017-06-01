@@ -6,6 +6,7 @@ const ControlGroup = require('../../../../components/form/control-group.jsx');
 const LinkState = require('../../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
+const SelectControl = require('../../../../components/form/select-control.jsx');
 const Spinner = require('../../../../components/form/spinner.jsx');
 const TextControl = require('../../../../components/form/text-control.jsx');
 
@@ -17,7 +18,10 @@ const propTypes = {
     help: PropTypes.object,
     loading: PropTypes.bool,
     name: PropTypes.object,
-    showSaveSuccess: PropTypes.bool
+    showSaveSuccess: PropTypes.bool,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    isActive: PropTypes.bool
 };
 
 
@@ -27,15 +31,11 @@ class DetailsForm extends React.Component {
         super(props);
 
         this.state = {
-            name: props.name
+            name: props.name,
+            username: props.username,
+            email: props.email,
+            isActive: props.isActive
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-
-        this.setState({
-            name: nextProps.name
-        });
     }
 
     handleSubmit(event) {
@@ -45,7 +45,10 @@ class DetailsForm extends React.Component {
 
         const id = this.props._id;
         const data = {
-            name: this.state.name
+            name: this.state.name,
+            email: this.state.email,
+            isActive: this.state.isActive,
+            username: this.state.username
         };
 
         Actions.saveDetails(id, data);
@@ -75,6 +78,36 @@ class DetailsForm extends React.Component {
         const formElements = <fieldset>
             <legend>Details</legend>
             {alerts}
+            <SelectControl
+                name="isActive"
+                label="Active"
+                value={this.state.isActive}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.isActive}
+                help={this.props.help.isActive}
+                disabled={this.props.loading}>
+
+                <option value={true}>true</option>
+                <option value={false}>false</option>
+            </SelectControl>
+            <TextControl
+                name="username"
+                label="Username"
+                value={this.state.username}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.username}
+                help={this.props.help.username}
+                disabled={this.props.loading}
+            />
+            <TextControl
+                name="email"
+                label="Email"
+                value={this.state.email}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.email}
+                help={this.props.help.email}
+                disabled={this.props.loading}
+            />
             <TextControl
                 name="name.first"
                 label="First name"

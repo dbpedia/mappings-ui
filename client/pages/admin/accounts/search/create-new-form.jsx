@@ -17,7 +17,11 @@ const propTypes = {
     help: PropTypes.object,
     history: PropTypes.object,
     loading: PropTypes.bool,
-    show: PropTypes.bool
+    show: PropTypes.bool,
+    username: PropTypes.string,
+    password: PropTypes.string,
+    email: PropTypes.string
+
 };
 
 
@@ -28,16 +32,20 @@ class CreateNewForm extends React.Component {
 
         this.els = {};
         this.state = {
-            name: ''
+            name: '',
+            username:'',
+            email: '',
+            password:''
         };
     }
 
-    componentDidUpdate() {
+
+    /*componentDidUpdate() {
 
         if (this.props.show && this.state.name.length === 0) {
             this.els.name.focus();
         }
-    }
+    }*/
 
     onSubmit(event) {
 
@@ -45,7 +53,10 @@ class CreateNewForm extends React.Component {
         event.stopPropagation();
 
         Actions.createNew({
-            name: this.state.name
+            name: this.state.name,
+            username: this.state.username,
+            email: this.state.email,
+            password: this.state.password
         }, this.props.history);
     }
 
@@ -72,13 +83,42 @@ class CreateNewForm extends React.Component {
                 help={this.props.help.name}
                 disabled={this.props.loading}
             />
+            <TextControl
+                ref={(c) => (this.els.username = c)}
+                name="username"
+                label="Username"
+                value={this.state.username}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.username}
+                help={this.props.help.username}
+                disabled={this.props.loading}
+            />
+            <TextControl
+                name="email"
+                label="Email"
+                value={this.state.email}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.email}
+                help={this.props.help.email}
+                disabled={this.props.loading}
+            />
+            <TextControl
+                name="password"
+                label="Password"
+                type="password"
+                value={this.state.password}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.password}
+                help={this.props.help.password}
+                disabled={this.props.loading}
+            />
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
                     disabled={this.props.loading}>
 
-                    Create new
+                    Create
                     <Spinner space="left" show={this.props.loading} />
                 </Button>
             </ControlGroup>
@@ -86,7 +126,7 @@ class CreateNewForm extends React.Component {
 
         return (
             <Modal
-                header="Create new"
+                header="Create new account"
                 show={this.props.show}
                 onClose={Actions.hideCreateNew}>
 

@@ -26,7 +26,7 @@ class Results extends React.Component {
                         </Link>
                     </td>
                     <td>{record.name.first} {record.name.last}</td>
-                    <td>{record.user ? record.user.name : '---'}</td>
+                    <td>{record.username}</td>
                     <td>{record._id}</td>
                 </tr>
             );

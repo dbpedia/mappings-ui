@@ -3,7 +3,6 @@ const Code = require('code');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
 const React = require('react');
-const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
 
 
@@ -39,38 +38,7 @@ lab.experiment('Admin Accounts Create New Form', () => {
     });
 
 
-    lab.test('it focuses on the name field when the component is update and showing', (done) => {
 
-        const container = document.createElement('div');
-
-        defaultProps.ref.impl = function (form) {
-
-            defaultProps.ref.impl = undefined;
-
-            form.els.name.input.onfocus = function () {
-
-                done();
-            };
-        };
-
-        // initial render
-        let FormEl = React.createElement(Form, defaultProps);
-        ReactDOM.render(FormEl, container);
-
-        // update props and render again
-        let props = Object.assign({}, defaultProps, {
-            show: false
-        });
-        FormEl = React.createElement(Form, props);
-        ReactDOM.render(FormEl, container);
-
-        // update props and render again
-        props = Object.assign({}, defaultProps, {
-            show: true
-        });
-        FormEl = React.createElement(Form, props);
-        ReactDOM.render(FormEl, container);
-    });
 
 
     lab.test('it handles a submit event', (done) => {

@@ -13,7 +13,10 @@ const initialState = {
     hasError: {},
     help: {},
     _id: undefined,
-    name: {}
+    name: {},
+    username: undefined,
+    email: {},
+    isActive: false
 };
 const reducer = function (state = initialState, action) {
 
@@ -33,14 +36,20 @@ const reducer = function (state = initialState, action) {
             showFetchFailure: !!action.err,
             error: validation.error,
             _id: action.response._id,
-            name: action.response.name
+            name: action.response.name,
+            username: action.response.username,
+            email: action.response.email,
+            isActive: action.response.isActive
         });
     }
 
     if (action.type === Constants.SAVE_DETAILS) {
         return ObjectAssign({}, state, {
             loading: true,
-            name: action.request.data.name
+            name: action.request.data.name,
+            email: action.request.data.email,
+            username: action.request.data.username,
+            isActive: action.request.data.isActive
         });
     }
 
@@ -56,6 +65,15 @@ const reducer = function (state = initialState, action) {
 
         if (action.response.hasOwnProperty('name')) {
             stateUpdates.name = action.response.name;
+        }
+        if (action.response.hasOwnProperty('username')) {
+            stateUpdates.username = action.response.username;
+        }
+        if (action.response.hasOwnProperty('email')) {
+            stateUpdates.email = action.response.email;
+        }
+        if (action.response.hasOwnProperty('isActive')) {
+            stateUpdates.isActive = action.response.isActive;
         }
 
         return ObjectAssign({}, state, stateUpdates);

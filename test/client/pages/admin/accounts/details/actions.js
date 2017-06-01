@@ -61,6 +61,64 @@ lab.experiment('Admin Accounts Details Actions', () => {
     });
 
 
+    lab.test('it calls ApiActions.put from savePassword', (done) => {
+
+        stub.ApiActions.put.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(data).to.be.an.object();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        const id = 'abcxyz';
+        const data = {
+            password: 'toasting',
+            passwordConfirm: 'toasting'
+        };
+
+        Actions.savePassword(id, data);
+    });
+
+
+    lab.test('it calls dispatch from savePassword (passwords mismatch)', (done) => {
+
+        stub.Store.dispatch.mock = function (action) {
+
+            if (action.type === Constants.SAVE_PASSWORD_RESPONSE) {
+
+                done();
+            }
+        };
+
+        const id = 'abcxyz';
+        const data = {
+            password: 'toasting',
+            passwordConfirm: 'bread'
+        };
+
+        Actions.savePassword(id, data);
+    });
+
+
+    lab.test('it calls dispatch from hidePasswordSaveSuccess', (done) => {
+
+        stub.Store.dispatch.mock = function (action) {
+
+            if (action.type === Constants.HIDE_PASSWORD_SAVE_SUCCESS) {
+
+                done();
+            }
+        };
+
+        Actions.hidePasswordSaveSuccess();
+    });
+
+
     lab.test('it calls ApiActions.get from getGroupOptions', (done) => {
 
         stub.ApiActions.get.mock = function (url, data, store, typeReq, typeRes, callback) {

@@ -160,6 +160,36 @@ class Actions {
         });
     }
 
+    static savePassword(id, data) {
+
+        if (data.password !== data.passwordConfirm) {
+            return Store.dispatch({
+                type: Constants.SAVE_PASSWORD_RESPONSE,
+                err: new Error('password mismatch'),
+                response: {
+                    message: 'Passwords do not match.'
+                }
+            });
+        }
+
+        delete data.passwordConfirm;
+
+        ApiActions.put(
+            `/api/accounts/${id}/password`,
+            data,
+            Store,
+            Constants.SAVE_PASSWORD,
+            Constants.SAVE_PASSWORD_RESPONSE
+        );
+    }
+
+    static hidePasswordSaveSuccess() {
+
+        Store.dispatch({
+            type: Constants.HIDE_PASSWORD_SAVE_SUCCESS
+        });
+    }
+
     static newNote(id, newNote) {
 
         const data = {

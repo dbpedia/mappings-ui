@@ -44,8 +44,8 @@ class FilterForm extends React.Component {
 
                         <option value="_id">id &#9650;</option>
                         <option value="-_id">id &#9660;</option>
-                        <option value="user.name">username &#9650;</option>
-                        <option value="-user.name">username &#9660;</option>
+                        <option value="username">username &#9650;</option>
+                        <option value="-username">username &#9660;</option>
                     </SelectControl>
                 </div>
                 <div className="col-sm-4">

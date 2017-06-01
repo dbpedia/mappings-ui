@@ -55,6 +55,7 @@ class Account extends MongoModels {
                     },
                     password: results.passwordHash.hash,
                     email: email.toLowerCase(),
+                    groups: { account:'Account' },
                     timeCreated: new Date()
                 };
 

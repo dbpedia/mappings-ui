@@ -37,7 +37,7 @@ internals.applyRoutes = function (server, next) {
 
             const query = {};
             if (request.query.username) {
-                query['user.name'] = new RegExp('^.*?' + EscapeRegExp(request.query.username) + '.*$', 'i');
+                query.username = new RegExp('^.*?' + EscapeRegExp(request.query.username) + '.*$', 'i');
             }
             if (request.query.isActive) {
                 query.isActive = request.query.isActive === 'true';
@@ -271,11 +271,18 @@ internals.applyRoutes = function (server, next) {
         handler: function (request, reply) {
 
             const id = request.params.id;
+
+
             const update = {
                 $set: {
                     groups: request.payload.groups
                 }
             };
+
+            //If not admin or account, it is account at least
+            if (!('admin' in update.$set.groups) && !('account' in update.$set.groups)) {
+                update.$set.groups.account = 'Account';
+            }
 
             Account.findByIdAndUpdate(id, update, (err, account) => {
 
@@ -326,7 +333,7 @@ internals.applyRoutes = function (server, next) {
 
                         const conditions = {
                             username: request.payload.username,
-                            _id: { $ne: request.params.id }
+                            _id: { $ne: Account._idClass(request.params.id) }
                         };
 
                         Account.findOne(conditions, (err, user) => {
@@ -346,9 +353,10 @@ internals.applyRoutes = function (server, next) {
                     assign: 'emailCheck',
                     method: function (request, reply) {
 
+
                         const conditions = {
                             email: request.payload.email,
-                            _id: { $ne: request.params.id }
+                            _id: { $ne: Account._idClass(request.params.id) }
                         };
 
 
@@ -378,7 +386,8 @@ internals.applyRoutes = function (server, next) {
                 $set: {
                     name: request.payload.name,
                     email: request.payload.email,
-                    username: request.payload.username
+                    username: request.payload.username,
+                    isActive: request.payload.isActive
                 }
             };
 

@@ -113,8 +113,8 @@ lab.experiment('Login Actions', () => {
 
             callback(null, {
                 user: {
-                    roles: {
-                        admin: {}
+                    groups: {
+                        admin: 'Admin'
                     }
                 }
             });
@@ -151,8 +151,8 @@ lab.experiment('Login Actions', () => {
 
             callback(null, {
                 user: {
-                    roles: {
-                        account: {}
+                    groups: {
+                        account: 'Account'
                     }
                 }
             });

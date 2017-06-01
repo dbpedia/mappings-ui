@@ -2,13 +2,11 @@
 const Actions = require('./actions');
 const DeleteForm = require('../../../../../client/pages/admin/components/delete-form.jsx');
 const DetailsForm = require('./details-form.jsx');
-const NoteForm = require('../../components/note-form.jsx');
+const PasswordForm = require('./password-form.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
-//const StatusForm = require('../../components/status-form.jsx');
 const Store = require('./store');
-const UserForm = require('./user-form.jsx');
 const GroupsForm = require('./groups-form.jsx');
 const PermissionsForm = require('./permissions-form.jsx');
 
@@ -84,30 +82,32 @@ class DetailsPage extends React.Component {
                     <Link to="/admin/accounts">Accounts</Link> / {fullName}
                 </h1>
                 <div className="row">
-                    <div className="col-sm-8">
+                    <div className="col-sm-6">
                         <DetailsForm {...this.state.details} />
-                        <UserForm {...this.state.user} />
                     </div>
-                    <div className="col-sm-4">
-                        {/*<StatusForm
-                            {...this.state.status}
-                            saveAction={Actions.newStatus.bind(Actions, id)}
-                            successCloseAction={Actions.hideStatusSaveSuccess}
-                        />*/}
-                        <NoteForm
+                    <div className="col-sm-6">
+                        <PasswordForm {...this.state.password} />
+                        {/*<NoteForm
                             {...this.state.note}
                             saveAction={Actions.newNote.bind(Actions, id)}
                             successCloseAction={Actions.hideNoteSaveSuccess}
-                        />
+                        />*/}
                     </div>
-                    <div className="col-sm-12">
-                        <DeleteForm
-                            {...this.state.delete}
-                            action={Actions.delete.bind(Actions, id, this.props.history)}
-                        />
+                </div>
+                <div className="row">
+                    <div className="col-sm-6">
                         <GroupsForm {...this.state.groups} />
+                    </div>
+                    <div className="col-sm-6">
                         <PermissionsForm {...this.state.permissions} />
                     </div>
+
+                </div>
+                <div className="row">
+                    <DeleteForm
+                        {...this.state.delete}
+                        action={Actions.delete.bind(Actions, id, this.props.history)}
+                    />
                 </div>
             </section>
         );
