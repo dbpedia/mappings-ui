@@ -6,36 +6,32 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
 
-
 const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../../client/pages/account/settings/user-form.jsx', {
+const Form = Proxyquire('../../../../../client/pages/account/details/details-form.jsx', {
     './actions': stub.Actions
 });
+const defaultProps = {
+    name: {
+        first: 'Stimpson',
+        middle: '',
+        last: 'Cat'
+    },
+    hasError: {},
+    help: {}
+};
 
 
-lab.experiment('Account Settings User Form', () => {
+lab.experiment('Account Profile Details Form', () => {
 
     lab.test('it renders', (done) => {
 
-        const FormEl = React.createElement(Form, {});
+        const FormEl = React.createElement(Form, defaultProps);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
 
         Code.expect(form).to.exist();
-
-        done();
-    });
-
-
-    lab.test('it handles unmounting', (done) => {
-
-        const container = global.document.createElement('div');
-        const FormEl = React.createElement(Form, {});
-
-        ReactDOM.render(FormEl, container);
-        ReactDOM.unmountComponentAtNode(container);
 
         done();
     });
@@ -46,14 +42,21 @@ lab.experiment('Account Settings User Form', () => {
         const container = document.createElement('div');
 
         // initial render
-        let FormEl = React.createElement(Form, {});
+        let FormEl = React.createElement(Form, defaultProps);
         ReactDOM.render(FormEl, container);
 
         // update props and render again
-        FormEl = React.createElement(Form, {
-            username: 'pal',
-            email: 'friend@pal'
+        const props = Object.assign({}, defaultProps, {
+            name: {
+                first: 'Ren',
+                middle: '',
+                last: 'Hoek'
+            },
+            email: 'mail@mail.com',
+            username: 'renhoek',
+            isActive: false
         });
+        FormEl = React.createElement(Form, props);
         ReactDOM.render(FormEl, container);
 
         done();
@@ -62,16 +65,12 @@ lab.experiment('Account Settings User Form', () => {
 
     lab.test('it handles a submit event', (done) => {
 
-        stub.Actions.saveUser = function () {
+        stub.Actions.saveDetails = function () {
 
             done();
         };
 
-        const FormEl = React.createElement(Form, {
-            hydrated: true,
-            hasError: {},
-            help: {}
-        });
+        const FormEl = React.createElement(Form, defaultProps);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const formTag = ReactTestUtils.findRenderedDOMComponentWithTag(form, 'form');
 
@@ -81,14 +80,9 @@ lab.experiment('Account Settings User Form', () => {
 
     lab.test('it renders with loading state', (done) => {
 
-        const props = {
-            hydrated: true,
-            loading: true,
-            hasError: {},
-            help: {},
-            username: 'pal',
-            email: 'friend@pal'
-        };
+        const props = Object.assign({}, defaultProps, {
+            loading: true
+        });
         const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const button = ReactTestUtils.findRenderedDOMComponentWithTag(form, 'button');
@@ -99,17 +93,11 @@ lab.experiment('Account Settings User Form', () => {
     });
 
 
-    lab.test('it renders with success state', (done) => {
+    lab.test('it renders showing save success alert', (done) => {
 
-        const props = {
-            hydrated: true,
-            loading: false,
-            showSaveSuccess: true,
-            hasError: {},
-            help: {},
-            username: 'pal',
-            email: 'friend@pal'
-        };
+        const props = Object.assign({}, defaultProps, {
+            showSaveSuccess: true
+        });
         const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const alerts = ReactTestUtils.scryRenderedDOMComponentsWithClass(form, 'alert-success');
@@ -120,18 +108,12 @@ lab.experiment('Account Settings User Form', () => {
     });
 
 
-    lab.test('it renders with error state', (done) => {
+    lab.test('it renders showing error alert', (done) => {
 
-        const props = {
-            hydrated: true,
-            loading: false,
+        const props = Object.assign({}, defaultProps, {
             showSaveSuccess: false,
-            error: 'sorry pal',
-            hasError: {},
-            help: {},
-            username: 'pal',
-            email: 'friend@pal'
-        };
+            error: 'sorry pal'
+        });
         const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const alerts = ReactTestUtils.scryRenderedDOMComponentsWithClass(form, 'alert-danger');

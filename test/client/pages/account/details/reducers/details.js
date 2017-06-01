@@ -1,14 +1,14 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../client/pages/account/settings/constants');
+const Constants = require('../../../../../../client/pages/account/details/constants');
 const Lab = require('lab');
-const Store = require('../../../../../../client/pages/account/settings/store');
+const Store = require('../../../../../../client/pages/account/details/store');
 
 
 const lab = exports.lab = Lab.script();
 
 
-lab.experiment('Account Details Reducer', () => {
+lab.experiment('Account Profile Details Reducer', () => {
 
     lab.test('it handles a GET_DETAILS action', (done) => {
 
@@ -57,7 +57,7 @@ lab.experiment('Account Details Reducer', () => {
         const state = Store.getState().details;
 
         Code.expect(state.loading).to.be.false();
-        Code.expect(state.showSaveSuccess).to.be.false();
+        Code.expect(state.showFetchFailure).to.be.true();
         Code.expect(state.error).to.equal('something else failed');
 
         done();
@@ -74,7 +74,8 @@ lab.experiment('Account Details Reducer', () => {
                         first: 'Ren',
                         middle: '',
                         last: 'Hoek'
-                    }
+                    },
+                    email: 'mail@mail.com'
                 }
             }
         });
@@ -85,6 +86,8 @@ lab.experiment('Account Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+
 
         done();
     });
@@ -100,7 +103,8 @@ lab.experiment('Account Details Reducer', () => {
                     first: 'Ren',
                     middle: '',
                     last: 'Hoek'
-                }
+                },
+                email: 'mail@mail.com'
             }
         });
 
@@ -110,6 +114,8 @@ lab.experiment('Account Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+
 
         done();
     });

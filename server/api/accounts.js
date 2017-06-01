@@ -98,7 +98,7 @@ internals.applyRoutes = function (server, next) {
         handler: function (request, reply) {
 
             const id = request.auth.credentials.user._id.toString();
-            const fields = Account.fieldsAdapter('username email timeCreated');
+            const fields = Account.fieldsAdapter('username name email timeCreated groups');
 
             Account.findById(id, fields, (err, account) => {
 

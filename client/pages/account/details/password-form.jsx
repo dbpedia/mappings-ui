@@ -14,31 +14,30 @@ const propTypes = {
     error: PropTypes.string,
     hasError: PropTypes.object,
     help: PropTypes.object,
-    hydrated: PropTypes.bool,
     loading: PropTypes.bool,
-    name: PropTypes.shape({
-        first: PropTypes.string,
-        middle: PropTypes.string,
-        last: PropTypes.string
-    }),
-    showSaveSuccess: PropTypes.bool
+    password: PropTypes.string,
+    passwordConfirm: PropTypes.string,
+    showSaveSuccess: PropTypes.bool,
+    userId: PropTypes.string
 };
 
 
-class DetailsForm extends React.Component {
+class PasswordForm extends React.Component {
     constructor(props) {
 
         super(props);
 
         this.state = {
-            name: props.name
+            password: props.password,
+            passwordConfirm: props.passwordConfirm
         };
     }
 
     componentWillReceiveProps(nextProps) {
 
         this.setState({
-            name: nextProps.name
+            password: nextProps.password,
+            passwordConfirm: nextProps.passwordConfirm
         });
     }
 
@@ -47,20 +46,16 @@ class DetailsForm extends React.Component {
         event.preventDefault();
         event.stopPropagation();
 
-        Actions.saveDetails({
-            name: this.state.name
-        });
+
+        const data = {
+            password: this.state.password,
+            passwordConfirm: this.state.passwordConfirm
+        };
+
+        Actions.savePassword( data);
     }
 
     render() {
-
-        if (!this.props.hydrated) {
-            return (
-                <div className="alert alert-info">
-                    Loading contact info data...
-                </div>
-            );
-        }
 
         const alerts = [];
 
@@ -68,7 +63,7 @@ class DetailsForm extends React.Component {
             alerts.push(<Alert
                 key="success"
                 type="success"
-                onClose={Actions.hideDetailsSaveSuccess}
+                onClose={Actions.hidePasswordSaveSuccess}
                 message="Success. Changes have been saved."
             />);
         }
@@ -84,33 +79,26 @@ class DetailsForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit.bind(this)}>
                 <fieldset>
-                    <legend>Contact info</legend>
+                    <legend>Password</legend>
                     {alerts}
                     <TextControl
-                        name="name.first"
-                        label="First name"
-                        value={this.state.name.first}
+                        name="password"
+                        type="password"
+                        label="New password"
+                        value={this.state.password}
                         onChange={LinkState.bind(this)}
-                        hasError={this.props.hasError['name.first']}
-                        help={this.props.help['name.first']}
+                        hasError={this.props.hasError.password}
+                        help={this.props.help.password}
                         disabled={this.props.loading}
                     />
                     <TextControl
-                        name="name.middle"
-                        label="Middle name"
-                        value={this.state.name.middle}
+                        name="passwordConfirm"
+                        type="password"
+                        label="Confirm new password"
+                        value={this.state.passwordConfirm}
                         onChange={LinkState.bind(this)}
-                        hasError={this.props.hasError['name.middle']}
-                        help={this.props.help['name.middle']}
-                        disabled={this.props.loading}
-                    />
-                    <TextControl
-                        name="name.last"
-                        label="Last name"
-                        value={this.state.name.last}
-                        onChange={LinkState.bind(this)}
-                        hasError={this.props.hasError['name.last']}
-                        help={this.props.help['name.last']}
+                        hasError={this.props.hasError.passwordConfirm}
+                        help={this.props.help.passwordConfirm}
                         disabled={this.props.loading}
                     />
                     <ControlGroup hideLabel={true} hideHelp={true}>
@@ -119,7 +107,7 @@ class DetailsForm extends React.Component {
                             inputClasses={{ 'btn-primary': true }}
                             disabled={this.props.loading}>
 
-                            Update contact info
+                            Set password
                             <Spinner
                                 space="left"
                                 show={this.props.loading}
@@ -132,7 +120,7 @@ class DetailsForm extends React.Component {
     }
 }
 
-DetailsForm.propTypes = propTypes;
+PasswordForm.propTypes = propTypes;
 
 
-module.exports = DetailsForm;
+module.exports = PasswordForm;

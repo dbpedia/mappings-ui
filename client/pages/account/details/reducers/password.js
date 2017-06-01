@@ -10,10 +10,17 @@ const initialState = {
     error: undefined,
     hasError: {},
     help: {},
+    userId: undefined,
     password: '',
     passwordConfirm: ''
 };
 const reducer = function (state = initialState, action) {
+
+    if (action.type === Constants.GET_DETAILS_RESPONSE) {
+        return ObjectAssign({}, initialState, {
+            userId: action.response._id
+        });
+    }
 
     if (action.type === Constants.SAVE_PASSWORD) {
         return ObjectAssign({}, state, {
