@@ -89,7 +89,7 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it returns an error when find one fails for username check', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             if (conditions.username) {
                 callback(Error('find one failed'));
@@ -109,7 +109,7 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it returns a conflict when find one hits for username check', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             if (conditions.username) {
                 callback(null, {});
@@ -129,7 +129,7 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it returns an error when find one fails for email check', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             if (conditions.email) {
                 callback(Error('find one failed'));
@@ -149,7 +149,7 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it returns a conflict when find one hits for email check', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             if (conditions.email) {
                 callback(null, {});
@@ -169,12 +169,12 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it returns an error if any critical setup step fails', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
 
-        stub.User.create = function (username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email, callback) {
 
             callback(Error('create failed'));
         };
@@ -189,38 +189,24 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it finishes successfully (even if sending welcome email fails)', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
 
-        stub.User.create = function (username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email, callback) {
 
-            callback(null, { _id: 'BL4M0' });
+            callback(null, { _id: 'BL4M0', name: {first: 'Muddy', last: 'Mudskipper' } });
         };
 
-        stub.Account.create = function (name, callback) {
 
-            const account = {
-                _id: 'BL4M0',
-                name: {
-                    first: 'Muddy',
-                    last: 'Mudskipper'
-                }
-            };
-
-            callback(null, account);
-        };
-
-        stub.User.findByIdAndUpdate = function (id, update, callback) {
-
-            callback(null, [{}, {}]);
-        };
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(null, [{}, {}]);
         };
+
+
 
         const realSendEmail = server.plugins.mailer.sendEmail;
         server.plugins.mailer.sendEmail = function (options, template, context, callback) {
@@ -252,33 +238,18 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it finishes successfully', (done) => {
 
-        stub.User.findOne = function (conditions, callback) {
+        stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
 
-        stub.User.create = function (username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email, callback) {
 
-            callback(null, { _id: 'BL4M0' });
+            callback(null, { _id: 'BL4M0', name: {first: 'Muddy', last: 'Mudskipper' } });
         };
 
-        stub.Account.create = function (name, callback) {
 
-            const account = {
-                _id: 'BL4M0',
-                name: {
-                    first: 'Muddy',
-                    last: 'Mudskipper'
-                }
-            };
 
-            callback(null, account);
-        };
-
-        stub.User.findByIdAndUpdate = function (id, update, callback) {
-
-            callback(null, [{}, {}]);
-        };
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 

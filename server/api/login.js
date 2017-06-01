@@ -102,8 +102,7 @@ internals.applyRoutes = function (server, next) {
             const credentials = request.pre.session._id.toString() + ':' + request.pre.session.key;
             const authHeader = 'Basic ' + new Buffer(credentials).toString('base64');
 
-            //Todo: return GROUPS instead of roles
-            //Todo: Later, we will also return specific permissions... First approach only admin and regular-users groups
+
             const result = {
                 user: {
                     _id: request.pre.user._id,

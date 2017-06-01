@@ -12,7 +12,6 @@ internals.applyRoutes = function (server, next) {
 
     const Account = server.plugins['hapi-mongo-models'].Account;
     const Session = server.plugins['hapi-mongo-models'].Session;
-    const User = server.plugins['hapi-mongo-models'].User;
 
 
     server.route({
@@ -44,7 +43,7 @@ internals.applyRoutes = function (server, next) {
                         username: request.payload.username
                     };
 
-                    User.findOne(conditions, (err, user) => {
+                    Account.findOne(conditions, (err, user) => {
 
                         if (err) {
                             return reply(err);
@@ -65,7 +64,7 @@ internals.applyRoutes = function (server, next) {
                         email: request.payload.email
                     };
 
-                    User.findOne(conditions, (err, user) => {
+                    Account.findOne(conditions, (err, user) => {
 
                         if (err) {
                             return reply(err);
@@ -82,54 +81,21 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+            //Username and mail are not repeated, as "pre" already checked it.
+
             const mailer = request.server.plugins.mailer;
 
             Async.auto({
-                user: function (done) {
+                account: function (done) {
 
+                    const name = request.payload.name;
                     const username = request.payload.username;
                     const password = request.payload.password;
                     const email = request.payload.email;
 
-                    User.create(username, password, email, done);
+                    Account.create(name, username, password, email, done);
                 },
-                account: ['user', function (results, done) {
-
-                    const name = request.payload.name;
-
-                    Account.create(name, done);
-                }],
-                linkUser: ['account', function (results, done) {
-
-                    const id = results.account._id.toString();
-                    const update = {
-                        $set: {
-                            user: {
-                                id: results.user._id.toString(),
-                                name: results.user.username
-                            }
-                        }
-                    };
-
-                    Account.findByIdAndUpdate(id, update, done);
-                }],
-                linkAccount: ['account', function (results, done) {
-
-                    const id = results.user._id.toString();
-                    const update = {
-                        $set: {
-                            roles: {
-                                account: {
-                                    id: results.account._id.toString(),
-                                    name: results.account.name.first + ' ' + results.account.name.last
-                                }
-                            }
-                        }
-                    };
-
-                    User.findByIdAndUpdate(id, update, done);
-                }],
-                welcome: ['linkUser', 'linkAccount', function (results, done) {
+                welcome: ['account', function (results, done) {
 
                     const emailOptions = {
                         subject: 'Your ' + Config.get('/projectName') + ' account',
@@ -149,9 +115,9 @@ internals.applyRoutes = function (server, next) {
 
                     done();
                 }],
-                session: ['linkUser', 'linkAccount', function (results, done) {
+                session: ['account', function (results, done) {
 
-                    Session.create(results.user._id.toString(), done);
+                    Session.create(results.account._id.toString(), done);
                 }]
             }, (err, results) => {
 
@@ -159,19 +125,22 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                const user = results.linkAccount;
-                const credentials = user.username + ':' + results.session.key;
+                const account = results.account;
+                const credentials = account.username + ':' + results.session.key;
                 const authHeader = 'Basic ' + new Buffer(credentials).toString('base64');
+
+                //Create cookie and send it
                 const result = {
                     user: {
-                        _id: user._id,
-                        username: user.username,
-                        email: user.email,
-                        roles: user.roles
+                        _id: account._id,
+                        username: account.username,
+                        email: account.email,
+                        groups: account.groups
                     },
                     session: results.session,
                     authHeader
                 };
+
 
                 request.cookieAuth.set(result);
                 reply(result);

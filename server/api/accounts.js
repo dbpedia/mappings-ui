@@ -393,7 +393,7 @@ internals.applyRoutes = function (server, next) {
 
 
     /**
-     * Update account info, but by the account itself. Only can update name.
+     * Update account info, but by the account itself. Only can update name and email, not username.
      */
     server.route({
         method: 'PUT',
@@ -409,9 +409,38 @@ internals.applyRoutes = function (server, next) {
                         first: Joi.string().required(),
                         middle: Joi.string().allow(''),
                         last: Joi.string().required()
-                    }).required()
+                    }).required(),
+                    email: Joi.string().email().lowercase().required()
                 }
-            }
+            },
+            pre: [
+
+                {
+                    assign: 'emailCheck',
+                    method: function (request, reply) {
+
+                        const conditions = {
+                            email: request.payload.email,
+                            _id: { $ne: request.auth.credentials.user._id }
+                        };
+
+
+
+                        Account.findOne(conditions, (err, user) => {
+
+                            if (err) {
+                                return reply(err);
+                            }
+
+                            if (user) {
+                                return reply(Boom.conflict('Email already in use.'));
+                            }
+
+                            reply(true);
+                        });
+                    }
+                }
+            ]
 
         },
 
@@ -420,7 +449,8 @@ internals.applyRoutes = function (server, next) {
             const id = request.auth.credentials.user._id.toString();
             const update = {
                 $set: {
-                    name: request.payload.name
+                    name: request.payload.name,
+                    email: request.payload.email
                 }
             };
 

@@ -24,14 +24,12 @@ lab.before((done) => {
 
     stub = {
         Account: MakeMockModel(),
-        Status: MakeMockModel(),
-        User: MakeMockModel()
+        Status: MakeMockModel()
     };
 
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/account')] = stub.Account;
     proxy[Path.join(process.cwd(), './server/models/status')] = stub.Status;
-    proxy[Path.join(process.cwd(), './server/models/user')] = stub.User;
 
     const ModelsPlugin = {
         register: Proxyquire('hapi-mongo-models', proxy),
@@ -132,7 +130,7 @@ lab.experiment('Accounts Plugin Result List', () => {
             callback(null, { data: [{}, {}, {}] });
         };
 
-        request.url += '?username=ren';
+        request.url += '?username=ren&isActive=true&limit=10&page=1';
 
         server.inject(request, (response) => {
 
@@ -302,8 +300,91 @@ lab.experiment('Accounts Plugin Create', () => {
         done();
     });
 
+    lab.test('it returns an error when find one fails for username check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.username) {
+                callback(Error('find one failed'));
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns a conflict when find one hits for username check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.username) {
+                callback(null, {});
+            }
+            else {
+                callback(Error('find one failed'));
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when find one fails for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(Error('find one failed'));
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns a conflict when find one hits for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(null, {});
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
 
     lab.test('it returns an error when create fails', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
 
         stub.Account.create = function (completename,username, password, email, callback) {
 
@@ -323,6 +404,11 @@ lab.experiment('Accounts Plugin Create', () => {
         stub.Account.create = function (completename,username, password, email, callback) {
 
             callback(null, {});
+        };
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
         };
 
         server.inject(request, (response) => {
@@ -358,8 +444,93 @@ lab.experiment('Accounts Plugin Update', () => {
         done();
     });
 
+    lab.test('it returns an error when find one fails for username check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.username) {
+                callback(Error('find one failed'));
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns a conflict when find one hits for username check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.username) {
+                callback(null, {});
+            }
+            else {
+                callback(Error('find one failed'));
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when find one fails for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(Error('find one failed'));
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns a conflict when find one hits for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(null, {});
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
 
     lab.test('it returns an error when update fails', (done) => {
+
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
@@ -376,6 +547,11 @@ lab.experiment('Accounts Plugin Update', () => {
 
     lab.test('it returns not found when find by id misses', (done) => {
 
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(null, undefined);
@@ -390,6 +566,12 @@ lab.experiment('Accounts Plugin Update', () => {
 
 
     lab.test('it updates a document successfully', (done) => {
+
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
@@ -418,7 +600,8 @@ lab.experiment('Accounts Plugin (My) Update', () => {
                 name: {
                     first: 'Mud',
                     last: 'Skipper'
-                }
+                },
+                email: 'mrmud@mudmail.mud'
             },
             credentials: AuthenticatedAccount
         };
@@ -427,7 +610,58 @@ lab.experiment('Accounts Plugin (My) Update', () => {
     });
 
 
+
+
+
+
+    lab.test('it returns an error when find one fails for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(Error('find one failed'));
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns a conflict when find one hits for email check', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            if (conditions.email) {
+                callback(null, {});
+            }
+            else {
+                callback();
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+
+            done();
+        });
+    });
+
     lab.test('it returns an error when update fails', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
 
         stub.Account.findByIdAndUpdate = function () {
 
@@ -447,6 +681,11 @@ lab.experiment('Accounts Plugin (My) Update', () => {
 
     lab.test('it updates a document successfully', (done) => {
 
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
         stub.Account.findByIdAndUpdate = function () {
 
             const args = Array.prototype.slice.call(arguments);
@@ -464,6 +703,79 @@ lab.experiment('Accounts Plugin (My) Update', () => {
         });
     });
 });
+
+lab.experiment('Accounts Plugin Set Password', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/420000000000000000000000/password',
+            payload: {
+                password: 'fromdirt'
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when generate password hash fails', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(Error('generate password hash failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when update fails', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(null, { password: '', hash: '' });
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(Error('update failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it sets the password successfully', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(null, { password: '', hash: '' });
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, {});
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
+});
+
 
 //Tests add/remove permissions
 lab.experiment('Accounts Plugin Update Permissions', () => {
@@ -514,7 +826,83 @@ lab.experiment('Accounts Plugin Update Permissions', () => {
         });
     });
 });
+lab.experiment('Accounts Plugin (My) Set Password', () => {
 
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/my/password',
+            payload: {
+                password: 'fromdirt'
+            },
+            credentials: AuthenticatedAccount
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when generate password hash fails', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(Error('generate password hash failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when update fails', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(null, { password: '', hash: '' });
+        };
+
+        stub.Account.findByIdAndUpdate = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(Error('update failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it sets the password successfully', (done) => {
+
+        stub.Account.generatePasswordHash = function (password, callback) {
+
+            callback(null, { password: '', hash: '' });
+        };
+
+        stub.Account.findByIdAndUpdate = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(null, {});
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
+});
 
 lab.experiment('Account Plugin Update Groups', () => {
 

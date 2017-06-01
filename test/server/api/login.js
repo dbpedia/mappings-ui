@@ -14,7 +14,6 @@ const Manifest = require('../../../manifest');
 const Path = require('path');
 const Proxyquire = require('proxyquire');
 const Session = require('../../../server/models/session');
-const User = require('../../../server/models/user');
 const Account = require('../../../server/models/account');
 
 const lab = exports.lab = Lab.script();

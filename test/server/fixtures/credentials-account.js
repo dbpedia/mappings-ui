@@ -7,6 +7,7 @@ const Account = require('../../../server/models/account');
 const user = new Account({
     _id: '535HOW35',
     username: 'ren',
+    email: 'mail@mail.com',
     groups: { account: 'Account' },
     _groups : {
         account: {
