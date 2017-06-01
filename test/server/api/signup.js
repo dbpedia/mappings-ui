@@ -196,7 +196,7 @@ lab.experiment('Signup Plugin', () => {
 
         stub.Account.create = function (name, username, password, email, callback) {
 
-            callback(null, { _id: 'BL4M0', name: {first: 'Muddy', last: 'Mudskipper' } });
+            callback(null, { _id: 'BL4M0', name: { first: 'Muddy', last: 'Mudskipper' } });
         };
 
 
@@ -245,7 +245,7 @@ lab.experiment('Signup Plugin', () => {
 
         stub.Account.create = function (name, username, password, email, callback) {
 
-            callback(null, { _id: 'BL4M0', name: {first: 'Muddy', last: 'Mudskipper' } });
+            callback(null, { _id: 'BL4M0', name: { first: 'Muddy', last: 'Mudskipper' } });
         };
 
 

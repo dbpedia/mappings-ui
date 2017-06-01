@@ -1,5 +1,4 @@
 'use strict';
-const Admin = require('../../server/models/admin');
 const AuthPlugin = require('../../server/auth');
 const Code = require('code');
 const Config = require('../../config');
@@ -12,7 +11,6 @@ const Manifest = require('../../manifest');
 const Path = require('path');
 const Proxyquire = require('proxyquire');
 const Session = require('../../server/models/session');
-const User = require('../../server/models/user');
 const Account = require('../../server/models/account');
 
 const lab = exports.lab = Lab.script();
@@ -24,8 +22,7 @@ lab.beforeEach((done) => {
 
     stub = {
         Session: MakeMockModel(),
-        Account: MakeMockModel(),
-        User: MakeMockModel
+        Account: MakeMockModel()
     };
 
     const proxy = {};
@@ -80,7 +77,7 @@ lab.experiment('Auth Plugin', () => {
 
         stub.Account.findById = function (username, callback) {
 
-            callback(null, new User({ _id: '1D', username: 'ren' }));
+            callback(null, new Account({ _id: '1D', username: 'ren' }));
         };
 
         server.route({
@@ -236,7 +233,7 @@ lab.experiment('Auth Plugin', () => {
 
         stub.Account.findById = function (id, callback) {
 
-            callback(null, new User({ _id: '1D', username: 'ren' }));
+            callback(null, new Account({ _id: '1D', username: 'ren' }));
         };
 
         server.route({
@@ -282,7 +279,7 @@ lab.experiment('Auth Plugin', () => {
 
         stub.Account.findById = function (id, callback) {
 
-            const user = new User({
+            const user = new Account({
                 username: 'ren',
                 groups: { admin: 'Admin' }
             });
@@ -348,7 +345,7 @@ lab.experiment('Auth Plugin', () => {
 
         stub.Account.findById = function (id, callback) {
 
-            const user = new User({
+            const user = new Account({
                 username: 'admin',
                 groups: { admin: 'Admin' }
             });
@@ -413,7 +410,7 @@ lab.experiment('Auth Plugin', () => {
 
         stub.Account.findById = function (id, callback) {
 
-            const user = new User({
+            const user = new Account({
                 username: 'root',
                 groups: { admin: 'Admin' }
             });

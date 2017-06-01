@@ -1,5 +1,4 @@
 'use strict';
-const AuthPlugin = require('../auth');
 const Boom = require('boom');
 const Joi = require('joi');
 

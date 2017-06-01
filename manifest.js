@@ -67,13 +67,10 @@ const manifest = {
                     mongodb: Config.get('/hapiMongoModels/mongodb'),
                     models: {
                         Account: './server/models/account',
-                        AdminGroup: './server/models/admin-group',
                         AccountGroup: './server/models/account-group',
-                        Admin: './server/models/admin',
                         AuthAttempt: './server/models/auth-attempt',
                         Session: './server/models/session',
-                        Status: './server/models/status',
-                        User: './server/models/user'
+                        Status: './server/models/status'
                     },
                     autoIndex: Config.get('/hapiMongoModels/autoIndex')
                 }
@@ -92,23 +89,12 @@ const manifest = {
             }
         },
         {
-            plugin: './server/api/admin-groups',
-            options: {
-                routes: { prefix: '/api' }
-            }
-        },
-        {
             plugin: './server/api/account-groups',
             options: {
                 routes: { prefix: '/api' }
             }
         },
-        {
-            plugin: './server/api/admins',
-            options: {
-                routes: { prefix: '/api' }
-            }
-        },
+
         {
             plugin: './server/api/auth-attempts',
             options: {
@@ -153,12 +139,6 @@ const manifest = {
         },
         {
             plugin: './server/api/statuses',
-            options: {
-                routes: { prefix: '/api' }
-            }
-        },
-        {
-            plugin: './server/api/users',
             options: {
                 routes: { prefix: '/api' }
             }

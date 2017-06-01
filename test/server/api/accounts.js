@@ -444,6 +444,31 @@ lab.experiment('Accounts Plugin Update', () => {
         done();
     });
 
+    lab.test('it returns an error when trying to update root details from outside', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/111111111111111111111111',
+            payload: {
+                name: {
+                    first: 'Muddy',
+                    last: 'Mudskipper'
+                },
+                isActive: true,
+                username: 'muddy',
+                email: 'mrmud@mudmail.mud'
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
     lab.test('it returns an error when find one fails for username check', (done) => {
 
         stub.Account.findOne = function (conditions, callback) {
@@ -756,6 +781,26 @@ lab.experiment('Accounts Plugin Set Password', () => {
     });
 
 
+    lab.test('it returns an error when trying to update root password', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/111111111111111111111111/password',
+            payload: {
+                password: 'fromdirt'
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
+
     lab.test('it sets the password successfully', (done) => {
 
         stub.Account.generatePasswordHash = function (password, callback) {
@@ -822,6 +867,26 @@ lab.experiment('Accounts Plugin Update Permissions', () => {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.object();
 
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when trying to update root permissions', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/111111111111111111111111/permissions',
+            payload: {
+                permissions: { SPACE_RACE: true }
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
             done();
         });
     });
@@ -948,6 +1013,26 @@ lab.experiment('Account Plugin Update Groups', () => {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.object();
 
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when trying to update root groups', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/111111111111111111111111/groups',
+            payload: {
+                groups: { sales: 'Sales' }
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
             done();
         });
     });

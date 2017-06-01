@@ -290,7 +290,8 @@ internals.applyRoutes = function (server, next) {
 
 
     /**
-     * Modify email, username, active, name of an account (Modifiable by admin)
+     * Modify email, username, active, name of an account (Modifiable by admin).
+     * Root user has to modify it using its page.
      */
     server.route({
         method: 'PUT',
@@ -301,6 +302,7 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             validate: {
+
                 payload: {
                     name: Joi.object().keys({
                         first: Joi.string().required(),
@@ -310,6 +312,9 @@ internals.applyRoutes = function (server, next) {
                     isActive: Joi.boolean().required(),
                     username: Joi.string().token().lowercase().required(),
                     email: Joi.string().email().lowercase().required()
+                },
+                params: {
+                    id: Joi.string().invalid('111111111111111111111111')
                 }
             },
             pre: [
@@ -366,15 +371,17 @@ internals.applyRoutes = function (server, next) {
 
         handler: function (request, reply) {
 
+
+
             const id = request.params.id;
             const update = {
                 $set: {
                     name: request.payload.name,
-                    isActive: request.payload.isActive,
-                    username: request.payload.username,
-                    email: request.payload.email
+                    email: request.payload.email,
+                    username: request.payload.username
                 }
             };
+
 
             Account.findByIdAndUpdate(id, update, (err, account) => {
 
@@ -467,7 +474,8 @@ internals.applyRoutes = function (server, next) {
 
 
     /**
-     * Update password by admin
+     * Update password by admin. Root password cannot be modified here.
+     * The own root has to modify it using its account page.
      */
     server.route({
         method: 'PUT',
@@ -478,15 +486,14 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             validate: {
-                params: {
-                    id: Joi.string().invalid('000000000000000000000000')
-                },
                 payload: {
                     password: Joi.string().required()
+                },
+                params: {
+                    id: Joi.string().invalid('111111111111111111111111')
                 }
             },
             pre: [
-                //AuthPlugin.preware.ensureAdminGroup('root'),
                 {
                     assign: 'password',
                     method: function (request, reply) {
@@ -523,6 +530,7 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+
     /**
      * A user changes her password
      */
@@ -540,7 +548,6 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                //AuthPlugin.preware.ensureNotRoot,
                 {
                     assign: 'password',
                     method: function (request, reply) {
@@ -579,201 +586,7 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-    //Assigns user to an account
-    /*server.route({
-        method: 'PUT',
-        path: '/accounts/{id}/user',
-        config: {
-            auth: {
-                strategy: 'session',
-                scope: 'admin'
-            },
-            validate: {
-                payload: {
-                    username: Joi.string().lowercase().required()
-                }
-            },
-            pre: [{
-                assign: 'account',
-                method: function (request, reply) {
 
-                    Account.findById(request.params.id, (err, account) => {
-
-                        if (err) {
-                            return reply(err);
-                        }
-
-                        if (!account) {
-                            return reply(Boom.notFound('Document not found.'));
-                        }
-
-                        reply(account);
-                    });
-                }
-            }, {
-                assign: 'user',
-                method: function (request, reply) {
-
-                    User.findByUsername(request.payload.username, (err, user) => {
-
-                        if (err) {
-                            return reply(err);
-                        }
-
-                        if (!user) {
-                            return reply(Boom.notFound('User document not found.'));
-                        }
-
-                        if (user.roles &&
-                            user.roles.account &&
-                            user.roles.account.id !== request.params.id) {
-
-                            return reply(Boom.conflict('User is already linked to another account. Unlink first.'));
-                        }
-
-                        reply(user);
-                    });
-                }
-            }, {
-                assign: 'userCheck',
-                method: function (request, reply) {
-
-                    if (request.pre.account.user &&
-                        request.pre.account.user.id !== request.pre.user._id.toString()) {
-
-                        return reply(Boom.conflict('Account is already linked to another user. Unlink first.'));
-                    }
-
-                    reply(true);
-                }
-            }]
-        },
-        handler: function (request, reply) {
-
-            Async.auto({
-                account: function (done) {
-
-                    const id = request.params.id;
-                    const update = {
-                        $set: {
-                            user: {
-                                id: request.pre.user._id.toString(),
-                                name: request.pre.user.username
-                            }
-                        }
-                    };
-
-                    Account.findByIdAndUpdate(id, update, done);
-                },
-                user: function (done) {
-
-                    const id = request.pre.user._id;
-                    const update = {
-                        $set: {
-                            'roles.account': {
-                                id: request.pre.account._id.toString(),
-                                name: request.pre.account.name.first + ' ' + request.pre.account.name.last
-                            }
-                        }
-                    };
-
-                    User.findByIdAndUpdate(id, update, done);
-                }
-            }, (err, results) => {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                reply(results.account);
-            });
-        }
-    });
-*/
-
-   /* server.route({
-        method: 'DELETE',
-        path: '/accounts/{id}/user',
-        config: {
-            auth: {
-                strategy: 'session',
-                scope: 'admin'
-            },
-            pre: [{
-                assign: 'account',
-                method: function (request, reply) {
-
-                    Account.findById(request.params.id, (err, account) => {
-
-                        if (err) {
-                            return reply(err);
-                        }
-
-                        if (!account) {
-                            return reply(Boom.notFound('Document not found.'));
-                        }
-
-                        if (!account.user || !account.user.id) {
-                            return reply(account).takeover();
-                        }
-
-                        reply(account);
-                    });
-                }
-            }, {
-                assign: 'user',
-                method: function (request, reply) {
-
-                    User.findById(request.pre.account.user.id, (err, user) => {
-
-                        if (err) {
-                            return reply(err);
-                        }
-
-                        if (!user) {
-                            return reply(Boom.notFound('User document not found.'));
-                        }
-
-                        reply(user);
-                    });
-                }
-            }]
-        },
-        handler: function (request, reply) {
-
-            Async.auto({
-                account: function (done) {
-
-                    const id = request.params.id;
-                    const update = {
-                        $unset: {
-                            user: undefined
-                        }
-                    };
-
-                    Account.findByIdAndUpdate(id, update, done);
-                },
-                user: function (done) {
-
-                    const id = request.pre.user._id.toString();
-                    const update = {
-                        $unset: {
-                            'roles.account': undefined
-                        }
-                    };
-
-                    User.findByIdAndUpdate(id, update, done);
-                }
-            }, (err, results) => {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                reply(results.account);
-            });
-        }
-    });*/
 
 
     server.route({
@@ -818,66 +631,6 @@ internals.applyRoutes = function (server, next) {
     });
 
 
-   /* server.route({
-        method: 'POST',
-        path: '/accounts/{id}/status',
-        config: {
-            auth: {
-                strategy: 'session',
-                scope: 'admin'
-            },
-            validate: {
-                payload: {
-                    status: Joi.string().required()
-                }
-            },
-            pre: [{
-                assign: 'status',
-                method: function (request, reply) {
-
-                    Status.findById(request.payload.status, (err, status) => {
-
-                        if (err) {
-                            return reply(err);
-                        }
-
-                        reply(status);
-                    });
-                }
-            }]
-        },
-        handler: function (request, reply) {
-
-            const id = request.params.id;
-            const newStatus = {
-                id: request.pre.status._id.toString(),
-                name: request.pre.status.name,
-                timeCreated: new Date(),
-                userCreated: {
-                    id: request.auth.credentials.user._id.toString(),
-                    name: request.auth.credentials.user.username
-                }
-            };
-            const update = {
-                $set: {
-                    'status.current': newStatus
-                },
-                $push: {
-                    'status.log': newStatus
-                }
-            };
-
-            Account.findByIdAndUpdate(id, update, (err, account) => {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                reply(account);
-            });
-        }
-    });
-*/
 
     server.route({
         method: 'DELETE',
@@ -886,6 +639,11 @@ internals.applyRoutes = function (server, next) {
             auth: {
                 strategy: 'session',
                 scope: 'admin'
+            },
+            validate: {
+                params: {
+                    id: Joi.string().invalid('000000000000000000000000')
+                }
             },
             pre: [
                 //AuthPlugin.preware.ensureAdminGroup('root')
