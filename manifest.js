@@ -147,10 +147,10 @@ const manifest = {
             plugin: './server/web/about'
         },
         {
-            plugin: './server/web/account'
+            plugin: './server/web/profile'
         },
         {
-            plugin: './server/web/admin'
+            plugin: './server/web/adminpanel'
         },
         {
             plugin: './server/web/contact'
@@ -166,6 +166,12 @@ const manifest = {
         },
         {
             plugin: './server/web/signup'
+        },
+        {
+            plugin: './server/web/groups'
+        },
+        {
+            plugin: './server/web/accounts'
         }
     ]
 };

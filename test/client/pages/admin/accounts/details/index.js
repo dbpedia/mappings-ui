@@ -1,13 +1,13 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../client/pages/admin/accounts/details/constants');
+const Constants = require('../../../../../../client/pages/adminview/accounts/details/constants');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
-const Store = require('../../../../../../client/pages/admin/accounts/details/store');
+const Store = require('../../../../../../client/pages/adminview/accounts/details/store');
 
 
 const lab = exports.lab = Lab.script();

@@ -1,6 +1,6 @@
 'use strict';
 const Code = require('code');
-const Component = require('../../../../client/pages/account/home.jsx');
+const Component = require('../../../../client/pages/profile/home.jsx');
 const Lab = require('lab');
 const React = require('react');
 const ReactDOM = require('react-dom');

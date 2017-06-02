@@ -1,7 +1,7 @@
 'use strict';
 const Code = require('code');
 const Lab = require('lab');
-const Navbar = require('../../../../client/pages/account/navbar.jsx');
+const Navbar = require('../../../../client/pages/profile/navbar.jsx');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactRouter = require('react-router-dom');

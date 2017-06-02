@@ -1,5 +1,5 @@
 'use strict';
-const AccountPlugin = require('../../../server/web/account/index');
+const AccountPlugin = require('../../../server/web/profile/index');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAccount = require('../fixtures/credentials-account');
 const Code = require('code');

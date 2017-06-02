@@ -1,6 +1,6 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../client/pages/admin/accounts/search/constants');
+const Constants = require('../../../../../../client/pages/adminview/accounts/search/constants');
 const FluxConstant = require('flux-constant');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');

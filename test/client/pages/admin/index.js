@@ -1,5 +1,5 @@
 'use strict';
-const App = require('../../../../client/pages/admin/index.jsx');
+const App = require('../../../../client/pages/adminpanel/index.jsx');
 const Code = require('code');
 const Lab = require('lab');
 const ReactDOM = require('react-dom');

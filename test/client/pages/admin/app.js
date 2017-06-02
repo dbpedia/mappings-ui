@@ -1,5 +1,5 @@
 'use strict';
-const App = require('../../../../client/pages/admin/app.jsx');
+const App = require('../../../../client/pages/adminpanel/app.jsx');
 const Code = require('code');
 const Lab = require('lab');
 

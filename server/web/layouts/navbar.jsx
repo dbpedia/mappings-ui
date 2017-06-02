@@ -44,10 +44,25 @@ class Navbar extends React.Component {
                             <li className={this.tabClass('contact')}>
                                 <a href="/contact">Contact</a>
                             </li>
+                            <li className={this.tabClass('groups')}>
+                                <a href="/groups">Groups</a>
+                            </li>
+                            <li className={this.tabClass('accounts')}>
+                                <a href="/accounts">Accounts</a>
+                            </li>
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
+                            <li className={this.tabClass('profile')}>
+                                <a href="/profile">My Profile</a>
+                            </li>
+                            <li className={this.tabClass('adminpanel')}>
+                                <a href="/adminpanel">Admin Panel</a>
+                            </li>
                             <li className={this.tabClass('login')}>
                                 <a href="/login">Sign in</a>
+                            </li>
+                            <li className={this.tabClass('logout')}>
+                                <a href="/login/logout">Sign out</a>
                             </li>
                         </ul>
                     </div>

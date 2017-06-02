@@ -12,7 +12,7 @@ const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../../../client/pages/admin/users/details/password-form.jsx', {
+const Form = Proxyquire('../../../../../../client/pages/account/details/password-form.jsx', {
     './actions': stub.Actions
 });
 

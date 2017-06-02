@@ -1,5 +1,5 @@
 'use strict';
-const AdminPlugin = require('../../../server/web/admin/index');
+const AdminPlugin = require('../../../server/web/adminpanel/index');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAdmin = require('../fixtures/credentials-admin');
 const Code = require('code');

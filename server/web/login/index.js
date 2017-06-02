@@ -27,10 +27,10 @@ internals.applyRoutes = function (server, next) {
 
 
                 if (request.auth.credentials.user.isMemberOf('admin')) {
-                    return reply.redirect('/admin');
+                    return reply.redirect('/adminpanel');
                 }
 
-                return reply.redirect('/account');
+                return reply.redirect('/profile');
             }
 
             const response = reply.view('login/index');

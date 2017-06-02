@@ -38,10 +38,10 @@ class Actions {
                         window.location.href = query.returnUrl;
                     }
                     else if (response.user.groups.admin) {
-                        window.location.href = '/admin';
+                        window.location.href = '/adminpanel';
                     }
                     else {
-                        window.location.href = '/account';
+                        window.location.href = '/profile';
                     }
                 }
             }

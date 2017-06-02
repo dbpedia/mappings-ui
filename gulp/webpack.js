@@ -38,11 +38,13 @@ Gulp.task('webpack', (callback) => {
     const config = {
         watch: global.isWatching,
         entry: {
-            account: './client/pages/account/index',
-            admin: './client/pages/admin/index',
             contact: './client/pages/contact/index',
             login: './client/pages/login/index',
-            signup: './client/pages/signup/index'
+            signup: './client/pages/signup/index',
+            profile: './client/pages/profile/index',
+            adminpanel: './client/pages/adminpanel/index',
+            groups: './client/pages/groups/index',
+            accounts: './client/pages/accounts/index'
         },
         output: {
             path: Path.resolve(__dirname, '../public/pages'),

@@ -4,7 +4,7 @@ const Lab = require('lab');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const ReactTestUtils = require('react-dom/test-utils');
-const Results = require('../../../../../../client/pages/admin/account-groups/search/results.jsx');
+const Results = require('../../../../../../client/pages/adminview/account-groups/search/results.jsx');
 
 
 const lab = exports.lab = Lab.script();

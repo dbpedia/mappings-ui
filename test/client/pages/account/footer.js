@@ -1,6 +1,6 @@
 'use strict';
 const Code = require('code');
-const Footer = require('../../../../client/pages/account/footer.jsx');
+const Footer = require('../../../../client/pages/profile/footer.jsx');
 const Lab = require('lab');
 const React = require('react');
 const ReactTestUtils = require('react-dom/test-utils');
