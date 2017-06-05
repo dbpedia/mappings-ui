@@ -1,13 +1,15 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../client/pages/profile/details/constants');
+
+const Constants = require('../../../../../../client/pages/accounts/details/constants');
 const Lab = require('lab');
-const Store = require('../../../../../client/pages/profile/details/store');
+const Store = require('../../../../../../client/pages/accounts/details/store');
+
 
 const lab = exports.lab = Lab.script();
 
 
-lab.experiment('Account Profile Password Reducer', () => {
+lab.experiment('Admin Accounts Password Reducer', () => {
 
     lab.test('it handles a SAVE_PASSWORD action', (done) => {
 

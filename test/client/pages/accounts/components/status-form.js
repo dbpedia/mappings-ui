@@ -1,10 +1,8 @@
 'use strict';
 const Code = require('code');
 const Lab = require('lab');
-const ObjectAssign = require('object-assign');
 const Proxyquire = require('proxyquire');
 const React = require('react');
-const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
 
 
@@ -12,25 +10,41 @@ const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../client/pages/profile/details/password-form.jsx', {
+const Form = Proxyquire('../../../../../client/pages/accounts/components/status-form.jsx', {
     './actions': stub.Actions
 });
+const defaultProps = {
+    current: undefined,
+    hasError: {},
+    help: {},
+    log: [],
+    newStatus: '',
+    options: [{
+        _id: 'some-foo',
+        name: 'Some Foo'
+    }, {
+        _id: 'some-bar',
+        name: 'Some Bar'
+    }],
+    saveAction: () => {}
+};
 
 
-lab.experiment('Account Profile Password Form', () => {
-
-    const defaultProps = {
-        loading: false,
-        showSaveSuccess: false,
-        hasError: {},
-        help: {},
-        password: '',
-        confirmPassword: ''
-    };
+lab.experiment('Status Form', () => {
 
     lab.test('it renders', (done) => {
 
-        const FormEl = React.createElement(Form, defaultProps);
+        const props = Object.assign({}, defaultProps, {
+            current: undefined,
+            log: [{
+                name: 'Some Status',
+                userCreated: {
+                    name: 'stimpson'
+                },
+                timeCreated: new Date()
+            }]
+        });
+        const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
 
         Code.expect(form).to.exist();
@@ -39,46 +53,15 @@ lab.experiment('Account Profile Password Form', () => {
     });
 
 
-    lab.test('it handles unmounting', (done) => {
-
-        const container = global.document.createElement('div');
-        const FormEl = React.createElement(Form, defaultProps);
-
-        ReactDOM.render(FormEl, container);
-        ReactDOM.unmountComponentAtNode(container);
-
-        done();
-    });
-
-
-    lab.test('it updates props with new input state data', (done) => {
-
-        const container = document.createElement('div');
-
-        // initial render
-        let FormEl = React.createElement(Form, defaultProps);
-        ReactDOM.render(FormEl, container);
-
-        // update props and render again
-        const props = ObjectAssign({}, defaultProps, {
-            password: '123',
-            confirmPassword: 'abc'
-        });
-        FormEl = React.createElement(Form, props);
-        ReactDOM.render(FormEl, container);
-
-        done();
-    });
-
-
     lab.test('it handles a submit event', (done) => {
 
-        stub.Actions.savePassword = function () {
+        const props = Object.assign({}, defaultProps, {
+            saveAction: function () {
 
-            done();
-        };
-
-        const FormEl = React.createElement(Form, defaultProps);
+                done();
+            }
+        });
+        const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const formTag = ReactTestUtils.findRenderedDOMComponentWithTag(form, 'form');
 
@@ -88,7 +71,7 @@ lab.experiment('Account Profile Password Form', () => {
 
     lab.test('it renders with loading state', (done) => {
 
-        const props = ObjectAssign({}, defaultProps, {
+        const props = Object.assign({}, defaultProps, {
             loading: true
         });
         const FormEl = React.createElement(Form, props);
@@ -101,9 +84,9 @@ lab.experiment('Account Profile Password Form', () => {
     });
 
 
-    lab.test('it renders with success state', (done) => {
+    lab.test('it renders showing save success alert', (done) => {
 
-        const props = ObjectAssign({}, defaultProps, {
+        const props = Object.assign({}, defaultProps, {
             showSaveSuccess: true
         });
         const FormEl = React.createElement(Form, props);
@@ -116,9 +99,9 @@ lab.experiment('Account Profile Password Form', () => {
     });
 
 
-    lab.test('it renders with error state', (done) => {
+    lab.test('it renders showing error alert', (done) => {
 
-        const props = ObjectAssign({}, defaultProps, {
+        const props = Object.assign({}, defaultProps, {
             showSaveSuccess: false,
             error: 'sorry pal'
         });

@@ -1,6 +1,6 @@
 'use strict';
 const Code = require('code');
-const Component = require('../../../client/pages/profile/home.jsx');
+const Component = require('../../../../client/pages/adminpanel/home.jsx');
 const Lab = require('lab');
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -10,7 +10,7 @@ const ReactTestUtils = require('react-dom/test-utils');
 const lab = exports.lab = Lab.script();
 
 
-lab.experiment('Account Home Page', () => {
+lab.experiment('AdminPanel Home Page', () => {
 
     lab.test('it renders', (done) => {
 

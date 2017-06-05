@@ -1,5 +1,5 @@
 'use strict';
-const App = require('../../../client/pages/profile/index.jsx');
+const App = require('../../../../client/pages/adminpanel/index.jsx');
 const Code = require('code');
 const Lab = require('lab');
 const ReactDOM = require('react-dom');
@@ -29,7 +29,7 @@ lab.after((done) => {
 });
 
 
-lab.experiment('Account App', () => {
+lab.experiment('AdminPanel App', () => {
 
     lab.test('it renders', (done) => {
 

@@ -6,25 +6,23 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
 
+
 const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../client/pages/profile/details/details-form.jsx', {
+const Form = Proxyquire('../../../../../client/pages/groups/details/details-form.jsx', {
     './actions': stub.Actions
 });
+
 const defaultProps = {
-    name: {
-        first: 'Stimpson',
-        middle: '',
-        last: 'Cat'
-    },
     hasError: {},
-    help: {}
+    help: {},
+    name: ''
 };
 
 
-lab.experiment('Account Profile Details Form', () => {
+lab.experiment('Account Groups Details Form', () => {
 
     lab.test('it renders', (done) => {
 
@@ -47,14 +45,7 @@ lab.experiment('Account Profile Details Form', () => {
 
         // update props and render again
         const props = Object.assign({}, defaultProps, {
-            name: {
-                first: 'Ren',
-                middle: '',
-                last: 'Hoek'
-            },
-            email: 'mail@mail.com',
-            username: 'renhoek',
-            isActive: false
+            name: 'Sales'
         });
         FormEl = React.createElement(Form, props);
         ReactDOM.render(FormEl, container);
