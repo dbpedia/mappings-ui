@@ -6,37 +6,29 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
 
-
 const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../../client/pages/admin/components/note-form.jsx', {
+const Form = Proxyquire('../../../../client/pages/profile/details/details-form.jsx', {
     './actions': stub.Actions
 });
 const defaultProps = {
+    name: {
+        first: 'Stimpson',
+        middle: '',
+        last: 'Cat'
+    },
     hasError: {},
-    help: {},
-    newNote: '',
-    notes: [],
-    saveAction: () => {}
+    help: {}
 };
 
 
-lab.experiment('Note Form', () => {
+lab.experiment('Account Profile Details Form', () => {
 
     lab.test('it renders', (done) => {
 
-        const props = Object.assign({}, defaultProps, {
-            notes: [{
-                data: 'toasting bread',
-                userCreated: {
-                    name: 'stimpson'
-                },
-                timeCreated: new Date()
-            }]
-        });
-        const FormEl = React.createElement(Form, props);
+        const FormEl = React.createElement(Form, defaultProps);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
 
         Code.expect(form).to.exist();
@@ -55,7 +47,14 @@ lab.experiment('Note Form', () => {
 
         // update props and render again
         const props = Object.assign({}, defaultProps, {
-            newNote: 'toasting bread'
+            name: {
+                first: 'Ren',
+                middle: '',
+                last: 'Hoek'
+            },
+            email: 'mail@mail.com',
+            username: 'renhoek',
+            isActive: false
         });
         FormEl = React.createElement(Form, props);
         ReactDOM.render(FormEl, container);
@@ -66,13 +65,12 @@ lab.experiment('Note Form', () => {
 
     lab.test('it handles a submit event', (done) => {
 
-        const props = Object.assign({}, defaultProps, {
-            saveAction: function () {
+        stub.Actions.saveDetails = function () {
 
-                done();
-            }
-        });
-        const FormEl = React.createElement(Form, props);
+            done();
+        };
+
+        const FormEl = React.createElement(Form, defaultProps);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
         const formTag = ReactTestUtils.findRenderedDOMComponentWithTag(form, 'form');
 

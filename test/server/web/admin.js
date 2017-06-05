@@ -52,7 +52,7 @@ lab.experiment('Admin Page View', () => {
 
         request = {
             method: 'GET',
-            url: '/admin',
+            url: '/adminpanel',
             credentials: AuthenticatedAdmin
         };
 
@@ -65,7 +65,7 @@ lab.experiment('Admin Page View', () => {
 
         server.inject(request, (response) => {
 
-            Code.expect(response.result).to.match(/admin/i);
+            Code.expect(response.result).to.match(/adminpanel/i);
             Code.expect(response.statusCode).to.equal(200);
 
             done();

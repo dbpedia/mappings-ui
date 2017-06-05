@@ -1,14 +1,14 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../../client/pages/adminview/account-groups/details/constants');
+const Constants = require('../../../../../client/pages/profile/details/constants');
 const Lab = require('lab');
-const Store = require('../../../../../../../client/pages/adminview/account-groups/details/store');
+const Store = require('../../../../../client/pages/profile/details/store');
 
 
 const lab = exports.lab = Lab.script();
 
 
-lab.experiment('Account Groups Details Reducer', () => {
+lab.experiment('Account Profile Details Reducer', () => {
 
     lab.test('it handles a GET_DETAILS action', (done) => {
 
@@ -74,7 +74,8 @@ lab.experiment('Account Groups Details Reducer', () => {
                         first: 'Ren',
                         middle: '',
                         last: 'Hoek'
-                    }
+                    },
+                    email: 'mail@mail.com'
                 }
             }
         });
@@ -85,6 +86,8 @@ lab.experiment('Account Groups Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+
 
         done();
     });
@@ -100,7 +103,8 @@ lab.experiment('Account Groups Details Reducer', () => {
                     first: 'Ren',
                     middle: '',
                     last: 'Hoek'
-                }
+                },
+                email: 'mail@mail.com'
             }
         });
 
@@ -110,6 +114,8 @@ lab.experiment('Account Groups Details Reducer', () => {
         Code.expect(state.name.first).to.equal('Ren');
         Code.expect(state.name.middle).to.equal('');
         Code.expect(state.name.last).to.equal('Hoek');
+        Code.expect(state.email).to.equal('mail@mail.com');
+
 
         done();
     });

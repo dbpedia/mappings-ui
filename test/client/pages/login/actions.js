@@ -96,7 +96,7 @@ lab.experiment('Login Actions', () => {
 
                 global.window.location = windowLocation;
 
-                Code.expect(value).to.equal('/admin');
+                Code.expect(value).to.equal('/adminpanel');
 
                 done();
             }
@@ -134,7 +134,7 @@ lab.experiment('Login Actions', () => {
 
                 global.window.location = windowLocation;
 
-                Code.expect(value).to.equal('/account');
+                Code.expect(value).to.equal('/profile');
 
                 done();
             }

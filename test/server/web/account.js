@@ -52,7 +52,7 @@ lab.experiment('Account Page View', () => {
 
         request = {
             method: 'GET',
-            url: '/account',
+            url: '/profile',
             credentials: AuthenticatedAccount
         };
 
@@ -64,7 +64,7 @@ lab.experiment('Account Page View', () => {
 
         server.inject(request, (response) => {
 
-            Code.expect(response.result).to.match(/account/i);
+            Code.expect(response.result).to.match(/profile/i);
             Code.expect(response.statusCode).to.equal(200);
 
             done();

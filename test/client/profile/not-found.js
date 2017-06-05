@@ -1,7 +1,7 @@
 'use strict';
 const Code = require('code');
 const Lab = require('lab');
-const NotFound = require('../../../../client/pages/adminpanel/not-found.jsx');
+const NotFound = require('../../../client/pages/profile/not-found.jsx');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactRouter = require('react-router-dom');
@@ -12,7 +12,7 @@ const lab = exports.lab = Lab.script();
 const MemoryRouter = ReactRouter.MemoryRouter;
 
 
-lab.experiment('Admin Not Found Page', () => {
+lab.experiment('Account Not Found Page', () => {
 
     let RootEl;
 

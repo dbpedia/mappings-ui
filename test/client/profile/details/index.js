@@ -1,26 +1,25 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../client/pages/adminview/accounts/details/constants');
+const Constants = require('../../../../client/pages/profile/details/constants');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
-const Store = require('../../../../../../client/pages/adminview/accounts/details/store');
+const Store = require('../../../../client/pages/profile/details/store');
 
 
 const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {
-        getDetails: () => {},
-        getStatusOptions: () => {},
-        getGroupOptions: () => {}
+        getDetails: () => {}
     }
 };
-const Page = Proxyquire('../../../../../../client/pages/admin/accounts/details/index.jsx', {
+const Page = Proxyquire('../../../../client/pages/profile/details/index.jsx', {
     './actions': stub.Actions
 });
+
 const container = global.document.createElement('div');
 const defaultProps = {
     ref: function () {
@@ -36,7 +35,7 @@ const defaultProps = {
 const MemoryRouter = ReactRouter.MemoryRouter;
 
 
-lab.experiment('Admin Accounts Details Page', () => {
+lab.experiment('Account Profile Details Page', () => {
 
     let RootEl;
 
