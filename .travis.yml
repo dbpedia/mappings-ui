@@ -14,3 +14,8 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: 0ed1e65a-1f71-4e60-8507-ea89cde5d639
