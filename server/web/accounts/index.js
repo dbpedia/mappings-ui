@@ -19,7 +19,8 @@ internals.applyRoutes = function (server, next) {
 
 
             //Pass credentials to personalize navbar
-            reply.view('accounts/index', { credentials: request.auth.credentials });        }
+            reply.view('accounts/index', { credentials: request.auth.credentials });
+        }
     });
 
 

@@ -6,7 +6,8 @@ const React = require('react');
 
 
 const propTypes = {
-    activeTab: PropTypes.string
+    activeTab: PropTypes.string,
+    credentials: PropTypes.object
 };
 
 
@@ -16,6 +17,7 @@ class Navbar extends React.Component {
 
 
     constructor(props){
+
         super(props);
         this.state = {
             isAuthenticated: this.props.credentials && this.props.credentials.user,

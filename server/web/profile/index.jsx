@@ -1,6 +1,14 @@
 'use strict';
 const Layout = require('../layouts/default.jsx');
 const React = require('react');
+const PropTypes = require('prop-types');
+
+
+const propTypes = {
+
+    credentials: PropTypes.object
+
+};
 
 
 class ProfilePage extends React.Component {
@@ -26,5 +34,6 @@ class ProfilePage extends React.Component {
     }
 }
 
+ProfilePage.propTypes = propTypes;
 
 module.exports = ProfilePage;

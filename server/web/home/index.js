@@ -1,7 +1,6 @@
 'use strict';
 
 const internals = {};
-
 internals.applyRoutes = function (server, next) {
 
     server.route({
@@ -9,14 +8,15 @@ internals.applyRoutes = function (server, next) {
         path: '/',
         config: {
             auth: {
-                mode: 'try',
+                mode:'try',
                 strategy: 'session'
             },
             plugins: { 'hapi-auth-cookie': { redirectTo: false } }
         },
         handler: function (request, reply) {
 
-            reply.view('home/index', { credentials: request.auth.credentials });        }
+            reply.view('home/index', { credentials: request.auth.credentials });
+        }
     });
 
 
@@ -25,12 +25,16 @@ internals.applyRoutes = function (server, next) {
     next();
 };
 
+
+
 exports.register = function (server, options, next) {
 
-    server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
+    server.dependency(['auth'], internals.applyRoutes);
 
     next();
 };
+
+
 
 exports.register.attributes = {
     name: 'web/home'

@@ -1,7 +1,14 @@
 'use strict';
 const Layout = require('../layouts/default.jsx');
 const React = require('react');
+const PropTypes = require('prop-types');
 
+
+const propTypes = {
+
+    credentials: PropTypes.object
+
+};
 
 class SignupPage extends React.Component {
     render() {
@@ -21,7 +28,7 @@ class SignupPage extends React.Component {
                     <div className="col-sm-6 text-center">
                         <h1 className="page-header">Campy benefits</h1>
                         <p className="lead">
-                            Really, you will love it inside. It's super great! {this.props.user && this.props.username}
+                            Really, you will love it inside. It's super great!
                         </p>
                         <i className="fa fa-thumbs-o-up bamf"></i>
                     </div>
@@ -30,6 +37,8 @@ class SignupPage extends React.Component {
         );
     }
 }
+
+SignupPage.propTypes = propTypes;
 
 
 module.exports = SignupPage;

@@ -2,8 +2,15 @@
 const Layout = require('../layouts/default.jsx');
 const Package = require('../../../package.json');
 const React = require('react');
+const PropTypes = require('prop-types');
 
 
+
+const propTypes = {
+
+    credentials: PropTypes.object
+
+};
 class HomePage extends React.Component {
     render() {
 
@@ -14,7 +21,8 @@ class HomePage extends React.Component {
                 title="Aqua"
                 neck={neck}
                 activeTab="home"
-                credentials={this.props.credentials}>
+                credentials={this.props.credentials}
+               >
 
                 <div className="jumbotron">
                     <h1>Success</h1>
@@ -86,5 +94,5 @@ class HomePage extends React.Component {
     }
 }
 
-
+HomePage.propTypes = propTypes;
 module.exports = HomePage;

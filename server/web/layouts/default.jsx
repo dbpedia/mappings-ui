@@ -9,7 +9,8 @@ const propTypes = {
     children: PropTypes.node,
     feet: PropTypes.node,
     neck: PropTypes.node,
-    title: PropTypes.string
+    title: PropTypes.string,
+    credentials: PropTypes.object
 };
 
 class DefaultLayout extends React.Component {

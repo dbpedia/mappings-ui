@@ -3,19 +3,29 @@ const Code = require('code');
 const Config = require('../../../config');
 const ContactPlugin = require('../../../server/web/contact/index');
 const Hapi = require('hapi');
+const HapiAuth = require('hapi-auth-cookie');
+const AuthPlugin = require('../../../server/auth');
+const Manifest = require('../../../manifest');
 const Lab = require('lab');
 const Path = require('path');
 const Vision = require('vision');
 
 
 const lab = exports.lab = Lab.script();
+const ModelsPlugin = {
+    register: require('hapi-mongo-models'),
+    options: Manifest.get('/registrations').filter((reg) => {
+
+        return reg.plugin.register === 'hapi-mongo-models';
+    })[0].plugin.options
+};
 let request;
 let server;
 
 
 lab.beforeEach((done) => {
 
-    const plugins = [Vision, ContactPlugin];
+    const plugins = [Vision, HapiAuth,AuthPlugin,ModelsPlugin,ContactPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/web') });
     server.register(plugins, (err) => {
@@ -30,7 +40,7 @@ lab.beforeEach((done) => {
             relativeTo: Path.join(__dirname, '..', '..', '..')
         });
 
-        done();
+        server.initialize(done());
     });
 });
 

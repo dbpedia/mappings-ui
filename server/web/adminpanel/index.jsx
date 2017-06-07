@@ -1,6 +1,13 @@
 'use strict';
 const Layout = require('../layouts/default.jsx');
 const React = require('react');
+const PropTypes = require('prop-types');
+
+const propTypes = {
+
+    credentials: PropTypes.object
+
+};
 
 
 class AdminPanelPage extends React.Component {
@@ -27,4 +34,5 @@ class AdminPanelPage extends React.Component {
 }
 
 
+AdminPanelPage.propTypes = propTypes;
 module.exports = AdminPanelPage;

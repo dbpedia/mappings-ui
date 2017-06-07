@@ -17,7 +17,8 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            reply.view('profile/index', { credentials: request.auth.credentials });        }
+            reply.view('profile/index', { credentials: request.auth.credentials });
+        }
     });
 
 

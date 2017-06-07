@@ -4,6 +4,7 @@
 const internals = {};
 
 
+
 internals.applyRoutes = function (server, next) {
 
     server.route({
