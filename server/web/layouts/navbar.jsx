@@ -83,7 +83,7 @@ class Navbar extends React.Component {
                             }
                             { this.state.isAuthenticated &&
                                 <li className={this.tabClass('profile')}>
-                                    <a href="/profile">My Profile ({this.state.username})</a>
+                                    <a href="/profile">My Profile</a>
                                 </li>
                             }
                             { this.state.isAuthenticated &&
