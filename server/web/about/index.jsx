@@ -9,7 +9,8 @@ class AboutPage extends React.Component {
         return (
             <Layout
                 title="About us"
-                activeTab="about">
+                activeTab="about"
+                credentials={this.props.credentials}>
 
                 <div className="row">
                     <div className="col-sm-6">

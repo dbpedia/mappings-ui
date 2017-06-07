@@ -17,7 +17,7 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            reply.view('adminpanel/index');
+            reply.view('adminpanel/index', { credentials: request.auth.credentials });
         }
     });
 

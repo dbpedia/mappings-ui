@@ -17,7 +17,8 @@ class ProfilePage extends React.Component {
                 title="Account"
                 neck={neck}
                 feet={feet}
-                activeTab="profile">
+                activeTab="profile"
+                credentials={this.props.credentials}>
 
                 <div id="app-mount"></div>
             </Layout>

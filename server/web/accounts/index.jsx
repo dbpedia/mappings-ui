@@ -17,7 +17,8 @@ class AccountsPage extends React.Component {
                 title="Accounts"
                 neck={neck}
                 feet={feet}
-                activeTab="accounts">
+                activeTab="accounts"
+                credentials={this.props.credentials}>
 
                 <div id="app-mount"></div>
             </Layout>

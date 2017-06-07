@@ -17,7 +17,8 @@ class AdminPanelPage extends React.Component {
                 title="Admin Panel"
                 neck={neck}
                 feet={feet}
-                activeTab="adminpanel">
+                activeTab="adminpanel"
+                credentials={this.props.credentials}>
 
                 <div id="app-mount"></div>
             </Layout>

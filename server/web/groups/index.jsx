@@ -17,7 +17,8 @@ class AdminPage extends React.Component {
                 title="Groups"
                 neck={neck}
                 feet={feet}
-                activeTab="groups">
+                activeTab="groups"
+                credentials={this.props.credentials}>
 
                 <div id="app-mount"></div>
             </Layout>

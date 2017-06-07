@@ -4,17 +4,38 @@ const PropTypes = require('prop-types');
 const React = require('react');
 
 
+
 const propTypes = {
     activeTab: PropTypes.string
 };
 
+
+
+
 class Navbar extends React.Component {
+
+
+    constructor(props){
+        super(props);
+        this.state = {
+            isAuthenticated: this.props.credentials && this.props.credentials.user,
+            username: this.props.credentials && this.props.credentials.user && this.props.credentials.user.username,
+            isAdmin: this.props.credentials && this.props.credentials.user && 'admin' in this.props.credentials.user.groups
+        };
+
+    }
+
+
     tabClass(tab) {
 
         return ClassNames({
             active: this.props.activeTab === tab
         });
     }
+
+
+
+
 
     render() {
 
@@ -35,35 +56,52 @@ class Navbar extends React.Component {
                             <li className={this.tabClass('home')}>
                                 <a href="/">Home</a>
                             </li>
-                            <li className={this.tabClass('about')}>
-                                <a href="/about">About</a>
-                            </li>
-                            <li className={this.tabClass('signup')}>
-                                <a href="/signup">Sign up</a>
-                            </li>
+
                             <li className={this.tabClass('contact')}>
                                 <a href="/contact">Contact</a>
                             </li>
-                            <li className={this.tabClass('groups')}>
-                                <a href="/groups">Groups</a>
-                            </li>
-                            <li className={this.tabClass('accounts')}>
-                                <a href="/accounts">Accounts</a>
-                            </li>
+                            { this.state.isAdmin &&
+                                <li className={this.tabClass('groups')}>
+                                    <a href="/groups">Groups</a>
+                                </li>
+                            }
+                            { this.state.isAdmin &&
+                                <li className={this.tabClass('accounts')}>
+                                    <a href="/accounts">Accounts</a>
+                                </li>
+                            }
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
-                            <li className={this.tabClass('profile')}>
-                                <a href="/profile">My Profile</a>
-                            </li>
-                            <li className={this.tabClass('adminpanel')}>
-                                <a href="/adminpanel">Admin Panel</a>
-                            </li>
-                            <li className={this.tabClass('login')}>
-                                <a href="/login">Sign in</a>
-                            </li>
-                            <li className={this.tabClass('logout')}>
-                                <a href="/login/logout">Sign out</a>
-                            </li>
+
+
+                            { this.state.isAdmin &&
+                                <li className={this.tabClass('adminpanel')}>
+                                    <a href="/adminpanel">Admin Panel</a>
+                                </li>
+                            }
+                            { this.state.isAuthenticated &&
+                                <li className={this.tabClass('profile')}>
+                                    <a href="/profile">My Profile ({this.state.username})</a>
+                                </li>
+                            }
+                            { this.state.isAuthenticated &&
+                                <li className={this.tabClass('logout')}>
+                                    <a href="/login/logout">Sign out</a>
+                                </li>
+                            }
+
+                            { !this.state.isAuthenticated &&
+                                <li className={this.tabClass('signup')}>
+                                    <a href="/signup">Sign up</a>
+                                </li>
+                            }
+                            { !this.state.isAuthenticated &&
+
+                                <li className={this.tabClass('login')}>
+                                    <a href="/login">Sign in</a>
+                                </li>
+                            }
+
                         </ul>
                     </div>
                 </div>

@@ -17,8 +17,9 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            reply.view('accounts/index');
-        }
+
+            //Pass credentials to personalize navbar
+            reply.view('accounts/index', { credentials: request.auth.credentials });        }
     });
 
 

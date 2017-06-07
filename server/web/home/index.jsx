@@ -13,7 +13,8 @@ class HomePage extends React.Component {
             <Layout
                 title="Aqua"
                 neck={neck}
-                activeTab="home">
+                activeTab="home"
+                credentials={this.props.credentials}>
 
                 <div className="jumbotron">
                     <h1>Success</h1>

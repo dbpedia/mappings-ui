@@ -1,14 +1,23 @@
 'use strict';
 
 
-exports.register = function (server, options, next) {
+const internals = {};
+
+internals.applyRoutes = function (server, next) {
 
     server.route({
         method: 'GET',
         path: '/signup',
+        config: {
+            auth: {
+                mode: 'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+        },
         handler: function (request, reply) {
-
-            reply.view('signup/index');
+            //Pass credentials to personalize navbar
+            reply.view('signup/index', { credentials: request.auth.credentials });
         }
     });
 
@@ -16,6 +25,13 @@ exports.register = function (server, options, next) {
     next();
 };
 
+
+exports.register = function (server, options, next) {
+
+    server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
+
+    next();
+};
 
 exports.register.attributes = {
     name: 'web/signup'

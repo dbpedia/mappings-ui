@@ -29,7 +29,7 @@ class DefaultLayout extends React.Component {
                     {this.props.neck}
                 </head>
                 <body>
-                    <Navbar activeTab={this.props.activeTab} />
+                    <Navbar activeTab={this.props.activeTab} credentials={this.props.credentials}/>
                     <div className="page">
                         <div className="container">
                             {this.props.children}

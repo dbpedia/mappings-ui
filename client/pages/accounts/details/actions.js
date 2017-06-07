@@ -223,7 +223,7 @@ class Actions {
             (err, response) => {
 
                 if (!err) {
-                    history.push('/admin/accounts');
+                    history.push('/accounts');
 
                     window.scrollTo(0, 0);
                 }

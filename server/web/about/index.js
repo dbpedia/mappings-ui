@@ -1,14 +1,22 @@
 'use strict';
 
+const internals = {};
 
-exports.register = function (server, options, next) {
-
+internals.applyRoutes = function (server, next) {
     server.route({
         method: 'GET',
         path: '/about',
+        config: {
+            auth: {
+                mode: 'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+        },
         handler: function (request, reply) {
 
-            reply.view('about/index');
+            //Pass credentials to personalize navbar
+            reply.view('about/index', { credentials: request.auth.credentials });
         }
     });
 
@@ -16,6 +24,13 @@ exports.register = function (server, options, next) {
     next();
 };
 
+
+exports.register = function (server, options, next) {
+
+    server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
+
+    next();
+};
 
 exports.register.attributes = {
     name: 'web/about'

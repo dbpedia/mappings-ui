@@ -13,6 +13,7 @@ internals.applyStrategy = function (server, next) {
     const Account = server.plugins['hapi-mongo-models'].Account;
 
 
+    //This strategy redirects to login if no user
     server.auth.strategy('session', 'cookie', {
         password: Config.get('/cookieSecret'),
         cookie: 'sid-aqua',
@@ -37,16 +38,8 @@ internals.applyStrategy = function (server, next) {
 
                     Account.findById(results.session.userId, done);
                 }],
-                /*roles: ['user', function (results, done) {
 
-                    if (!results.user) {
-                        return done();
-                    }
-
-                    results.user.hydrateRoles(done);
-                }],*/
-
-                //The scope of an user/account is their roles
+                //The scope of an user/account is their groups
                 scope: ['user', function (results, done) {
 
                     if (!results.user || !results.user.groups) {
@@ -69,6 +62,8 @@ internals.applyStrategy = function (server, next) {
             });
         }
     });
+
+
 
 
     next();

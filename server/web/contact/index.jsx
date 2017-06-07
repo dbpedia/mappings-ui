@@ -12,7 +12,8 @@ class ContactPage extends React.Component {
             <Layout
                 title="Contact us"
                 feet={feet}
-                activeTab="contact">
+                activeTab="contact"
+                credentials={this.props.credentials}>
 
                 <div className="row">
                     <div className="col-sm-6" id="app-mount"></div>
