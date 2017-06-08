@@ -1,7 +1,7 @@
 {
-  "name": "aqua",
-  "version": "6.4.0",
-  "description": "A website and user system for Node.js",
+  "name": "dbpedia-mappings-ui",
+  "version": "0.0.1",
+  "description": "RML Mappings UI for DBpedia",
   "main": "index.js",
   "scripts": {
     "start": "gulp",
@@ -9,9 +9,10 @@
     "test": "lab -t 99 -S -T ./test/lab/transform -L --lint-options '{\"extensions\":[\".js\",\".jsx\"]}' ./test/lab/client-before.js ./test/client/ ./test/lab/client-after.js ./test/server/ ./test/lab/server-after.js ./test/misc/",
     "test-client": "lab -v -t 99 -S -T ./test/lab/transform ./test/lab/client-before.js $TEST_TARGET ./test/lab/client-after.js || true",
     "test-server": "lab -v -t 99 -S -T ./test/lab/transform $TEST_TARGET ./test/lab/server-after.js || true",
-    "postinstall": "gulp build"
+    "postinstall": "gulp build",
+    "heroku-postbuild": "node first-time-setup-heroku"
   },
-  "author": "Reza Akhavan <jedireza@gmail.com> (http://reza.akhavan.me/)",
+  "author": "DBPedia",
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
