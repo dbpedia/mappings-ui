@@ -17,7 +17,7 @@ class Actions {
             (err, response) => {
 
                 if (!err) {
-                    window.location.href = '/account';
+                    window.location.href = '/profile';
                 }
             }
         );
