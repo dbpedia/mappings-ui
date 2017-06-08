@@ -2,6 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/dbpedia/mappings-ui.svg?branch=master)](https://travis-ci.org/dbpedia/mappings-ui)
+[![Heroku](https://heroku-badge.herokuapp.com/?app=mappings-ui)](https://mappings-ui.herokuapp.com)
 
 Developed under the "DBPedia Mappings Front-end Administration" GSoC 2017 project.
 
