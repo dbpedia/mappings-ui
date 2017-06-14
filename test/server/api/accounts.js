@@ -160,7 +160,7 @@ lab.experiment('Accounts Plugin Read', () => {
 
     lab.test('it returns an error when find by id fails', (done) => {
 
-        stub.Account.findById = function (id, callback) {
+        stub.Account.findById = function (id,filter, callback) {
 
             callback(Error('find by id failed'));
         };
@@ -175,7 +175,7 @@ lab.experiment('Accounts Plugin Read', () => {
 
     lab.test('it returns a not found when find by id misses', (done) => {
 
-        stub.Account.findById = function (id, callback) {
+        stub.Account.findById = function (id,filter, callback) {
 
             callback();
         };
@@ -192,7 +192,7 @@ lab.experiment('Accounts Plugin Read', () => {
 
     lab.test('it returns a document successfully', (done) => {
 
-        stub.Account.findById = function (id, callback) {
+        stub.Account.findById = function (id,filter, callback) {
 
             callback(null, { _id: '93EP150D35' });
         };
@@ -292,7 +292,8 @@ lab.experiment('Accounts Plugin Create', () => {
                 name: 'Muddy Mudskipper',
                 username: 'muddy',
                 email: 'mail@mail.com',
-                password: 'pass'
+                password: 'pass',
+                mappingsLang:'en'
             },
             credentials: AuthenticatedAdmin
         };
@@ -386,7 +387,7 @@ lab.experiment('Accounts Plugin Create', () => {
             callback();
         };
 
-        stub.Account.create = function (completename,username, password, email, callback) {
+        stub.Account.create = function (completename,username, password, email, mappingsLang, callback) {
 
             callback(Error('create failed'));
         };
@@ -401,7 +402,7 @@ lab.experiment('Accounts Plugin Create', () => {
 
     lab.test('it creates a document successfully', (done) => {
 
-        stub.Account.create = function (completename,username, password, email, callback) {
+        stub.Account.create = function (completename,username, password, email,mappingsLang, callback) {
 
             callback(null, {});
         };
@@ -436,7 +437,8 @@ lab.experiment('Accounts Plugin Update', () => {
                 },
                 isActive: true,
                 username: 'muddy',
-                email: 'mrmud@mudmail.mud'
+                email: 'mrmud@mudmail.mud',
+                mappingsLang:'en'
             },
             credentials: AuthenticatedAdmin
         };
@@ -626,7 +628,8 @@ lab.experiment('Accounts Plugin (My) Update', () => {
                     first: 'Mud',
                     last: 'Skipper'
                 },
-                email: 'mrmud@mudmail.mud'
+                email: 'mrmud@mudmail.mud',
+                mappingsLang:'en'
             },
             credentials: AuthenticatedAccount
         };

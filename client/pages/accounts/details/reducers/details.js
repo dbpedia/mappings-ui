@@ -39,7 +39,10 @@ const reducer = function (state = initialState, action) {
             name: action.response.name,
             username: action.response.username,
             email: action.response.email,
-            isActive: action.response.isActive
+            isActive: action.response.isActive,
+            timeLastLogin: action.response.timeLastLogin,
+            timeCreated: action.response.timeCreated,
+            mappingsLang: action.response.mappingsLang
         });
     }
 
@@ -49,7 +52,8 @@ const reducer = function (state = initialState, action) {
             name: action.request.data.name,
             email: action.request.data.email,
             username: action.request.data.username,
-            isActive: action.request.data.isActive
+            isActive: action.request.data.isActive,
+            mappingsLang: action.request.data.mappingsLang
         });
     }
 
@@ -74,6 +78,10 @@ const reducer = function (state = initialState, action) {
         }
         if (action.response.hasOwnProperty('isActive')) {
             stateUpdates.isActive = action.response.isActive;
+        }
+
+        if (action.response.hasOwnProperty('mappingsLang')) {
+            stateUpdates.mappingsLang = action.response.mappingsLang;
         }
 
         return ObjectAssign({}, state, stateUpdates);

@@ -21,7 +21,8 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool,
     username: PropTypes.string,
     email: PropTypes.string,
-    isActive: PropTypes.bool
+    isActive: PropTypes.bool,
+    mappingsLang: PropTypes.string
 };
 
 
@@ -34,7 +35,8 @@ class DetailsForm extends React.Component {
             name: props.name,
             username: props.username,
             email: props.email,
-            isActive: props.isActive
+            isActive: props.isActive,
+            mappingsLang: props.mappingsLang
         };
     }
 
@@ -48,7 +50,8 @@ class DetailsForm extends React.Component {
             name: this.state.name,
             email: this.state.email,
             isActive: this.state.isActive,
-            username: this.state.username
+            username: this.state.username,
+            mappingsLang: this.state.mappingsLang
         };
 
         Actions.saveDetails(id, data);
@@ -133,6 +136,16 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError['name.last']}
                 help={this.props.help['name.last']}
+                disabled={this.props.loading}
+            />
+
+            <TextControl
+                name="mappingsLang"
+                label="Mappings Language"
+                value={this.state.mappingsLang}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.mappingsLang}
+                help={this.props.help.mappingsLang}
                 disabled={this.props.loading}
             />
             <ControlGroup hideLabel={true} hideHelp={true}>

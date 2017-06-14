@@ -35,7 +35,7 @@ class Account extends MongoModels {
 
 
     //Receives the completa nem, username, password and email
-    static create(completename,username, password, email, callback) {
+    static create(completename,username, password, email, mappingsLang, callback) {
 
         const self = this;
 
@@ -55,6 +55,7 @@ class Account extends MongoModels {
                     },
                     password: results.passwordHash.hash,
                     email: email.toLowerCase(),
+                    mappingsLang: mappingsLang.toLowerCase(),
                     groups: { account:'Account' },
                     timeCreated: new Date()
                 };
@@ -131,6 +132,8 @@ class Account extends MongoModels {
             callback();
         });
     }
+
+
 
     constructor(attrs) {
 
@@ -241,6 +244,7 @@ Account.schema = Joi.object().keys({
         token: Joi.string()
     }),
     timeCreated: Joi.date(),
+    timeLastLogin: Joi.date(),
     resetPassword: Joi.object().keys({
         token: Joi.string().required(),
         expires: Joi.date().required()

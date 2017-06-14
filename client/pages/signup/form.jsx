@@ -46,7 +46,8 @@ class Form extends React.Component {
             name: this.input.name.value(),
             username: this.input.username.value(),
             password: this.input.password.value(),
-            email: this.input.email.value()
+            email: this.input.email.value(),
+            mappingsLang: this.input.mappingsLang.value()
         });
     }
 
@@ -104,6 +105,17 @@ class Form extends React.Component {
                     help={this.state.help.password}
                     disabled={this.state.loading}
                 />
+                <TextControl
+                    ref={(c) => (this.input.mappingsLang = c)}
+                    name="mappingsLang"
+                    label="Mappings language"
+                    type="text"
+                    hasError={this.state.hasError.mappingsLang}
+                    help={this.state.help.mappingsLang}
+                    disabled={this.state.loading}
+                />
+
+
                 <ControlGroup hideLabel={true} hideHelp={true}>
                     <Button
                         type="submit"
@@ -119,7 +131,7 @@ class Form extends React.Component {
 
         return (
             <section>
-                <h1 className="page-header">Sign up</h1>
+
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     {alert}
                     {formElements}

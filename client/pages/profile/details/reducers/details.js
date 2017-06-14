@@ -39,7 +39,10 @@ const reducer = function (state = initialState, action) {
             name: action.response.name,
             username: action.response.username,
             email: action.response.email,
-            groups: action.response.groups
+            groups: action.response.groups,
+            mappingsLang: action.response.mappingsLang,
+            timeCreated: action.response.timeCreated,
+            timeLastLogin: action.response.timeLastLogin
         });
     }
 

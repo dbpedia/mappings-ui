@@ -241,6 +241,11 @@ lab.experiment('Login Plugin (Create Session)', () => {
             callback(null, new Account({ _id: '1D', username: 'ren' }));
         };
 
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, new Account({ _id: '1D', username: 'ren' }));
+        };
+
         stub.Session.create = function (username, callback) {
 
             callback(null, new Session({ _id: '2D', userId: '1D' }));

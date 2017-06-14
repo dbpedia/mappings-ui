@@ -70,7 +70,8 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            Account.findById(request.params.id, (err, account) => {
+            const fields = Account.fieldsAdapter('_id isActive username name email timeCreated timeLastLogin groups permissions mappingsLang');
+            Account.findById(request.params.id, fields, (err, account) => {
 
                 if (err) {
                     return reply(err);
@@ -98,7 +99,7 @@ internals.applyRoutes = function (server, next) {
         handler: function (request, reply) {
 
             const id = request.auth.credentials.user._id.toString();
-            const fields = Account.fieldsAdapter('username name email timeCreated groups');
+            const fields = Account.fieldsAdapter('username name email timeCreated timeLastLogin groups mappingsLang');
 
             Account.findById(id, fields, (err, account) => {
 
@@ -132,7 +133,8 @@ internals.applyRoutes = function (server, next) {
                     username: Joi.string().token().lowercase().required(),
                     email: Joi.string().email().lowercase().required(),
                     password: Joi.string().required(),
-                    name: Joi.string().required()
+                    name: Joi.string().required(),
+                    mappingsLang: Joi.string().required()
                 }
             },
             pre: [
@@ -188,8 +190,9 @@ internals.applyRoutes = function (server, next) {
             const password = request.payload.password;
             const email = request.payload.email;
             const name = request.payload.name;
+            const mappingsLang = request.payload.mappingsLang;
 
-            Account.create(name,username, password, email, (err, user) => {
+            Account.create(name,username, password, email,mappingsLang, (err, user) => {
 
                 if (err) {
                     return reply(err);
@@ -318,7 +321,8 @@ internals.applyRoutes = function (server, next) {
                     }).required(),
                     isActive: Joi.boolean().required(),
                     username: Joi.string().token().lowercase().required(),
-                    email: Joi.string().email().lowercase().required()
+                    email: Joi.string().email().lowercase().required(),
+                    mappingsLang: Joi.string().lowercase().required()
                 },
                 params: {
                     id: Joi.string().invalid('111111111111111111111111')
@@ -387,7 +391,8 @@ internals.applyRoutes = function (server, next) {
                     name: request.payload.name,
                     email: request.payload.email,
                     username: request.payload.username,
-                    isActive: request.payload.isActive
+                    isActive: request.payload.isActive,
+                    mappingsLang: request.payload.mappingsLang
                 }
             };
 
@@ -426,7 +431,8 @@ internals.applyRoutes = function (server, next) {
                         middle: Joi.string().allow(''),
                         last: Joi.string().required()
                     }).required(),
-                    email: Joi.string().email().lowercase().required()
+                    email: Joi.string().email().lowercase().required(),
+                    mappingsLang: Joi.string().lowercase().required()
                 }
             },
             pre: [
@@ -466,7 +472,8 @@ internals.applyRoutes = function (server, next) {
             const update = {
                 $set: {
                     name: request.payload.name,
-                    email: request.payload.email
+                    email: request.payload.email,
+                    mappingsLang: request.payload.mappingsLang
                 }
             };
 

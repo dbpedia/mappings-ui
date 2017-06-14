@@ -32,7 +32,8 @@ internals.applyRoutes = function (server, next) {
                     name: Joi.string().required(),
                     email: Joi.string().email().lowercase().required(),
                     username: Joi.string().token().lowercase().required(),
-                    password: Joi.string().required()
+                    password: Joi.string().required(),
+                    mappingsLang: Joi.string().lowercase().required()
                 }
             },
             pre: [{
@@ -92,8 +93,9 @@ internals.applyRoutes = function (server, next) {
                     const username = request.payload.username;
                     const password = request.payload.password;
                     const email = request.payload.email;
+                    const mappingsLang = request.payload.mappingsLang;
 
-                    Account.create(name, username, password, email, done);
+                    Account.create(name, username, password, email,mappingsLang, done);
                 },
                 welcome: ['account', function (results, done) {
 

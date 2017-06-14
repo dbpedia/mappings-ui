@@ -79,7 +79,8 @@ lab.experiment('Signup Plugin', () => {
                 name: 'Muddy Mudskipper',
                 username: 'muddy',
                 password: 'dirtandwater',
-                email: 'mrmud@mudmail.mud'
+                email: 'mrmud@mudmail.mud',
+                mappingsLang: 'en'
             }
         };
 
@@ -174,7 +175,7 @@ lab.experiment('Signup Plugin', () => {
             callback();
         };
 
-        stub.Account.create = function (name, username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email, mappingsLang, callback) {
 
             callback(Error('create failed'));
         };
@@ -194,7 +195,7 @@ lab.experiment('Signup Plugin', () => {
             callback();
         };
 
-        stub.Account.create = function (name, username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email,mappingsLang, callback) {
 
             callback(null, { _id: 'BL4M0', name: { first: 'Muddy', last: 'Mudskipper' } });
         };
@@ -243,7 +244,7 @@ lab.experiment('Signup Plugin', () => {
             callback();
         };
 
-        stub.Account.create = function (name, username, password, email, callback) {
+        stub.Account.create = function (name, username, password, email,mappingsLang, callback) {
 
             callback(null, { _id: 'BL4M0', name: { first: 'Muddy', last: 'Mudskipper' } });
         };

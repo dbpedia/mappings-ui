@@ -84,7 +84,7 @@ lab.experiment('Account Class Methods', () => {
 
     lab.test('it returns a new instance when create succeeds', (done) => {
 
-        Account.create('Ren Höek','renhoek','pass','mail@mail.com', (err, result) => {
+        Account.create('Ren Höek','renhoek','pass','mail@mail.com','en', (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(Account);
@@ -98,7 +98,7 @@ lab.experiment('Account Class Methods', () => {
 
     lab.test('it correctly sets the middle name when create is called', (done) => {
 
-        Account.create('Stimpson J Cat', 'stimpson','pass','mail@mail.com', (err, account) => {
+        Account.create('Stimpson J Cat', 'stimpson','pass','mail@mail.com','en', (err, account) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(account).to.be.an.instanceOf(Account);
@@ -120,7 +120,7 @@ lab.experiment('Account Class Methods', () => {
             callback(Error('insert failed'));
         };
 
-        Account.create('Stimpy Cat','stimpy','pass','mail@mail.com', (err, result) => {
+        Account.create('Stimpy Cat','stimpy','pass','mail@mail.com','en', (err, result) => {
 
             Code.expect(err).to.be.an.object();
             Code.expect(result).to.not.exist();
@@ -136,7 +136,7 @@ lab.experiment('Account Class Methods', () => {
         Async.auto({
             user: function (cb) {
 
-                Account.create('Stimpy Cat','stimpy', 'thebigshot', 'stimpy@ren.show', cb);
+                Account.create('Stimpy Cat','stimpy', 'thebigshot', 'stimpy@ren.show', 'en',cb);
             },
             username: ['user', function (results, cb) {
 
@@ -236,7 +236,7 @@ lab.experiment('Account Class Methods', () => {
         Async.auto({
             account: function (cb) {
 
-                Account.create('Stimpson J Cat','stimpy', 'pass','mail@mail.com',cb);
+                Account.create('Stimpson J Cat','stimpy', 'pass','mail@mail.com','en',cb);
             },
             accountCreated: ['account', function (results, cb) {
 
@@ -265,7 +265,7 @@ lab.experiment('Account Class Methods', () => {
         Async.auto({
             account: function (cb) {
 
-                Account.create('Stimpson J Cat','stimpy', 'pass','test@mail.com',cb);
+                Account.create('Stimpson J Cat','stimpy', 'pass','test@mail.com','en',cb);
             },
             accountCreated: ['account', function (results, cb) {
 

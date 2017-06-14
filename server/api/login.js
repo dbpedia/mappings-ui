@@ -82,6 +82,25 @@ internals.applyRoutes = function (server, next) {
                         return reply(Boom.badRequest('Username and password combination not found or account is inactive.'));
                     });
                 }
+            },{
+                assign: 'registerLogin',
+                method: function (request, reply) {
+
+                    const update = {
+                        $set: {
+                            timeLastLogin: new Date()
+                        }
+                    };
+
+                    Account.findByIdAndUpdate(request.pre.user._id, update, (err, account) => {
+
+                        if (err) {
+                            return reply(err);
+                        }
+
+                        reply(account);
+                    });
+                }
             }, {
                 assign: 'session',
                 method: function (request, reply) {

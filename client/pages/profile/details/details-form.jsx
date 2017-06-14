@@ -20,7 +20,8 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool,
     username: PropTypes.string,
     email: PropTypes.string,
-    groups: PropTypes.object
+    groups: PropTypes.object,
+    mappingsLang: PropTypes.string
 };
 
 
@@ -33,7 +34,8 @@ class DetailsForm extends React.Component {
             name: props.name,
             username: props.username,
             email: props.email,
-            groups: props.groups
+            groups: props.groups,
+            mappingsLang: props.mappingsLang
         };
     }
 
@@ -45,7 +47,8 @@ class DetailsForm extends React.Component {
 
         const data = {
             name: this.state.name,
-            email: this.state.email
+            email: this.state.email,
+            mappingsLang: this.state.mappingsLang
         };
 
         Actions.saveDetails(data);
@@ -54,6 +57,14 @@ class DetailsForm extends React.Component {
     render() {
 
         const alerts = [];
+        const groups = [];
+
+        for (const key in this.props.groups) {
+            if (this.props.groups.hasOwnProperty(key)) {
+                groups.push(<span className="badge group-badge" key={key}>{this.props.groups[key]}</span>);
+            }
+        }
+
 
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
@@ -122,12 +133,29 @@ class DetailsForm extends React.Component {
                 disabled={this.props.loading}
             />
 
+            <TextControl
+                name="mappingsLang"
+                label="Mappings Language"
+                value={this.state.mappingsLang}
+                onChange={LinkState.bind(this)}
+                hasError={this.props.hasError.mappingsLang}
+                help={this.props.help.mappingsLang}
+                disabled={this.props.loading}
+            />
+
+
+            <ControlGroup hideLabel={true} hideHelp={true}>
+            <span className="group-list"><b>Groups:</b> {groups}</span>
+            </ControlGroup>
+
+
+
+
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
                     disabled={this.props.loading}>
-
                     Save changes
                     <Spinner space="left" show={this.props.loading} />
                 </Button>

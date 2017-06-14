@@ -3,6 +3,8 @@ const Actions = require('./actions');
 const DeleteForm = require('../components/delete-form.jsx');
 const DetailsForm = require('./details-form.jsx');
 const PasswordForm = require('./password-form.jsx');
+const StatsForm = require('../../../components/stats-form.jsx');
+
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -86,6 +88,7 @@ class DetailsPage extends React.Component {
                         <DetailsForm {...this.state.details} />
                     </div>
                     <div className="col-sm-6">
+                        <StatsForm {...this.state.details} />
                         <PasswordForm {...this.state.password} />
                         {/*<NoteForm
                             {...this.state.note}
