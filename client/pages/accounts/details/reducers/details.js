@@ -16,7 +16,8 @@ const initialState = {
     name: {},
     username: undefined,
     email: {},
-    isActive: false
+    isActive: false,
+    activeChangeloading: false
 };
 const reducer = function (state = initialState, action) {
 
@@ -52,10 +53,30 @@ const reducer = function (state = initialState, action) {
             name: action.request.data.name,
             email: action.request.data.email,
             username: action.request.data.username,
-            isActive: action.request.data.isActive,
             mappingsLang: action.request.data.mappingsLang
         });
     }
+
+    if (action.type === Constants.CHANGE_ACTIVE) {
+        return ObjectAssign({}, state, {
+            activeChangeLoading: true,
+            isActive: action.request.data.isActive
+        });
+    }
+
+    if (action.type === Constants.CHANGE_ACTIVE_RESPONSE) {
+        const stateUpdates = {
+            activeChangeLoading: false
+        };
+
+        if (action.response.hasOwnProperty('isActive')) {
+            stateUpdates.isActive = action.response.isActive;
+        }
+
+        return ObjectAssign({}, state, stateUpdates);
+    }
+
+
 
     if (action.type === Constants.SAVE_DETAILS_RESPONSE) {
         const validation = ParseValidation(action.response);
@@ -76,9 +97,7 @@ const reducer = function (state = initialState, action) {
         if (action.response.hasOwnProperty('email')) {
             stateUpdates.email = action.response.email;
         }
-        if (action.response.hasOwnProperty('isActive')) {
-            stateUpdates.isActive = action.response.isActive;
-        }
+
 
         if (action.response.hasOwnProperty('mappingsLang')) {
             stateUpdates.mappingsLang = action.response.mappingsLang;

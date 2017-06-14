@@ -6,7 +6,6 @@ const ControlGroup = require('../../../components/form/control-group.jsx');
 const LinkState = require('../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
-const SelectControl = require('../../../components/form/select-control.jsx');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
@@ -49,7 +48,6 @@ class DetailsForm extends React.Component {
         const data = {
             name: this.state.name,
             email: this.state.email,
-            isActive: this.state.isActive,
             username: this.state.username,
             mappingsLang: this.state.mappingsLang
         };
@@ -81,18 +79,7 @@ class DetailsForm extends React.Component {
         const formElements = <fieldset>
             <legend>Details</legend>
             {alerts}
-            <SelectControl
-                name="isActive"
-                label="Active"
-                value={this.state.isActive}
-                onChange={LinkState.bind(this)}
-                hasError={this.props.hasError.isActive}
-                help={this.props.help.isActive}
-                disabled={this.props.loading}>
 
-                <option value={true}>true</option>
-                <option value={false}>false</option>
-            </SelectControl>
             <TextControl
                 name="username"
                 label="Username"

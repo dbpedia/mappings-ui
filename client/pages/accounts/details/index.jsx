@@ -1,10 +1,10 @@
+/* eslint-disable hapi/hapi-scope-start */
 'use strict';
 const Actions = require('./actions');
-const DeleteForm = require('../components/delete-form.jsx');
 const DetailsForm = require('./details-form.jsx');
 const PasswordForm = require('./password-form.jsx');
 const StatsForm = require('../../../components/stats-form.jsx');
-
+const ButtonGroup = require('../../../components/button-group.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -78,10 +78,41 @@ class DetailsPage extends React.Component {
         const name = this.state.details.name;
         const fullName = `${name.first} ${name.last}`;
 
+
+
+
+        const buttons = [
+
+            { type: 'btn-danger', text: 'Remove permanently', action:
+                () => {
+                    window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(id,this.props.history);
+                }
+            }
+        ];
+
+        if ( this.state.details.isActive ){
+            buttons.unshift( { type: 'btn-warning', text: 'Disable', loading: this.state.details.activeChangeLoading, action:
+                () => {
+                    Actions.changeActive(id, { isActive:false } );
+                }
+            });
+        }
+        else {
+            buttons.unshift( { type: 'btn-success', text: 'Enable', loading: this.state.details.activeChangeLoading, action:
+                () => {
+                    Actions.changeActive(id, { isActive:true } );
+                }
+            });
+        }
+
         return (
             <section className="section-account-details container">
                 <h1 className="page-header">
                     <Link to="/accounts">Accounts</Link> / {fullName}
+                    {!this.state.details.isActive &&
+
+                    <span style={ { 'fontSize':'0.7em' }}><i>&nbsp;(Disabled)</i></span>}
+                    <ButtonGroup float='right' buttons={buttons}/>
                 </h1>
                 <div className="row">
                     <div className="col-sm-6">
@@ -106,12 +137,7 @@ class DetailsPage extends React.Component {
                     </div>
 
                 </div>
-                <div className="row">
-                    <DeleteForm
-                        {...this.state.delete}
-                        action={Actions.delete.bind(Actions, id, this.props.history)}
-                    />
-                </div>
+
             </section>
         );
     }

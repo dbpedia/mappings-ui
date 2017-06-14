@@ -300,7 +300,7 @@ internals.applyRoutes = function (server, next) {
 
 
     /**
-     * Modify email, username, active, name of an account (Modifiable by admin).
+     * Modify email, username,  name of an account (Modifiable by admin).
      * Root user has to modify it using its page.
      */
     server.route({
@@ -319,7 +319,6 @@ internals.applyRoutes = function (server, next) {
                         middle: Joi.string().allow(''),
                         last: Joi.string().required()
                     }).required(),
-                    isActive: Joi.boolean().required(),
                     username: Joi.string().token().lowercase().required(),
                     email: Joi.string().email().lowercase().required(),
                     mappingsLang: Joi.string().lowercase().required()
@@ -391,7 +390,6 @@ internals.applyRoutes = function (server, next) {
                     name: request.payload.name,
                     email: request.payload.email,
                     username: request.payload.username,
-                    isActive: request.payload.isActive,
                     mappingsLang: request.payload.mappingsLang
                 }
             };
@@ -599,6 +597,47 @@ internals.applyRoutes = function (server, next) {
                 }
 
                 reply(user);
+            });
+        }
+    });
+
+
+    server.route({
+        method: 'PUT',
+        path: '/accounts/{id}/active',
+        config: {
+            auth: {
+                strategy: 'session',
+                scope: 'admin'
+            },
+            validate: {
+                payload: {
+                    isActive: Joi.boolean().required()
+                },
+                params: {
+                    id: Joi.string().invalid('111111111111111111111111')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            const id = request.params.id;
+            const update = {
+                $set: {
+                    isActive: request.payload.isActive
+                }
+            };
+
+            Account.findByIdAndUpdate(id, update, (err, account) => {
+
+                if (err) {
+                    return reply(err);
+                }
+                if (!account) {
+                    return reply(Boom.notFound('Document not found.'));
+                }
+
+                reply(account);
             });
         }
     });

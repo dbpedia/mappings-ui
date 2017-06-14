@@ -423,6 +423,109 @@ lab.experiment('Accounts Plugin Create', () => {
 });
 
 
+
+lab.experiment('Accounts Active Update',() => {
+
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/592fe4c8ff79c6347b1db038/active',
+            payload: {
+                isActive:true
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when trying to update root active status', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/accounts/111111111111111111111111/active',
+            payload: {
+                isActive:false
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
+    lab.test('it returns an error when update active status fails', (done) => {
+
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(Error('update failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+    lab.test('it returns not found when find by id misses', (done) => {
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, undefined);
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+
+    lab.test('it updates the active status successfully', (done) => {
+
+
+        stub.Account.findOne = function (conditions, callback) {
+
+            callback();
+        };
+
+        stub.Account.findByIdAndUpdate = function (id, update, callback) {
+
+            callback(null, {});
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+
+});
+
 lab.experiment('Accounts Plugin Update', () => {
 
     lab.beforeEach((done) => {
@@ -435,7 +538,6 @@ lab.experiment('Accounts Plugin Update', () => {
                     first: 'Muddy',
                     last: 'Mudskipper'
                 },
-                isActive: true,
                 username: 'muddy',
                 email: 'mrmud@mudmail.mud',
                 mappingsLang:'en'
@@ -456,7 +558,6 @@ lab.experiment('Accounts Plugin Update', () => {
                     first: 'Muddy',
                     last: 'Mudskipper'
                 },
-                isActive: true,
                 username: 'muddy',
                 email: 'mrmud@mudmail.mud'
             },

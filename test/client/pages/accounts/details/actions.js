@@ -240,6 +240,24 @@ lab.experiment('Admin Accounts Details Actions', () => {
         Actions.hideUserSaveSuccess();
     });
 
+    lab.test('it calls ApiActions.put from changeActive', (done) => {
+
+        stub.ApiActions.put.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(url).to.include('abcxyz/active');
+            Code.expect(data).to.be.an.object();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        Actions.changeActive('abcxyz', { isActive:false });
+    });
+
     lab.test('it calls ApiActions.put from saveGroups', (done) => {
 
         stub.ApiActions.put.mock = function (url, data, store, typeReq, typeRes, callback) {

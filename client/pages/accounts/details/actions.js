@@ -29,6 +29,8 @@ class Actions {
         );
     }
 
+
+
     static getStatusOptions() {
 
 
@@ -55,6 +57,17 @@ class Actions {
             Store,
             Constants.SAVE_DETAILS,
             Constants.SAVE_DETAILS_RESPONSE
+        );
+    }
+
+    static changeActive(id, data) {
+
+        ApiActions.put(
+            `/api/accounts/${id}/active`,
+            data,
+            Store,
+            Constants.CHANGE_ACTIVE,
+            Constants.CHANGE_ACTIVE_RESPONSE
         );
     }
 

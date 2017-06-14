@@ -76,8 +76,7 @@ lab.experiment('Admin Accounts Details Reducer', () => {
                         last: 'Hoek'
                     },
                     email: 'mail@mail.com',
-                    username: 'renhoek',
-                    isActive: false
+                    username: 'renhoek'
                 }
             }
         });
@@ -90,7 +89,6 @@ lab.experiment('Admin Accounts Details Reducer', () => {
         Code.expect(state.name.last).to.equal('Hoek');
         Code.expect(state.email).to.equal('mail@mail.com');
         Code.expect(state.username).to.equal('renhoek');
-        Code.expect(state.isActive).to.equal(false);
 
         done();
     });
@@ -108,8 +106,7 @@ lab.experiment('Admin Accounts Details Reducer', () => {
                     last: 'Hoek'
                 },
                 email: 'mail@mail.com',
-                username: 'renhoek',
-                isActive: false
+                username: 'renhoek'
             }
         });
 
@@ -121,7 +118,6 @@ lab.experiment('Admin Accounts Details Reducer', () => {
         Code.expect(state.name.last).to.equal('Hoek');
         Code.expect(state.email).to.equal('mail@mail.com');
         Code.expect(state.username).to.equal('renhoek');
-        Code.expect(state.isActive).to.equal(false);
 
         done();
     });
@@ -145,6 +141,62 @@ lab.experiment('Admin Accounts Details Reducer', () => {
         done();
     });
 
+
+    lab.test('it handles a CHANGE_ACTIVE action', (done) => {
+
+        Store.dispatch({
+            type: Constants.CHANGE_ACTIVE,
+            request: {
+                data: {
+                    isActive: false
+                }
+            }
+        });
+
+        const state = Store.getState().details;
+
+        Code.expect(state.activeChangeLoading).to.be.true();
+        Code.expect(state.isActive).to.equal(false);
+
+        done();
+    });
+
+    lab.test('it handles a CHANGE_ACTIVE_RESPONSE action (success)', (done) => {
+
+        Store.dispatch({
+            type: Constants.CHANGE_ACTIVE_RESPONSE,
+            err: null,
+            response: {
+                isActive:false
+            }
+        });
+
+        const state = Store.getState().details;
+
+        Code.expect(state.activeChangeLoading).to.be.false();
+        Code.expect(state.isActive).to.equal(false);
+
+        done();
+    });
+
+
+    lab.test('it handles a CHANGE_ACTIVE_RESPONSE action (failure)', (done) => {
+
+        Store.dispatch({
+            type: Constants.CHANGE_ACTIVE_RESPONSE,
+            err: new Error('sorry pal'),
+            response: {
+                message: 'something else failed'
+            }
+        });
+
+        const state = Store.getState().details;
+
+        Code.expect(state.activeChangeLoading).to.be.false();
+        Code.expect(state.error).to.equal('something else failed');
+
+        done();
+    });
 
     lab.test('it handles a HIDE_DETAILS_SAVE_SUCCESS action', (done) => {
 
