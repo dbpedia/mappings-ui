@@ -3,6 +3,8 @@ const Actions = require('./actions');
 const Alert = require('../../components/alert.jsx');
 const Button = require('../../components/form/button.jsx');
 const ControlGroup = require('../../components/form/control-group.jsx');
+const MappingLangSelector = require('../../components/mapping-lang-selector.jsx');
+
 const React = require('react');
 const Spinner = require('../../components/form/spinner.jsx');
 const Store = require('./store');
@@ -37,6 +39,13 @@ class Form extends React.Component {
         this.setState(Store.getState());
     }
 
+    handleNewLanguage(newLang){
+
+        this.setState( { mappingsLang:newLang } );
+
+    }
+
+
     handleSubmit(event) {
 
         event.preventDefault();
@@ -47,7 +56,7 @@ class Form extends React.Component {
             username: this.input.username.value(),
             password: this.input.password.value(),
             email: this.input.email.value(),
-            mappingsLang: this.input.mappingsLang.value()
+            mappingsLang: this.state.mappingsLang
         });
     }
 
@@ -105,15 +114,14 @@ class Form extends React.Component {
                     help={this.state.help.password}
                     disabled={this.state.loading}
                 />
-                <TextControl
-                    ref={(c) => (this.input.mappingsLang = c)}
-                    name="mappingsLang"
-                    label="Mappings language"
-                    type="text"
-                    hasError={this.state.hasError.mappingsLang}
-                    help={this.state.help.mappingsLang}
+
+
+                <MappingLangSelector
+                    selectedLang={this.state.mappingsLang}
                     disabled={this.state.loading}
-                />
+                    callback={this.handleNewLanguage.bind(this)}/>
+
+
 
 
                 <ControlGroup hideLabel={true} hideHelp={true}>

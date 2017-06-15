@@ -3,6 +3,7 @@ const Actions = require('./actions');
 const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const ControlGroup = require('../../../components/form/control-group.jsx');
+const MappingLangSelector = require('../../../components/mapping-lang-selector.jsx');
 const LinkState = require('../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -37,6 +38,13 @@ class DetailsForm extends React.Component {
             groups: props.groups,
             mappingsLang: props.mappingsLang
         };
+    }
+
+
+    handleNewLanguage(newLang){
+
+        this.setState( { mappingsLang:newLang } );
+
     }
 
     handleSubmit(event) {
@@ -133,21 +141,15 @@ class DetailsForm extends React.Component {
                 disabled={this.props.loading}
             />
 
-            <TextControl
-                name="mappingsLang"
-                label="Mappings Language"
-                value={this.state.mappingsLang}
-                onChange={LinkState.bind(this)}
-                hasError={this.props.hasError.mappingsLang}
-                help={this.props.help.mappingsLang}
+            <MappingLangSelector
+                selectedLang={this.state.mappingsLang}
                 disabled={this.props.loading}
-            />
+                callback={this.handleNewLanguage.bind(this)}/>
 
 
             <ControlGroup hideLabel={true} hideHelp={true}>
             <span className="group-list"><b>Groups:</b> {groups}</span>
             </ControlGroup>
-
 
 
 

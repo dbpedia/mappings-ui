@@ -3,6 +3,8 @@ const Actions = require('./actions');
 const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const ControlGroup = require('../../../components/form/control-group.jsx');
+const MappingLangSelector = require('../../../components/mapping-lang-selector.jsx');
+
 const LinkState = require('../../../helpers/link-state.js');
 const Modal = require('../../../components/modal.jsx');
 const PropTypes = require('prop-types');
@@ -20,7 +22,8 @@ const propTypes = {
     show: PropTypes.bool,
     username: PropTypes.string,
     password: PropTypes.string,
-    email: PropTypes.string
+    email: PropTypes.string,
+    mappingsLang: PropTypes.string
 
 };
 
@@ -35,7 +38,8 @@ class CreateNewForm extends React.Component {
             name: '',
             username:'',
             email: '',
-            password:''
+            password:'',
+            mappingsLang: 'all'
         };
     }
 
@@ -47,6 +51,12 @@ class CreateNewForm extends React.Component {
         }
     }*/
 
+    handleNewLanguage(newLang){
+
+        this.setState( { mappingsLang:newLang } );
+    }
+
+
     onSubmit(event) {
 
         event.preventDefault();
@@ -56,7 +66,8 @@ class CreateNewForm extends React.Component {
             name: this.state.name,
             username: this.state.username,
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
+            mappingsLang: this.state.mappingsLang
         }, this.props.history);
     }
 
@@ -112,6 +123,11 @@ class CreateNewForm extends React.Component {
                 help={this.props.help.password}
                 disabled={this.props.loading}
             />
+            <MappingLangSelector
+                selectedLang={this.state.mappingsLang}
+                disabled={this.props.loading}
+                callback={this.handleNewLanguage.bind(this)}/>
+
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
                     type="submit"

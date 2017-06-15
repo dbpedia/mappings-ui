@@ -317,7 +317,7 @@ internals.applyRoutes = function (server, next) {
                     name: Joi.object().keys({
                         first: Joi.string().required(),
                         middle: Joi.string().allow(''),
-                        last: Joi.string().required()
+                        last: Joi.string().allow('')
                     }).required(),
                     username: Joi.string().token().lowercase().required(),
                     email: Joi.string().email().lowercase().required(),
@@ -427,7 +427,7 @@ internals.applyRoutes = function (server, next) {
                     name: Joi.object().keys({
                         first: Joi.string().required(),
                         middle: Joi.string().allow(''),
-                        last: Joi.string().required()
+                        last: Joi.string().allow('')
                     }).required(),
                     email: Joi.string().email().lowercase().required(),
                     mappingsLang: Joi.string().lowercase().required()
