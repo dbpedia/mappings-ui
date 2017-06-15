@@ -1,8 +1,9 @@
 'use strict';
 const Actions = require('./actions');
-const DeleteForm = require('../components/delete-form.jsx');
 const DetailsForm = require('./details-form.jsx');
 const PermissionsForm = require('./permissions-form.jsx');
+const ButtonGroup = require('../../../components/button-group.jsx');
+
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -41,6 +42,11 @@ class DetailsPage extends React.Component {
         this.setState(Store.getState());
     }
 
+
+    remove(id) {
+
+        window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(id,this.props.history);
+    }
     render() {
 
         if (!this.state.details.hydrated) {
@@ -69,19 +75,34 @@ class DetailsPage extends React.Component {
         const id = this.state.details._id;
         const name = this.state.details.name;
 
+        const buttons = [
+
+            { type: 'btn-danger', text: 'Remove permanently', action:this.remove.bind(this, id)
+
+            }
+        ];
+
         return (
             <section className="container">
                 <h1 className="page-header">
                     <Link to="/groups">Groups</Link> / {name}
+                    <ButtonGroup float='right' buttons={buttons}/>
                 </h1>
                 <div className="row">
-                    <div className="col-sm-8">
+                    <div className="col-sm-7">
                         <DetailsForm {...this.state.details} />
                         <PermissionsForm {...this.state.permissions} />
-                        <DeleteForm
-                            {...this.state.delete}
-                            action={Actions.delete.bind(Actions, id, this.props.history)}
-                        />
+
+                    </div>
+                    <div className="col-sm-5">
+                        <h3 className="text-center"><i className="fa fa-info-circle fa-2x"></i></h3>
+                        <p className="lead">
+
+                            <br/>
+                            Groups are set of permissions identified by a name.<br/><br/>
+                            Use groups to give a group of users a set of permissions you consider that must be together.
+                            For specific individual permissions, please edit the specific account's permissions.
+                        </p>
                     </div>
                 </div>
             </section>

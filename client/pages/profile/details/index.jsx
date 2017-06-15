@@ -71,7 +71,10 @@ class DetailsPage extends React.Component {
         }
 
         const name = this.state.details.name;
-        const fullName = `${name.first} ${name.last}`;
+        let fullName = name.first;
+        if (name.last && name.last.length > 0) {
+            fullName += ' ' + name.last;
+        }
 
         return (
             <section className="section-account-details container">

@@ -76,7 +76,10 @@ class DetailsPage extends React.Component {
 
         const id = this.state.details._id;
         const name = this.state.details.name;
-        const fullName = `${name.first} ${name.last}`;
+        let fullName = name.first;
+        if (name.last && name.last.length > 0) {
+            fullName += ' ' + name.last;
+        }
 
 
 
