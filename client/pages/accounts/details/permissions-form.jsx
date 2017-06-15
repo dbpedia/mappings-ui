@@ -151,7 +151,7 @@ class PermissionsForm extends React.Component {
                         </button>
                         <button
                             type="button"
-                            className="btn btn-warning"
+                            className="btn btn-danger"
                             onClick={deleteHandler}>
 
                             Remove

@@ -2,6 +2,8 @@
 const Actions = require('./actions');
 const CreateNewForm = require('./create-new-form.jsx');
 const FilterForm = require('./filter-form.jsx');
+const ButtonGroup = require('../../../components/button-group.jsx');
+
 const Paging = require('../../../components/paging.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -73,16 +75,16 @@ class SearchPage extends React.Component {
 
     render() {
 
+        const buttons = [
+            { type: 'btn-success', text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Group</span>,
+                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c)
+            }
+        ];
+
         return (
             <section className="container">
                 <div className="page-header">
-                    <button
-                        ref={(c) => (this.els.createNew = c)}
-                        className="btn btn-default pull-right"
-                        onClick={this.onNewClick.bind(this)}>
-
-                        Create new
-                    </button>
+                    <ButtonGroup float='right' buttons={buttons}/>
                     <h1>Groups</h1>
                 </div>
                 <FilterForm

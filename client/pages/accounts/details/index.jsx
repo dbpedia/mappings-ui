@@ -86,7 +86,7 @@ class DetailsPage extends React.Component {
 
         const buttons = [
 
-            { type: 'btn-danger', text: 'Remove permanently', action:
+            { type: 'btn-danger', text: 'Delete permanently', action:
                 () => {
                     window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(id,this.props.history);
                 }
@@ -110,13 +110,17 @@ class DetailsPage extends React.Component {
 
         return (
             <section className="section-account-details container">
-                <h1 className="page-header">
-                    <Link to="/accounts">Accounts</Link> / {fullName}
-                    {!this.state.details.isActive &&
-
-                    <span style={ { 'fontSize':'0.7em' }}><i>&nbsp;(Disabled)</i></span>}
+                <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}/>
-                </h1>
+                    <h1 >
+
+                        <Link to="/accounts">Accounts</Link> / {fullName}
+                        {!this.state.details.isActive &&
+
+                        <span style={ { 'fontSize':'0.7em' }}><i>&nbsp;(Disabled)</i></span>}
+
+                    </h1>
+                </div>
                 <div className="row">
                     <div className="col-sm-6">
                         <DetailsForm {...this.state.details} />

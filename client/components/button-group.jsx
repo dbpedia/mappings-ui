@@ -22,7 +22,7 @@ class ButtonGroup extends React.Component {
 
             (b) => {
                 buttonElems.push(
-                    <button key={b.text} type="button" className={'btn ' + b.type} onClick={b.action}>
+                    <button ref={b.ref} key={b.text} type="button" className={'btn ' + b.type} onClick={b.action}>
                         {b.text}
                         <Spinner space="left" show={b.loading} />
                         </button>

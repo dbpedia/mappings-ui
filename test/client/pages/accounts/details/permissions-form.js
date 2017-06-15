@@ -95,7 +95,7 @@ lab.experiment('Admin Accounts Permissions Form', () => {
         });
         const FormEl = React.createElement(Form, props);
         const form = ReactTestUtils.renderIntoDocument(FormEl);
-        const button = ReactTestUtils.scryRenderedDOMComponentsWithClass(form, 'btn-warning')[0];
+        const button = ReactTestUtils.scryRenderedDOMComponentsWithClass(form, 'btn-danger')[0];
 
         Code.expect(form.state.permissions).to.have.length(2);
 

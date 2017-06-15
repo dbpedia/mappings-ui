@@ -77,17 +77,22 @@ class DetailsPage extends React.Component {
 
         const buttons = [
 
-            { type: 'btn-danger', text: 'Remove permanently', action:this.remove.bind(this, id)
+            { type: 'btn-danger', text: 'Delete permanently', action:this.remove.bind(this, id)
 
             }
         ];
 
         return (
             <section className="container">
-                <h1 className="page-header">
-                    <Link to="/groups">Groups</Link> / {name}
+                <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}/>
-                </h1>
+                    <h1 >
+
+                        <Link to="/groups">Groups</Link> / {name}
+
+                    </h1>
+                </div>
+
                 <div className="row">
                     <div className="col-sm-7">
                         <DetailsForm {...this.state.details} />
