@@ -64,7 +64,6 @@ lab.experiment('Panel in Home Page, Not Logged In', () => {
 
             //Elements that have to be there
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Home<\/a><\/li>/i);
-            Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Contact<\/a><\/li>/i);
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign Up<\/a><\/li>/i);
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign In<\/a><\/li>/i);
 
