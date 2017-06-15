@@ -48,9 +48,9 @@ class Navbar extends React.Component {
                         <a className="navbar-brand" href="/">
                             <img
                                 className="navbar-logo"
-                                src="/public/media/logo-square.png"
+                                src="/public/media/navbar-logo.png"
                             />
-                            <span className="navbar-brand-label">Aqua</span>
+                            <span className="navbar-brand-label">Mappings UI</span>
                         </a>
                     </div>
                     <div className="navbar-collapse collapse">
@@ -59,9 +59,6 @@ class Navbar extends React.Component {
                                 <a href="/">Home</a>
                             </li>
 
-                            <li className={this.tabClass('contact')}>
-                                <a href="/contact">Contact</a>
-                            </li>
                             { this.state.isAdmin &&
                                 <li className={this.tabClass('groups')}>
                                     <a href="/groups">Groups</a>

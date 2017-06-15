@@ -18,7 +18,7 @@ class HomePage extends React.Component {
 
         return (
             <Layout
-                title="Aqua"
+                title="DBpedia Mappings UI"
                 neck={neck}
                 activeTab="home"
                 credentials={this.props.credentials}
