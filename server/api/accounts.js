@@ -24,6 +24,8 @@ internals.applyRoutes = function (server, next) {
             validate: {
                 query: {
                     username: Joi.string().allow(''),
+                    name: Joi.string().allow(''),
+                    group: Joi.string().allow(''),
                     isActive: Joi.string().allow(''),
                     fields: Joi.string(),
                     sort: Joi.string().default('_id'),
@@ -42,6 +44,32 @@ internals.applyRoutes = function (server, next) {
             if (request.query.isActive) {
                 query.isActive = request.query.isActive === 'true';
             }
+            //Remember, groups are stored like this. groups: { key: 'name',key2: 'name2'}
+            if (request.query.group) {
+                query['groups.' + request.query.group] = new RegExp('.*');
+            }
+
+            if (request.query.name){
+                //query.name = new RegExp('^.*?' + EscapeRegExp(request.query.name) + '.*$', 'i');
+                const nameParts = request.query.name.split(' ');
+                if (nameParts.length === 1){
+                    query['name.first'] = new RegExp('^.*?' + EscapeRegExp(request.query.name) + '.*$', 'i');
+                }
+                else if (nameParts.length === 2){
+                    query['name.first'] = new RegExp('^.*?' + EscapeRegExp(nameParts[0]) + '.*$', 'i');
+                    query['name.last'] = new RegExp('^.*?' + EscapeRegExp(nameParts[1]) + '.*$', 'i');
+                }
+                else if (nameParts.length === 3){
+                    query['name.first'] = new RegExp('^.*?' + EscapeRegExp(nameParts[0]) + '.*$', 'i');
+                    query['name.middle'] = new RegExp('^.*?' + EscapeRegExp(nameParts[1]) + '.*$', 'i');
+                    query['name.last'] = new RegExp('^.*?' + EscapeRegExp(nameParts[2]) + '.*$', 'i');
+                }
+
+
+                console.log(query);
+            }
+
+
             const fields = request.query.fields;
             const sort = request.query.sort;
             const limit = request.query.limit;

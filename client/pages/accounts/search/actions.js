@@ -28,6 +28,17 @@ class Actions {
         window.scrollTo(0, 0);
     }
 
+    static getGroupOptions() {
+
+        ApiActions.get(
+            '/api/account-groups?limit=0',
+            undefined,
+            Store,
+            Constants.GET_GROUP_OPTIONS,
+            Constants.GET_GROUP_OPTIONS_RESPONSE
+        );
+    }
+
     static showCreateNew() {
 
         Store.dispatch({

@@ -25,6 +25,7 @@ class SearchPage extends React.Component {
 
         const query = Qs.parse(this.props.location.search.substring(1));
 
+
         Actions.getResults(query);
 
         this.els = {};

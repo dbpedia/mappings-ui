@@ -8,5 +8,7 @@ module.exports = FluxConstant.set([
     'GET_RESULTS',
     'GET_RESULTS_RESPONSE',
     'HIDE_CREATE_NEW',
-    'SHOW_CREATE_NEW'
+    'SHOW_CREATE_NEW',
+    'GET_GROUP_OPTIONS',
+    'GET_GROUP_OPTIONS_RESPONSE'
 ]);

@@ -23,7 +23,6 @@ internals.applyRoutes = function (server, next) {
             validate: {
                 query: {
                     name: Joi.string().allow(''),
-                    _id: Joi.string().allow(''),
                     fields: Joi.string(),
                     sort: Joi.string().default('_id'),
                     limit: Joi.number().default(20),
@@ -59,6 +58,7 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
+
 
 
     server.route({

@@ -24,7 +24,11 @@ class SearchPage extends React.Component {
 
         const query = Qs.parse(this.props.location.search.substring(1));
 
+        //Get results from backend
         Actions.getResults(query);
+
+        //Get the list of groups
+        Actions.getGroupOptions();
 
         this.els = {};
         this.state = Store.getState();
@@ -87,25 +91,34 @@ class SearchPage extends React.Component {
 
                     <h1>Accounts</h1>
                 </div>
-                <FilterForm
-                    ref={(c) => (this.els.filters = c)}
-                    loading={this.state.results.loading}
-                    query={Qs.parse(this.props.location.search.substring(1))}
-                    onChange={this.onFiltersChange.bind(this)}
-                />
-                <Results data={this.state.results.data} />
-                <Paging
-                    ref={(c) => (this.els.paging = c)}
-                    pages={this.state.results.pages}
-                    items={this.state.results.items}
-                    loading={this.state.results.loading}
-                    onChange={this.onPageChange.bind(this)}
-                />
-                <CreateNewForm
-                    history={this.props.history}
-                    location={this.props.location}
-                    {...this.state.createNew}
-                />
+                <div className="row">
+                    <div className="col-sm-8"> {/*Left column: results */}
+                        <Results data={this.state.results.data} />
+                        <Paging
+                            ref={(c) => (this.els.paging = c)}
+                            pages={this.state.results.pages}
+                            items={this.state.results.items}
+                            loading={this.state.results.loading}
+                            onChange={this.onPageChange.bind(this)}
+                        />
+                    </div>
+                    <CreateNewForm
+                        history={this.props.history}
+                        location={this.props.location}
+                        {...this.state.createNew}
+                    />
+                    <div className="col-sm-4"> {/*Right column: filters */}
+                        <FilterForm
+                            ref={(c) => (this.els.filters = c)}
+                            loading={this.state.results.loading}
+                            query={Qs.parse(this.props.location.search.substring(1))}
+                            onChange={this.onFiltersChange.bind(this)}
+                            groups={this.state.groups}
+
+                        />
+                    </div>
+                </div>
+
             </section>
         );
     }

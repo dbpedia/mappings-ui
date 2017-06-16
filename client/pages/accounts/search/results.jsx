@@ -17,17 +17,19 @@ class Results extends React.Component {
 
             return (
                 <tr key={record._id}>
+
+                    <td>{record.username}</td>
+                    <td>{record.name.first} {record.name.last}</td>
+                    <td>{record.groups.admin ? 'Yes' : 'No'}</td>
+                    <td>{record.isActive ? 'Enabled' : 'Disabled'}</td>
                     <td>
                         <Link
                             className="btn btn-default btn-sm"
                             to={`accounts/${record._id}`}>
 
-                            Edit
+                            <i className="fa fa-pencil" aria-hidden="true"></i>
                         </Link>
                     </td>
-                    <td>{record.name.first} {record.name.last}</td>
-                    <td>{record.username}</td>
-                    <td>{record._id}</td>
                 </tr>
             );
         });
@@ -37,10 +39,12 @@ class Results extends React.Component {
                 <table className="table table-striped table-results">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th className="stretch">name</th>
-                            <th>username</th>
-                            <th>id</th>
+
+                            <th >Username</th>
+                            <th className="stretch">Name</th>
+                            <th>Admin</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>

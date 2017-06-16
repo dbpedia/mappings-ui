@@ -21,7 +21,7 @@ class Actions {
     static getGroupOptions() {
 
         ApiActions.get(
-            '/api/account-groups',
+            '/api/account-groups?limit=0',
             undefined,
             Store,
             Constants.GET_GROUP_OPTIONS,

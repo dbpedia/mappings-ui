@@ -18,8 +18,7 @@ const defaultValues = {
     name: '',
     sort: '_id',
     limit: '20',
-    page: '1',
-    _id: ''
+    page: '1'
 };
 
 
@@ -42,8 +41,7 @@ class FilterForm extends React.Component {
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
 
-                                    <option value="_id">id &#9650;</option>
-                                    <option value="-_id">id &#9660;</option>
+
                                     <option value="name">name &#9650;</option>
                                     <option value="-name">name &#9660;</option>
                                 </SelectControl>
@@ -76,19 +74,6 @@ class FilterForm extends React.Component {
                                 />
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <TextControl
-                                    name="_id"
-                                    label="ID search"
-                                    value={this.props.state._id}
-                                    onChange={this.props.linkInputState}
-                                    disabled={this.props.loading}
-                                />
-                            </div>
-                        </div>
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <button type="button" className="btn btn-primary btn-block" onClick={this.props.onSubmitFilters} disabled={this.props.loading}>Apply Filters</button>

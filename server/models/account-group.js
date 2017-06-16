@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
-const Slug = require('slug');
 
 
 class AccountGroup extends MongoModels {
@@ -11,7 +10,6 @@ class AccountGroup extends MongoModels {
     static create(name, callback) {
 
         const document = {
-            _id: Slug(name).toLowerCase(),
             name
         };
 
@@ -39,14 +37,19 @@ class AccountGroup extends MongoModels {
 AccountGroup.collection = 'accountGroups';
 
 
-AccountGroup._idClass = String;
 
 
 AccountGroup.schema = Joi.object().keys({
-    _id: Joi.string(),
+    _id: Joi.object(),
     name: Joi.string().required(),
     permissions: Joi.object().description('{ permission: boolean, ... }')
 });
+
+
+AccountGroup.indexes = [
+    { key: { _id: 1 } },
+    { key: { name: 1, unique:1 } }
+];
 
 
 module.exports = AccountGroup;

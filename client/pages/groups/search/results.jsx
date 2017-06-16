@@ -19,7 +19,6 @@ class Results extends React.Component {
                 <tr key={record._id}>
 
                     <td>{record.name}</td>
-                    <td className="nowrap">{record._id}</td>
                     <td>
                         <Link
                             className="btn btn-default btn-sm"
@@ -39,7 +38,6 @@ class Results extends React.Component {
                     <thead>
                         <tr>
                             <th className="stretch">Name</th>
-                            <th>ID</th>
                             <th>Actions</th>
                         </tr>
                     </thead>

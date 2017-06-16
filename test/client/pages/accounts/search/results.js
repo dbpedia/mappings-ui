@@ -23,7 +23,8 @@ lab.experiment('Accounts Search Results', () => {
                     middle: '',
                     last: 'Hoek'
                 },
-                username: 'renhoek'
+                username: 'renhoek',
+                groups: {}
             }, {
                 _id: 'xyzabc',
                 name: {
@@ -31,7 +32,8 @@ lab.experiment('Accounts Search Results', () => {
                     middle: '',
                     last: 'Cat'
                 },
-                username: 'stimpsoncat'
+                username: 'stimpsoncat',
+                groups: {}
             }]
         };
         const ResultsEl = React.createElement(Results, props);

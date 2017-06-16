@@ -47,7 +47,7 @@ lab.experiment('Filter Form HOC', () => {
     });
 
 
-    lab.test('it handles a select menu change event', (done) => {
+    /*lab.test('it handles a select menu change event', (done) => {
 
         const props = Object.assign({}, defaultProps, {
             query: {
@@ -70,7 +70,7 @@ lab.experiment('Filter Form HOC', () => {
         Code.expect(form.state.page).to.equal('1');
 
         done();
-    });
+    });*/
 
 
     lab.test('it handles submit on enter key, but not another key', (done) => {

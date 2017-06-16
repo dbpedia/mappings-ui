@@ -157,4 +157,22 @@ lab.experiment('Accounts Search Actions', () => {
 
         Actions.createNew({});
     });
+
+
+    lab.test('it calls ApiActions.get from getGroupOptions', (done) => {
+
+        stub.ApiActions.get.mock = function (url, data, store, typeReq, typeRes, callback) {
+
+            Code.expect(url).to.be.a.string();
+            Code.expect(data).to.be.undefined();
+            Code.expect(store).to.be.an.object();
+            Code.expect(typeReq).to.be.an.instanceof(FluxConstant);
+            Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
+            Code.expect(callback).to.not.exist();
+
+            done();
+        };
+
+        Actions.getGroupOptions();
+    });
 });
