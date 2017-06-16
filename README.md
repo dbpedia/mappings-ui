@@ -11,3 +11,14 @@ Please go to the Wiki for more information.
 
 Based on Aqua Framework.
 
+
+Basic groups and accounts
+-
+Admin account id: 111111111111111111111111
+
+Admin group id: 111111111111111111111111
+
+Account group id: 000000000000000000000000
+
+These groups and accounts cannot be removed, and their IDs are used in the code to check for permissions, amongst others.
+

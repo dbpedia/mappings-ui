@@ -19,7 +19,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 query: {
@@ -93,7 +93,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             }
         },
         handler: function (request, reply) {
@@ -121,7 +121,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: ['admin','account']
+                scope: ['111111111111111111111111','000000000000000000000000']
             }
         },
         handler: function (request, reply) {
@@ -154,7 +154,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 payload: {
@@ -241,7 +241,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 params: {
@@ -285,7 +285,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 params: {
@@ -311,8 +311,8 @@ internals.applyRoutes = function (server, next) {
             };
 
             //If not admin or account, it is account at least
-            if (!('admin' in update.$set.groups) && !('account' in update.$set.groups)) {
-                update.$set.groups.account = 'Account';
+            if (!('111111111111111111111111' in update.$set.groups) && !('000000000000000000000000' in update.$set.groups)) {
+                update.$set.groups['000000000000000000000000'] = 'Account';
             }
 
             Account.findByIdAndUpdate(id, update, (err, account) => {
@@ -337,7 +337,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
 
@@ -448,7 +448,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope:['admin','account']
+                scope:['111111111111111111111111','000000000000000000000000']
             },
             validate: {
                 payload: {
@@ -525,7 +525,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 payload: {
@@ -582,7 +582,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: ['admin', 'account']
+                scope: ['111111111111111111111111', '000000000000000000000000']
             },
             validate: {
                 payload: {
@@ -636,7 +636,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 payload: {
@@ -678,7 +678,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 payload: {
@@ -721,7 +721,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 params: {

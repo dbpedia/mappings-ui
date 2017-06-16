@@ -17,7 +17,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             validate: {
                 query: {
@@ -57,7 +57,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             pre: [
                 //AuthPlugin.preware.ensureAdminGroup('root')
@@ -87,7 +87,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session',
-                scope: 'admin'
+                scope: '111111111111111111111111'
             },
             pre: [
                 //AuthPlugin.preware.ensureAdminGroup('root')

@@ -22,7 +22,7 @@ class Navbar extends React.Component {
         this.state = {
             isAuthenticated: this.props.credentials && this.props.credentials.user,
             username: this.props.credentials && this.props.credentials.user && this.props.credentials.user.username,
-            isAdmin: this.props.credentials && this.props.credentials.user && 'admin' in this.props.credentials.user.groups
+            isAdmin: this.props.credentials && this.props.credentials.user && '111111111111111111111111' in this.props.credentials.user.groups
         };
 
     }

@@ -1143,7 +1143,7 @@ lab.experiment('Account Plugin Update Groups', () => {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.$set.groups).to.equal( { account: 'Account' } );
+            Code.expect(response.result.$set.groups).to.equal( { '000000000000000000000000': 'Account' } );
 
             done();
         });

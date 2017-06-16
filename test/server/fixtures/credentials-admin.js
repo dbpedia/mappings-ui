@@ -5,9 +5,9 @@ const Account = require('../../../server/models/account');
 const user = new Account({
     _id: '592fe4c8ff79c6347b1db038',
     username: 'ren',
-    groups: { admin: 'Admin' },
+    groups: { '111111111111111111111111': 'Admin' },
     _groups : {
-        admin: {
+        '111111111111111111111111': {
             _id: 'admin',
             name: 'Admin',
             permissions: {

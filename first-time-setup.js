@@ -111,7 +111,7 @@ Async.auto({
                         password: passResults.passwordHash.hash,
                         email: results.rootEmail.toLowerCase(),
                         groups: {
-                            admin: 'Admin'
+                            '111111111111111111111111': 'Admin'
                         },
                         mappingsLang: 'all',
                         timeCreated: new Date()

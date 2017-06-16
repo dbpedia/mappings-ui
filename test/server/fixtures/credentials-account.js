@@ -8,9 +8,9 @@ const user = new Account({
     _id: '592fe4c8ff79c6347b1db038',
     username: 'ren',
     email: 'mail@mail.com',
-    groups: { account: 'Account' },
+    groups: { '000000000000000000000000': 'Account' },
     _groups : {
-        account: {
+        '000000000000000000000000': {
             _id: 'account',
             name: 'Account',
             permissions: {
