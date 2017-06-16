@@ -55,7 +55,10 @@ class Actions {
                 if (!err) {
                     this.hideCreateNew();
 
-                    history.replace(window.location);
+
+                    const path = `/groups/${response._id}`;
+
+                    history.push(path);
 
                     window.scrollTo(0, 0);
                 }

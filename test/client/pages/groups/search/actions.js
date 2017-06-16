@@ -126,13 +126,13 @@ lab.experiment('Account Groups Search Actions', () => {
             Code.expect(typeRes).to.be.an.instanceof(FluxConstant);
             Code.expect(callback).to.exist();
 
-            callback(null, {});
+            callback(null, { _id: 'testGroup' });
         };
 
         const history = {
-            replace: function (path) {
+            push: function (path) {
 
-                Code.expect(path).to.be.an.object();
+                Code.expect(path).to.be.a.string();
             }
         };
 
