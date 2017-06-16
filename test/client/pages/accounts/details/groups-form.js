@@ -22,7 +22,8 @@ const defaultProps = {
         { _id: 'root', name: 'Root' }
     ],
     accountId: undefined,
-    groups: {}
+    groups: {},
+    enabled: true
 };
 
 

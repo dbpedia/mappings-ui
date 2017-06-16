@@ -725,7 +725,7 @@ internals.applyRoutes = function (server, next) {
             },
             validate: {
                 params: {
-                    id: Joi.string().invalid('000000000000000000000000')
+                    id: Joi.string().invalid('111111111111111111111111')
                 }
             },
             pre: [

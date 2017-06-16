@@ -22,7 +22,8 @@ const propTypes = {
     username: PropTypes.string,
     email: PropTypes.string,
     isActive: PropTypes.bool,
-    mappingsLang: PropTypes.string
+    mappingsLang: PropTypes.string,
+    enabled: PropTypes.bool
 };
 
 
@@ -78,7 +79,7 @@ class DetailsForm extends React.Component {
             alerts.push(<Alert
                 key="danger"
                 type="danger"
-                message={this.props.error}
+                message={this.props.error }
             />);
         }
 
@@ -93,7 +94,7 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError.username}
                 help={this.props.help.username}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
             />
             <TextControl
                 name="email"
@@ -102,7 +103,7 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError.email}
                 help={this.props.help.email}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
             />
             <TextControl
                 name="name.first"
@@ -111,7 +112,7 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError['name.first']}
                 help={this.props.help['name.first']}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
             />
             <TextControl
                 name="name.middle"
@@ -120,7 +121,7 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError['name.middle']}
                 help={this.props.help['name.middle']}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
             />
             <TextControl
                 name="name.last"
@@ -129,20 +130,20 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError['name.last']}
                 help={this.props.help['name.last']}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
             />
 
 
             <MappingLangSelector
                 selectedLang={this.state.mappingsLang}
-                disabled={this.props.loading}
+                disabled={this.props.loading || !this.props.enabled}
                 callback={this.handleNewLanguage.bind(this)}/>
 
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
-                    disabled={this.props.loading}>
+                    disabled={this.props.loading || !this.props.enabled}>
 
                     Save changes
                     <Spinner space="left" show={this.props.loading} />

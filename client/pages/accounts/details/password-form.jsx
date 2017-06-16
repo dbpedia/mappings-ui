@@ -18,7 +18,8 @@ const propTypes = {
     password: PropTypes.string,
     passwordConfirm: PropTypes.string,
     showSaveSuccess: PropTypes.bool,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    enabled: PropTypes.bool
 };
 
 
@@ -89,7 +90,7 @@ class PasswordForm extends React.Component {
                         onChange={LinkState.bind(this)}
                         hasError={this.props.hasError.password}
                         help={this.props.help.password}
-                        disabled={this.props.loading}
+                        disabled={this.props.loading || !this.props.enabled}
                     />
                     <TextControl
                         name="passwordConfirm"
@@ -99,13 +100,13 @@ class PasswordForm extends React.Component {
                         onChange={LinkState.bind(this)}
                         hasError={this.props.hasError.passwordConfirm}
                         help={this.props.help.passwordConfirm}
-                        disabled={this.props.loading}
+                        disabled={this.props.loading || !this.props.enabled}
                     />
                     <ControlGroup hideLabel={true} hideHelp={true}>
                         <Button
                             type="submit"
                             inputClasses={{ 'btn-primary': true }}
-                            disabled={this.props.loading}>
+                            disabled={this.props.loading || !this.props.enabled}>
 
                             Set password
                             <Spinner

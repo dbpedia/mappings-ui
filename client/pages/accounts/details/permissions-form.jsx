@@ -14,7 +14,8 @@ const propTypes = {
     error: PropTypes.string,
     loading: PropTypes.bool,
     permissions: PropTypes.object,
-    showSaveSuccess: PropTypes.bool
+    showSaveSuccess: PropTypes.bool,
+    enabled: PropTypes.bool
 };
 
 
@@ -145,14 +146,15 @@ class PermissionsForm extends React.Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={toggleHandler}>
-
+                            onClick={toggleHandler}
+                            disabled={this.props.loading || !this.props.enabled}>
                             {toggleIcon}
                         </button>
                         <button
                             type="button"
                             className="btn btn-danger"
-                            onClick={deleteHandler}>
+                            onClick={deleteHandler}
+                            disabled={this.props.loading || !this.props.enabled}>
 
                             Remove
                         </button>
@@ -181,13 +183,16 @@ class PermissionsForm extends React.Component {
                         onKeyDown={this.onEnterNewPermission.bind(this)}
                         value={this.state.newPermission}
                         onChange={LinkState.bind(this)}
+                        disabled={this.props.loading || !this.props.enabled}
                     />
                     <span className="input-group-btn">
                         <button
                             ref={(c) => (this.els.newPermissionButton = c)}
                             type="button"
                             className="btn btn-default"
-                            onClick={this.handleNewPermission.bind(this)}>
+                            onClick={this.handleNewPermission.bind(this)}
+                            disabled={this.props.loading || !this.props.enabled}
+                        >
 
                             Add
                         </button>
@@ -201,7 +206,7 @@ class PermissionsForm extends React.Component {
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
-                    disabled={this.props.loading}>
+                    disabled={this.props.loading || !this.props.enabled}>
 
                     Save changes
                     <Spinner space="left" show={this.props.loading} />

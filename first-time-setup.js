@@ -60,14 +60,33 @@ Async.auto({
             }],
 
             adminGroup: ['clean', function (dbResults, done) {
+                //Admin group has 111111111111111111111111 id
 
-                AccountGroup.create('Admin', done);
+                const document = {
+                    _id: Account.ObjectId('111111111111111111111111'),
+                    name: 'Admin'
+                };
+
+                AccountGroup.insertOne(document, (err, docs) => {
+
+                    done(err, docs && docs[0]);
+                });
             }],
 
 
             accountGroup: ['clean', function (dbResults, done) {
 
-                AccountGroup.create('Account', done);
+                //Account group has 000000000000000000000000 id
+
+                const document = {
+                    _id: Account.ObjectId('000000000000000000000000'),
+                    name: 'Account'
+                };
+
+                AccountGroup.insertOne(document, (err, docs) => {
+
+                    done(err, docs && docs[0]);
+                });
             }],
 
             rootUser: ['clean', function (dbResults, done) {
@@ -94,6 +113,7 @@ Async.auto({
                         groups: {
                             admin: 'Admin'
                         },
+                        mappingsLang: 'all',
                         timeCreated: new Date()
                     };
 

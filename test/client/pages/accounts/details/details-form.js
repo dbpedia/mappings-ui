@@ -21,7 +21,8 @@ const defaultProps = {
         last: 'Cat'
     },
     hasError: {},
-    help: {}
+    help: {},
+    enabled: true
 };
 
 

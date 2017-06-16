@@ -219,8 +219,9 @@ internals.applyRoutes = function (server, next) {
                 scope: 'admin'
             },
             validate: {
+                //Account and Admin groups cannot be removed
                 params: {
-                    id: Joi.string().invalid('root')
+                    id: Joi.string().invalid('111111111111111111111111','000000000000000000000000')
                 }
             },
             pre: [

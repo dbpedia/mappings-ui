@@ -77,7 +77,11 @@ class DetailsPage extends React.Component {
 
         const buttons = [
 
-            { type: 'btn-danger', text: 'Delete permanently', action:this.remove.bind(this, id)
+            {
+                type: 'btn-danger',
+                text: 'Delete permanently',
+                action:this.remove.bind(this, id),
+                disabled: (this.state.details._id === '111111111111111111111111' || this.state.details._id === '000000000000000000000000')
 
             }
         ];

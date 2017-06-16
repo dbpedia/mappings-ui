@@ -51,6 +51,11 @@ class DetailsPage extends React.Component {
 
     render() {
 
+
+        let canEdit = true;
+        if (this.state.details._id){
+            canEdit = this.state.details._id !== '111111111111111111111111';
+        }
         if (!this.state.details.hydrated) {
             return (
                 <section className="section-account-details container">
@@ -89,7 +94,8 @@ class DetailsPage extends React.Component {
             { type: 'btn-danger', text: 'Delete permanently', action:
                 () => {
                     window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(id,this.props.history);
-                }
+                },
+                disabled: (this.state.details._id === '111111111111111111111111')
             }
         ];
 
@@ -97,14 +103,16 @@ class DetailsPage extends React.Component {
             buttons.unshift( { type: 'btn-warning', text: 'Disable', loading: this.state.details.activeChangeLoading, action:
                 () => {
                     Actions.changeActive(id, { isActive:false } );
-                }
+                },
+                disabled: (this.state.details._id === '111111111111111111111111')
             });
         }
         else {
             buttons.unshift( { type: 'btn-success', text: 'Enable', loading: this.state.details.activeChangeLoading, action:
                 () => {
                     Actions.changeActive(id, { isActive:true } );
-                }
+                },
+                disabled: (this.state.details._id === '111111111111111111111111' )
             });
         }
 
@@ -123,11 +131,11 @@ class DetailsPage extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-6">
-                        <DetailsForm {...this.state.details} />
+                        <DetailsForm {...this.state.details} enabled={canEdit} />
                     </div>
                     <div className="col-sm-6">
                         <StatsForm {...this.state.details} />
-                        <PasswordForm {...this.state.password} />
+                        <PasswordForm {...this.state.password} enabled={canEdit}/>
                         {/*<NoteForm
                             {...this.state.note}
                             saveAction={Actions.newNote.bind(Actions, id)}
@@ -137,10 +145,10 @@ class DetailsPage extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-6">
-                        <GroupsForm {...this.state.groups} />
+                        <GroupsForm {...this.state.groups} enabled={canEdit} />
                     </div>
                     <div className="col-sm-6">
-                        <PermissionsForm {...this.state.permissions} />
+                        <PermissionsForm {...this.state.permissions} enabled={canEdit} />
                     </div>
 
                 </div>

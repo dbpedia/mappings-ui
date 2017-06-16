@@ -15,7 +15,8 @@ const propTypes = {
     groups: PropTypes.object,
     loading: PropTypes.bool,
     options: PropTypes.array,
-    showSaveSuccess: PropTypes.bool
+    showSaveSuccess: PropTypes.bool,
+    enabled: PropTypes.bool
 };
 
 
@@ -122,7 +123,7 @@ class GroupsForm extends React.Component {
                             type="button"
                             className="btn btn-warning"
                             onClick={deleteHandler}
-                            disabled={this.props.loading}>
+                            disabled={this.props.loading || !this.props.enabled}>
 
                             Remove
                         </button>
@@ -162,7 +163,7 @@ class GroupsForm extends React.Component {
                         className="form-control"
                         value={this.state.newGroup}
                         onChange={LinkState.bind(this)}
-                        disabled={this.props.loading}>
+                        disabled={this.props.loading || !this.props.enabled}>
 
                         <option value="">--- select ---</option>
                         {groupOptions}
@@ -173,7 +174,7 @@ class GroupsForm extends React.Component {
                             type="button"
                             className="btn btn-default"
                             onClick={this.handleNewGroup.bind(this)}
-                            disabled={this.props.loading}>
+                            disabled={this.props.loading || !this.props.enabled}>
 
                             Add
                         </button>
@@ -187,7 +188,7 @@ class GroupsForm extends React.Component {
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
-                    disabled={this.props.loading}>
+                    disabled={this.props.loading || !this.props.enabled}>
 
                     Save changes
                     <Spinner space="left" show={this.props.loading} />

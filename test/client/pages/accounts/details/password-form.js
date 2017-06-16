@@ -25,7 +25,8 @@ lab.experiment('Admin Accounts Password Form', () => {
         hasError: {},
         help: {},
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        enabled: true
     };
 
     lab.test('it renders', (done) => {

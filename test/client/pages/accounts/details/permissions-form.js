@@ -17,7 +17,8 @@ const defaultProps = {
     hasError: {},
     help: {},
     accountId: undefined,
-    permissions: {}
+    permissions: {},
+    enabled: true
 };
 
 

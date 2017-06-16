@@ -383,6 +383,40 @@ lab.experiment('Account Groups Plugin Delete', () => {
         done();
     });
 
+    lab.test('it returns an error when trying to delete admin group', (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/account-groups/111111111111111111111111',
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
+
+
+    lab.test('it returns an error when trying to delete account group', (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/account-groups/000000000000000000000000',
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+            done();
+        });
+    });
+
 
     lab.test('it returns an error when delete by id fails', (done) => {
 
