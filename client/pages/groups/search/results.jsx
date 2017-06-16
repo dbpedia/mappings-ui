@@ -17,16 +17,18 @@ class Results extends React.Component {
 
             return (
                 <tr key={record._id}>
+
+                    <td>{record.name}</td>
+                    <td className="nowrap">{record._id}</td>
                     <td>
                         <Link
                             className="btn btn-default btn-sm"
                             to={`groups/${record._id}`}>
 
-                            Edit
+                            <i className="fa fa-pencil" aria-hidden="true"></i>
+
                         </Link>
                     </td>
-                    <td>{record.name}</td>
-                    <td className="nowrap">{record._id}</td>
                 </tr>
             );
         });
@@ -36,9 +38,9 @@ class Results extends React.Component {
                 <table className="table table-striped table-results">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th className="stretch">name</th>
-                            <th>id</th>
+                            <th className="stretch">Name</th>
+                            <th>ID</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>

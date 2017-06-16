@@ -30,7 +30,8 @@ const FilterFormFactory = function (FilterForm, defaultValues) {
             this.setState(nextState);
         }
 
-        onSelectChange(event) {
+
+        onSubmitFilters(event){
 
             this.setState({ page: '1' }, this.props.onChange.bind(this));
         }
@@ -61,7 +62,8 @@ const FilterFormFactory = function (FilterForm, defaultValues) {
                         {...this.props}
                         state={this.state}
                         linkInputState={LinkState.bind(this)}
-                        linkSelectState={LinkState.bind(this, this.onSelectChange.bind(this))}
+                        linkSelectState={LinkState.bind(this)}
+                        onSubmitFilters={LinkState.bind(this,this.onSubmitFilters.bind(this))}
                     />
                 </form>
             );

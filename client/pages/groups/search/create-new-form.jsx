@@ -87,7 +87,7 @@ class CreateNewForm extends React.Component {
                     inputClasses={{ 'btn-primary': true }}
                     disabled={this.props.loading}>
 
-                    Create new
+                    Create
                     <Spinner space="left" show={this.props.loading} />
                 </Button>
             </ControlGroup>
@@ -95,7 +95,7 @@ class CreateNewForm extends React.Component {
 
         return (
             <Modal
-                header="Create new"
+                header="Create new group"
                 show={this.props.show}
                 onClose={Actions.hideCreateNew}>
 
