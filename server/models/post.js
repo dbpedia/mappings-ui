@@ -18,7 +18,7 @@ class Post extends MongoModels {
         }
 
         const document = {
-            _id: Slug(title).toLowerCase(),
+            _id: this.idFromTitle(title),
             title,
             lastEdition: {
                 username,
@@ -53,6 +53,12 @@ class Post extends MongoModels {
     }
 
 
+
+    static idFromTitle(title){
+
+        return Slug(title).toLowerCase();
+
+    }
     constructor(attrs) {
 
         super(attrs);

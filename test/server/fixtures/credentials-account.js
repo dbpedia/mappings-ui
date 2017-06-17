@@ -6,12 +6,12 @@ const Account = require('../../../server/models/account');
 
 const user = new Account({
     _id: '592fe4c8ff79c6347b1db038',
-    username: 'ren',
+    username: 'account',
     email: 'mail@mail.com',
     groups: { '000000000000000000000000': 'Account' },
     _groups : {
         '000000000000000000000000': {
-            _id: 'account',
+            _id: '000000000000000000000000',
             name: 'Account',
             permissions: {
                 SPACE_MADNESS: true,

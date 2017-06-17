@@ -70,7 +70,8 @@ const manifest = {
                         AccountGroup: './server/models/account-group',
                         AuthAttempt: './server/models/auth-attempt',
                         Session: './server/models/session',
-                        Status: './server/models/status'
+                        Status: './server/models/status',
+                        Post: './server/models/post'
                     },
                     autoIndex: Config.get('/hapiMongoModels/autoIndex')
                 }
@@ -139,6 +140,12 @@ const manifest = {
         },
         {
             plugin: './server/api/statuses',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
+        {
+            plugin: './server/api/posts',
             options: {
                 routes: { prefix: '/api' }
             }

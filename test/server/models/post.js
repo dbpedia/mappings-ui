@@ -86,8 +86,6 @@ lab.experiment('Post Class Methods', () => {
 
 
 
-
-
     lab.test('it returns an error when create fails', (done) => {
 
         const realInsertOne = Post.insertOne;
@@ -111,30 +109,3 @@ lab.experiment('Post Class Methods', () => {
     });
 });
 
-
-lab.experiment('Post Instance Methods', () => {
-
-    lab.before((done) => {
-
-        Post.connect(mongoUri, mongoOptions, (err, db) => {
-
-            done(err);
-        });
-    });
-
-
-    lab.after((done) => {
-
-        Post.deleteMany({}, (err, result) => {
-
-            Post.disconnect();
-
-            done(err);
-        });
-    });
-
-
-
-
-
-});
