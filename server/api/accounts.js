@@ -310,8 +310,8 @@ internals.applyRoutes = function (server, next) {
                 }
             };
 
-            //If not admin or account, it is account at least
-            if (!('111111111111111111111111' in update.$set.groups) && !('000000000000000000000000' in update.$set.groups)) {
+            //Account has to be always present
+            if (!('000000000000000000000000' in update.$set.groups)) {
                 update.$set.groups['000000000000000000000000'] = 'Account';
             }
 
