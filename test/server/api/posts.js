@@ -255,6 +255,12 @@ lab.experiment('Posts Plugin Create', () => {
             callback(Error('create failed'));
         };
 
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
+
         server.inject(request, (response) => {
 
             Code.expect(response.statusCode).to.equal(500);
@@ -263,11 +269,32 @@ lab.experiment('Posts Plugin Create', () => {
     });
 
 
+
+
+    lab.test('it returns an error when there is a page with that title already', (done) => {
+
+        stub.Post.findOne = function (conditions, callback) {
+
+            callback(null,{ postId:'test' });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
     lab.test('it creates a document successfully', (done) => {
 
         stub.Post.create = function (title,markdown, username, visible, callback) {
 
             callback(null, { title,markdown,lastEditor:username,visible });
+        };
+
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
         };
 
         server.inject(request, (response) => {
@@ -315,6 +342,11 @@ lab.experiment('Posts Plugin Update', () => {
             callback(Error('update failed'));
         };
 
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
         server.inject(request, (response) => {
 
             Code.expect(response.statusCode).to.equal(500);
@@ -330,9 +362,30 @@ lab.experiment('Posts Plugin Update', () => {
             callback(null, undefined);
         };
 
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
         server.inject(request, (response) => {
 
             Code.expect(response.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+
+
+    lab.test('it returns an error when there is a page with that title already', (done) => {
+
+        stub.Post.findOne = function (conditions, callback) {
+
+            callback(null,{ postId:'test' });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
             done();
         });
     });
@@ -344,6 +397,42 @@ lab.experiment('Posts Plugin Update', () => {
 
             callback(null, update.$set);
         };
+
+
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result.lastEdition.username).to.equal('admin');
+
+            done();
+        });
+    });
+
+    lab.test('it updates a document successfully when title is not updated', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/posts/test-post',
+            payload: {
+                title: 'test-post',
+                markdown: 'updated-text',
+                visible: false
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        stub.Post.findOneAndUpdate = function (id, update, callback) {
+
+            callback(null, update.$set);
+        };
+
+
 
         server.inject(request, (response) => {
 

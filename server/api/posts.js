@@ -113,7 +113,41 @@ internals.applyRoutes = function (server, next) {
                     markdown: Joi.string().required().allow(''),
                     visible: Joi.boolean().required()
                 }
-            }
+            },
+            pre: [
+                //AuthPlugin.preware.ensureAdminGroup('root'),
+                {
+                    assign: 'postIdCheck',
+                    method: function (request, reply) {
+                        //When is trying to change title, check that no repeated
+
+                        const newPostId = Post.idFromTitle(request.payload.title);
+
+
+                        const conditions = {
+                            postId: newPostId
+                        };
+
+
+                        Post.findOne(conditions, (err, user) => {
+
+                            if (err) {
+                                return reply(err);
+                            }
+
+                            if (user) {
+                                return reply(Boom.conflict('Title already in use.'));
+                            }
+
+                            reply(true);
+                        });
+
+
+
+
+                    }
+                }
+            ]
         },
         handler: function (request, reply) {
 
@@ -149,7 +183,46 @@ internals.applyRoutes = function (server, next) {
                     markdown: Joi.string().required().allow(''),
                     visible: Joi.boolean().required()
                 }
-            }
+            },
+            pre: [
+                //AuthPlugin.preware.ensureAdminGroup('root'),
+                {
+                    assign: 'postIdCheck',
+                    method: function (request, reply) {
+                        //When is trying to change title, check that no repeated
+
+                        const newPostId = Post.idFromTitle(request.payload.title);
+
+                        //Not trying to change title: no problem
+                        if ( newPostId === request.params.id){
+                            reply(true);
+                        }
+
+                        else {
+                            const conditions = {
+                                postId: newPostId
+                            };
+
+
+                            Post.findOne(conditions, (err, user) => {
+
+                                if (err) {
+                                    return reply(err);
+                                }
+
+                                if (user) {
+                                    return reply(Boom.conflict('Title already in use.'));
+                                }
+
+                                reply(true);
+                            });
+
+                        }
+
+
+                    }
+                }
+            ]
         },
         handler: function (request, reply) {
 
