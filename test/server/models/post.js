@@ -86,6 +86,8 @@ lab.experiment('Post Class Methods', () => {
 
 
 
+
+
     lab.test('it returns an error when create fails', (done) => {
 
         const realInsertOne = Post.insertOne;
@@ -106,6 +108,23 @@ lab.experiment('Post Class Methods', () => {
 
             done();
         });
+    });
+
+
+    lab.test('it returns correct username in lastEdition and creation', (done) => {
+
+        Post.create('Test Page 4','text','sampleaccount',true, (err, post) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(post).to.be.an.instanceOf(Post);
+            Code.expect(post.lastEdition.username).to.equal('sampleaccount');
+            Code.expect(post.creation.username).to.equal('sampleaccount');
+            Code.expect(post.creation.time).to.equal(post.lastEdition.time);
+            //Code.expect(accountGroup.hasPermissionTo('SPACE_MADNESS')).to.equal(false);
+            done();
+        });
+
+
     });
 });
 

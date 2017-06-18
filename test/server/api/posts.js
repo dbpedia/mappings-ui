@@ -129,7 +129,7 @@ lab.experiment('Posts Plugin Result List', () => {
             callback(null, { data: [{}, {}, {}] });
         };
 
-        request.url += '?title=ren&lastEditor=me&visible=true';
+        request.url += '?title=ren&lasteditor=me&visible=true';
 
         server.inject(request, (response) => {
 

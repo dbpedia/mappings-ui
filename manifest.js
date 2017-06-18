@@ -179,6 +179,9 @@ const manifest = {
         },
         {
             plugin: './server/web/accounts'
+        },
+        {
+            plugin: './server/web/postslist'
         }
     ]
 };

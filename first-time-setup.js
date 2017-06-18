@@ -42,6 +42,7 @@ Async.auto({
         const AuthAttempt = require('./server/models/auth-attempt');
         const Session = require('./server/models/session');
         const Status = require('./server/models/status');
+        const Post = require('./server/models/post');
 
         Async.auto({
             connect: function (done) {
@@ -55,7 +56,8 @@ Async.auto({
                     AccountGroup.deleteMany.bind(AccountGroup, {}),
                     AuthAttempt.deleteMany.bind(AuthAttempt, {}),
                     Session.deleteMany.bind(Session, {}),
-                    Status.deleteMany.bind(Status, {})
+                    Status.deleteMany.bind(Status, {}),
+                    Post.deleteMany.bind(Post,{})
                 ], done);
             }],
 
@@ -87,6 +89,41 @@ Async.auto({
 
                     done(err, docs && docs[0]);
                 });
+            }],
+
+            homePost: ['clean', function (dbResults, done) {
+
+                const d = {
+                    title: 'Home Page',
+                    markdown: '#Welcome!!',
+                    username: 'admin',
+                    visible: true
+                };
+
+                Post.create(d.title,d.markdown,d.username,d.visible, (err,docs) => {
+
+                    done(err, docs);
+                });
+
+
+
+            }],
+            homePost2: ['clean', function (dbResults, done) {
+
+                const d = {
+                    title: 'Home Page2',
+                    markdown: '#Welcome2!!',
+                    username: 'pepito',
+                    visible: true
+                };
+
+                Post.create(d.title,d.markdown,d.username,d.visible, (err,docs) => {
+
+                    done(err, docs);
+                });
+
+
+
             }],
 
             rootUser: ['clean', function (dbResults, done) {

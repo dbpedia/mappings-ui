@@ -74,6 +74,7 @@ lab.experiment('Panel in Home Page, Logged In As Regular Account', () => {
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign in<\/a><\/li>/i);
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Accounts<\/a><\/li>/i);
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Groups<\/a><\/li>/i);
+            Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Pages<\/a><\/li>/i);
 
 
 

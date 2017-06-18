@@ -67,7 +67,7 @@ class FilterForm extends React.Component {
                             <div className="col-sm-12">
                                 <TextControl
                                     name="name"
-                                    label="Name search"
+                                    label="Name"
                                     value={this.props.state.name}
                                     onChange={this.props.linkInputState}
                                     disabled={this.props.loading}

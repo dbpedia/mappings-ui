@@ -11,17 +11,16 @@ const propTypes = {
     linkSelectState: PropTypes.func,
     onSubmitFilters: PropTypes.func,
     loading: PropTypes.bool,
-    state: PropTypes.object,
-    groups: PropTypes.object
-
+    state: PropTypes.object
 };
 const defaultValues = {
-    name: '',
-    sort: '_id',
+    title: '',
+    creator: '',
+    lasteditor:'',
+    sort: 'title',
     limit: '20',
     page: '1',
-    group: '',
-    isActive: ''
+    visible: ''
 };
 
 
@@ -30,16 +29,7 @@ class FilterForm extends React.Component {
 
 
 
-        const groupOptions = this.props.groups.options.map((group) => {
 
-            return (
-                <option
-                    key={group._id}
-                    value={group._id}>
-                    {group.name}
-                </option>
-            );
-        });
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -56,10 +46,17 @@ class FilterForm extends React.Component {
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
 
-                                    <option value="username">username &#9650;</option>
-                                    <option value="-username">username &#9660;</option>
-                                    <option value="name">name &#9650;</option>
-                                    <option value="-name">name &#9660;</option>
+                                    <option value="title">title &#9650;</option>
+                                    <option value="-title">title &#9660;</option>
+                                    <option value="creator">creator &#9650;</option>
+                                    <option value="-creator">creator &#9660;</option>
+                                    <option value="editor">editor &#9650;</option>
+                                    <option value="-editor">editor &#9660;</option>
+                                    <option value="creation.time">date created &#9650;</option>
+                                    <option value="-creation.time">date created &#9660;</option>
+                                    <option value="lastEdition.time">date edited &#9650;</option>
+                                    <option value="-lastEdition.time">date edited &#9660;</option>
+
                                 </SelectControl>
                             </div>
 
@@ -82,9 +79,9 @@ class FilterForm extends React.Component {
                         <div className="row">
                             <div className="col-sm-12">
                                 <TextControl
-                                    name="username"
-                                    label="Username"
-                                    value={this.props.state.username}
+                                    name="title"
+                                    label="Title"
+                                    value={this.props.state.title}
                                     onChange={this.props.linkInputState}
                                     disabled={this.props.loading}
                                 />
@@ -93,41 +90,38 @@ class FilterForm extends React.Component {
                         <div className="row">
                             <div className="col-sm-12">
                                 <TextControl
-                                    name="name"
-                                    label="Name"
-                                    value={this.props.state.name}
+                                    name="creator"
+                                    label="Creator"
+                                    value={this.props.state.creator}
+                                    onChange={this.props.linkInputState}
+                                    disabled={this.props.loading}
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <TextControl
+                                    name="lasteditor"
+                                    label="Last editor"
+                                    value={this.props.state.lastEditor}
                                     onChange={this.props.linkInputState}
                                     disabled={this.props.loading}
                                 />
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <SelectControl
-                                    name="group"
-                                    label="Group"
-                                    value={this.props.state.group}
-                                    onChange={this.props.linkSelectState}
-                                    disabled={this.props.loading || this.props.groups.loading}>
-                                    <option value="">Any</option>
-                                    {groupOptions}
-
-                                </SelectControl>
-                            </div>
-                        </div>
 
                         <div className="row">
                             <div className="col-sm-12">
                                 <SelectControl
-                                    name="isActive"
+                                    name="visible"
                                     label="Status"
-                                    value={this.props.state.isActive}
+                                    value={this.props.state.visible}
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
                                     <option value="">Any</option>
-                                    <option value="true">Enabled</option>
-                                    <option value="false">Disabled</option>
+                                    <option value="true">Visible</option>
+                                    <option value="false">Not visible</option>
 
                                 </SelectControl>
                             </div>

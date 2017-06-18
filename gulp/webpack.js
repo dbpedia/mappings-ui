@@ -44,7 +44,8 @@ Gulp.task('webpack', (callback) => {
             profile: './client/pages/profile/index',
             adminpanel: './client/pages/adminpanel/index',
             groups: './client/pages/groups/index',
-            accounts: './client/pages/accounts/index'
+            accounts: './client/pages/accounts/index',
+            posts: './client/pages/posts/index'
         },
         output: {
             path: Path.resolve(__dirname, '../public/pages'),

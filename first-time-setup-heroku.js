@@ -82,6 +82,24 @@ Async.auto({
                 });
             }],
 
+            homePost: ['clean', function (dbResults, done) {
+
+                const d = {
+                    title: 'Home Page',
+                    markdown: '#Welcome!!',
+                    username: 'admin',
+                    visible: true
+                };
+
+                Post.create(d.title,d.markdown,d.username,d.visible, (err,docs) => {
+
+                    done(err, docs);
+                });
+
+
+
+            }],
+
             rootUser: ['clean', function (dbResults, done) {
 
                 Async.auto({

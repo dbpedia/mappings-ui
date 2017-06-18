@@ -52,6 +52,11 @@ Gulp.task('less', () => {
         entries: './client/pages/accounts/index.less',
         dest: './public/pages',
         outputName: 'accounts.min.css'
+    },
+    {
+        entries: './client/pages/posts/index.less',
+        dest: './public/pages',
+        outputName: 'posts.min.css'
     }
 
     ];

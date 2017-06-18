@@ -13,6 +13,7 @@ class Post extends MongoModels {
     static create(title,markdown, username, visible, callback) {
 
 
+        const creationDate = new Date();
         if (!markdown || markdown.length === 0){
             markdown = '**This page is empty**';
         }
@@ -22,7 +23,11 @@ class Post extends MongoModels {
             title,
             lastEdition: {
                 username,
-                time: new Date()
+                time: creationDate
+            },
+            creation: {
+                username,
+                time: creationDate
             },
             markdown,
             visible
@@ -75,6 +80,10 @@ Post.schema = Joi.object().keys({
     _id: Joi.string(),
     title: Joi.string(),
     lastEdition: Joi.object().keys({
+        username: Joi.string().required(),
+        time: Joi.date()
+    }),
+    creation: Joi.object().keys({
         username: Joi.string().required(),
         time: Joi.date()
     }),

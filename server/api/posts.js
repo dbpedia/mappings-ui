@@ -24,8 +24,9 @@ internals.applyRoutes = function (server, next) {
                 query: {
                     //Can search by title, lastEditor username, and visible status
                     title: Joi.string().allow(''),
-                    lastEditor: Joi.string().allow(''),
-                    visible: Joi.boolean(),
+                    lasteditor: Joi.string().allow(''),
+                    creator: Joi.string().allow(''),
+                    visible: Joi.string().allow(''),
                     fields: Joi.string(),
                     sort: Joi.string().default('_id'),
                     limit: Joi.number().default(20),
@@ -37,18 +38,25 @@ internals.applyRoutes = function (server, next) {
 
 
             const query = {};
-            if (request.query.name) {
+            if (request.query.title) {
                 query.title = new RegExp('^.*?' + EscapeRegExp(request.query.title) + '.*$', 'i');
             }
 
-            if (request.query.lastEditor){
-                query['lastEdition.username'] = new RegExp('^.*?' + EscapeRegExp(request.query.lastEditor) + '.*$', 'i');
+            if (request.query.lasteditor){
+                query['lastEdition.username'] = new RegExp('^.*?' + EscapeRegExp(request.query.lasteditor) + '.*$', 'i');
+            }
+
+            if (request.query.creator){
+                query['creation.username'] = new RegExp('^.*?' + EscapeRegExp(request.query.creator) + '.*$', 'i');
             }
 
             if (request.query.visible){
                 query.visible = request.query.visible === 'true';
             }
-            const fields = request.query.fields;
+
+            //Don't return markdown text in the list...
+            const fields = Post.fieldsAdapter('_id title lastEdition creation visible');
+
             const sort = request.query.sort;
             const limit = request.query.limit;
             const page = request.query.page;
