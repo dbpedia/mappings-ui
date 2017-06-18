@@ -56,7 +56,7 @@ class Actions {
                 if (!err) {
                     this.hideCreateNew();
 
-                    const path = `/posts/${response._id}`;
+                    const path = `/posts/edit/${response.postId}`;
 
                     history.push(path);
 

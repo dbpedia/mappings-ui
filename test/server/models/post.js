@@ -62,7 +62,7 @@ lab.experiment('Post Class Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(post).to.be.an.instanceOf(Post);
-            Code.expect(post._id).to.equal('espana-is-spain-in-spanish');
+            Code.expect(post.postId).to.equal('espana-is-spain-in-spanish');
             //Code.expect(accountGroup.hasPermissionTo('SPACE_MADNESS')).to.equal(false);
             done();
         });

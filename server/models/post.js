@@ -18,8 +18,9 @@ class Post extends MongoModels {
             markdown = '**This page is empty**';
         }
 
+        //_id is automatically generated
         const document = {
-            _id: this.idFromTitle(title),
+            postId: this.idFromTitle(title),
             title,
             lastEdition: {
                 username,
@@ -52,10 +53,14 @@ class Post extends MongoModels {
 
 
         const id = Slug(title).toLowerCase();
-        const query = { '_id': id };
+        const query = { 'postId': id };
 
         this.findOne(query, callback);
     }
+
+
+
+
 
 
 
@@ -77,7 +82,8 @@ Post.collection = 'posts';
 
 
 Post.schema = Joi.object().keys({
-    _id: Joi.string(),
+    _id: Joi.object(),
+    postId: Joi.string(),
     title: Joi.string(),
     lastEdition: Joi.object().keys({
         username: Joi.string().required(),
@@ -94,6 +100,7 @@ Post.schema = Joi.object().keys({
 
 Post.indexes = [
     { key: { _id: 1 } },
+    { key: { postId: 1, unique: 1 } },
     { key: { title: 1, unique:1 } }
 ];
 

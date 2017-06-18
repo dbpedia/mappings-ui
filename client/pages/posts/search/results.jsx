@@ -28,14 +28,14 @@ class Results extends React.Component {
                     <td>
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`posts/${record._id}/edit`}>
+                            to={`posts/edit/${record.postId}`}>
 
                             <i className="fa fa-pencil" aria-hidden="true"></i>
                         </Link>
 
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`posts/${record._id}`}>
+                            to={`posts/view/${record.postId}`}>
 
                             <i className="fa fa-eye" aria-hidden="true"></i>
                         </Link>

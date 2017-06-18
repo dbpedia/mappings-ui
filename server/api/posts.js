@@ -55,7 +55,7 @@ internals.applyRoutes = function (server, next) {
             }
 
             //Don't return markdown text in the list...
-            const fields = Post.fieldsAdapter('_id title lastEdition creation visible');
+            const fields = Post.fieldsAdapter('postId title lastEdition creation visible');
 
             const sort = request.query.sort;
             const limit = request.query.limit;
@@ -80,7 +80,9 @@ internals.applyRoutes = function (server, next) {
         //Anybody can see a post, no authentication checks
         handler: function (request, reply) {
 
-            Post.findById(request.params.id, (err, post) => {
+
+            const query = { postId: request.params.id };
+            Post.findOne(query, (err, post) => {
 
                 if (err) {
                     return reply(err);
@@ -152,12 +154,12 @@ internals.applyRoutes = function (server, next) {
         handler: function (request, reply) {
 
             const newId = Post.idFromTitle(request.payload.title);
-            const oldId = request.params.id;
             const update = {
                 $set: {
-                    _id: newId,
+                    postId: newId,
                     title: request.payload.title,
                     visible: request.payload.visible,
+                    markdown: request.payload.markdown,
                     lastEdition: {
                         username: request.auth.credentials.user.username,
                         time: new Date()
@@ -165,7 +167,9 @@ internals.applyRoutes = function (server, next) {
                 }
             };
 
-            Post.findByIdAndUpdate(oldId, update, (err, post) => {
+            const query = { postId: request.params.id };
+
+            Post.findOneAndUpdate(query, update, (err, post) => {
 
                 if (err) {
                     return reply(err);
@@ -199,7 +203,8 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            Post.findByIdAndDelete(request.params.id, (err, post) => {
+            const query = { postId: request.params.id };
+            Post.findOneAndDelete(query, (err, post) => {
 
                 if (err) {
                     return reply(err);

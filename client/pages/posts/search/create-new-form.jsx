@@ -47,7 +47,7 @@ class CreateNewForm extends React.Component {
 
 
     onVisibleChange(event){
-        
+
         this.setState({ visible: event.target.value });
     }
 

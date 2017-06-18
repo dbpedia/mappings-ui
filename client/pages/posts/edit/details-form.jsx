@@ -1,0 +1,141 @@
+'use strict';
+const Actions = require('./actions');
+const Alert = require('../../../components/alert.jsx');
+const Button = require('../../../components/form/button.jsx');
+const ControlGroup = require('../../../components/form/control-group.jsx');
+const LinkState = require('../../../helpers/link-state');
+const PropTypes = require('prop-types');
+const React = require('react');
+const Spinner = require('../../../components/form/spinner.jsx');
+const TextControl = require('../../../components/form/text-control.jsx');
+
+
+const propTypes = {
+    postId: PropTypes.string,
+    title: PropTypes.string,
+    visible: PropTypes.string,
+    markdown: PropTypes.string,
+    error: PropTypes.string,
+    hasError: PropTypes.object,
+    help: PropTypes.object,
+    loading: PropTypes.bool,
+    showSaveSuccess: PropTypes.bool
+};
+
+
+class DetailsForm extends React.Component {
+    constructor(props) {
+
+        super(props);
+
+        this.state = {
+            title: props.title,
+            visible: (props.visible ? 'true' : 'false') ,
+            markdown: props.markdown
+        };
+    }
+
+    onVisibleChange(event){
+
+        this.setState({ visible: event.target.value });
+    }
+
+    handleSubmit(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const id = this.props.postId;
+        const data = {
+            title: this.state.title,
+            visible: this.state.visible,
+            markdown: this.state.markdown
+        };
+
+        Actions.saveDetails(id, data);
+    }
+
+    render() {
+
+        const alerts = [];
+
+        if (this.props.showSaveSuccess) {
+            alerts.push(<Alert
+                key="success"
+                type="success"
+                onClose={Actions.hideDetailsSaveSuccess}
+                message="Success. Changes have been saved."
+            />);
+        }
+
+        if (this.props.error) {
+            alerts.push(<Alert
+                key="danger"
+                type="danger"
+                message={this.props.error}
+            />);
+        }
+
+        const formElements = <fieldset>
+
+            {alerts}
+
+            <div className="row">
+                <div className="col-sm-9">
+                    <TextControl
+                        name="title"
+                        label="Title"
+                        value={this.state.title}
+                        onChange={LinkState.bind(this)}
+                        hasError={this.props.hasError.name}
+                        help={this.props.help.title}
+                        disabled={this.props.loading}
+                    />
+                </div>
+                <div className="col-sm-3">
+                    <ControlGroup hideLabel={true} hideHelp={true}>
+                        <b>Status:</b>
+                        <select value={this.state.visible} onChange={this.onVisibleChange.bind(this)} className="form-control language-select">
+                            <option value="true">Visible</option>
+                            <option value="false">Not visible</option>
+                        </select>
+                    </ControlGroup>
+                </div>
+            </div>
+
+            <ControlGroup hideLabel={true} hideHelp={true}>
+                <b>Content</b>
+                <textarea
+                    name="markdown"
+                    value={this.state.markdown}
+                    onChange={LinkState.bind(this)}
+                    className="form-control vertical-form"
+                    rows="10"
+                    id="markdown" ></textarea>
+            </ControlGroup>
+
+
+            <ControlGroup hideLabel={true} hideHelp={true}>
+                <Button
+                    type="submit"
+                    inputClasses={{ 'btn-primary': true }}
+                    disabled={this.props.loading}>
+
+                    Save changes
+                    <Spinner space="left" show={this.props.loading} />
+                </Button>
+            </ControlGroup>
+        </fieldset>;
+
+        return (
+            <form onSubmit={this.handleSubmit.bind(this)}>
+                {formElements}
+            </form>
+        );
+    }
+}
+
+DetailsForm.propTypes = propTypes;
+
+
+module.exports = DetailsForm;

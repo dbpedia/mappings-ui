@@ -181,7 +181,7 @@ lab.experiment('Post Plugin Read', () => {
 
     lab.test('it returns an error when find by id fails', (done) => {
 
-        stub.Post.findById = function (id, callback) {
+        stub.Post.findOne = function (id, callback) {
 
             callback(Error('find by id failed'));
         };
@@ -196,7 +196,7 @@ lab.experiment('Post Plugin Read', () => {
 
     lab.test('it returns a not found when find by id misses', (done) => {
 
-        stub.Post.findById = function (id, callback) {
+        stub.Post.findOne = function (id, callback) {
 
             callback();
         };
@@ -213,7 +213,7 @@ lab.experiment('Post Plugin Read', () => {
 
     lab.test('it returns a document successfully', (done) => {
 
-        stub.Post.findById = function (id, callback) {
+        stub.Post.findOne = function (id, callback) {
 
             callback(null, { _id: 'test-post' });
         };
@@ -310,7 +310,7 @@ lab.experiment('Posts Plugin Update', () => {
 
     lab.test('it returns an error when update fails', (done) => {
 
-        stub.Post.findByIdAndUpdate = function (id, update, callback) {
+        stub.Post.findOneAndUpdate = function (id, update, callback) {
 
             callback(Error('update failed'));
         };
@@ -325,7 +325,7 @@ lab.experiment('Posts Plugin Update', () => {
 
     lab.test('it returns not found when find by id misses', (done) => {
 
-        stub.Post.findByIdAndUpdate = function (id, update, callback) {
+        stub.Post.findOneAndUpdate = function (id, update, callback) {
 
             callback(null, undefined);
         };
@@ -340,7 +340,7 @@ lab.experiment('Posts Plugin Update', () => {
 
     lab.test('it updates a document successfully', (done) => {
 
-        stub.Post.findByIdAndUpdate = function (id, update, callback) {
+        stub.Post.findOneAndUpdate = function (id, update, callback) {
 
             callback(null, update.$set);
         };
@@ -374,7 +374,7 @@ lab.experiment('Posts Plugin Delete', () => {
 
     lab.test('it returns an error when delete by id fails', (done) => {
 
-        stub.Post.findByIdAndDelete = function (id, callback) {
+        stub.Post.findOneAndDelete = function (id, callback) {
 
             callback(Error('delete by id failed'));
         };
@@ -389,7 +389,7 @@ lab.experiment('Posts Plugin Delete', () => {
 
     lab.test('it returns a not found when delete by id misses', (done) => {
 
-        stub.Post.findByIdAndDelete = function (id, callback) {
+        stub.Post.findOneAndDelete = function (id, callback) {
 
             callback(null, undefined);
         };
@@ -406,7 +406,7 @@ lab.experiment('Posts Plugin Delete', () => {
 
     lab.test('it deletes a document successfully', (done) => {
 
-        stub.Post.findByIdAndDelete = function (id, callback) {
+        stub.Post.findOneAndDelete = function (id, callback) {
 
             callback(null, 1);
         };
