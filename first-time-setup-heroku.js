@@ -34,6 +34,7 @@ Async.auto({
         const AuthAttempt = require('./server/models/auth-attempt');
         const Session = require('./server/models/session');
         const Status = require('./server/models/status');
+        const Post = require('./server/models/post');
 
         Async.auto({
             connect: function (done) {
@@ -47,7 +48,8 @@ Async.auto({
                     AccountGroup.deleteMany.bind(AccountGroup, {}),
                     AuthAttempt.deleteMany.bind(AuthAttempt, {}),
                     Session.deleteMany.bind(Session, {}),
-                    Status.deleteMany.bind(Status, {})
+                    Status.deleteMany.bind(Status, {}),
+                    Post.deleteMany.bind(Post,{})
                 ], done);
             }],
 
