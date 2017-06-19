@@ -37,7 +37,9 @@ const reducer = function (state = initialState, action) {
             postId: action.response.postId,
             title: action.response.title,
             visible: action.response.visible,
-            markdown: action.response.markdown
+            markdown: action.response.markdown,
+            lastEdition: action.response.lastEdition,
+            creator: action.response.creator
 
         });
     }
@@ -71,6 +73,10 @@ const reducer = function (state = initialState, action) {
 
         if (action.response.hasOwnProperty('visible')) {
             stateUpdates.visible = action.response.visible;
+        }
+
+        if (action.response.hasOwnProperty('lastEdition')) {
+            stateUpdates.lastEdition = action.response.lastEdition;
         }
 
         if (action.response.hasOwnProperty('postId')) {

@@ -66,7 +66,6 @@ internals.applyRoutes = function (server, next) {
                 }
 
 
-                console.log(query);
             }
 
 

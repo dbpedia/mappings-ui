@@ -21,12 +21,18 @@ class ButtonGroup extends React.Component {
         this.props.buttons.forEach(
 
             (b) => {
-                buttonElems.push(
-                    <button ref={b.ref} key={b.text} type="button" className={'btn ' + b.type} onClick={b.action} disabled={b.disabled}>
-                        {b.text}
-                        <Spinner space="left" show={b.loading} />
-                        </button>
-                );
+
+                const but =  <button ref={b.ref} key={b.text} type="button" className={'btn ' + b.type} onClick={b.action} disabled={b.disabled}>
+                    {b.text}
+                    <Spinner space="left" show={b.loading} />
+
+                </button>;
+
+
+
+                buttonElems.push(but);
+
+
             });
 
         return (

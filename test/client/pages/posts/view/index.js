@@ -1,13 +1,13 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../client/pages/posts/edit/constants');
+const Constants = require('../../../../../client/pages/posts/view/constants');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactRouter = require('react-router-dom');
 const ReactTestUtils = require('react-dom/test-utils');
-const Store = require('../../../../../client/pages/posts/edit/store');
+const Store = require('../../../../../client/pages/posts/view/store');
 
 
 const lab = exports.lab = Lab.script();
@@ -16,7 +16,7 @@ const stub = {
         getDetails: () => {}
     }
 };
-const Page = Proxyquire('../../../../../client/pages/posts/edit/index.jsx', {
+const Page = Proxyquire('../../../../../client/pages/posts/view/index.jsx', {
     './actions': stub.Actions
 });
 const container = global.document.createElement('div');
@@ -34,7 +34,7 @@ const defaultProps = {
 const MemoryRouter = ReactRouter.MemoryRouter;
 
 
-lab.experiment('Posts Edit Page', () => {
+lab.experiment('Posts View Page', () => {
 
     let RootEl;
 
@@ -83,7 +83,7 @@ lab.experiment('Posts Edit Page', () => {
 
             const heading = ReactTestUtils.findRenderedDOMComponentWithTag(page, 'h1');
 
-            Code.expect(heading.textContent).to.include('loading');
+            Code.expect(heading.textContent).to.include('Loading...');
 
             done();
         };
@@ -124,7 +124,8 @@ lab.experiment('Posts Edit Page', () => {
             err: null,
             response: {
                 title: 'Page',
-                lastEdition: { user: 'username', time: new Date() }
+                lastEdition: { user: 'username', time: new Date() },
+                markdown: 'Hi'
 
             }
         });
@@ -167,30 +168,5 @@ lab.experiment('Posts Edit Page', () => {
         });
     });
 
-
-    lab.test('it changes title state', (done) => {
-
-        Store.dispatch({
-            type: Constants.SAVE_DETAILS_RESPONSE,
-            err: null,
-            response: {
-                title: 'New Page',
-                postId: 'newpage'
-            }
-        });
-
-        defaultProps.ref.impl = function (page) {
-
-            defaultProps.ref.impl = undefined;
-
-            const heading = ReactTestUtils.findRenderedDOMComponentWithTag(page, 'h1');
-
-            Code.expect(heading.textContent).to.include('New Page');
-
-            done();
-        };
-
-        ReactDOM.render(RootEl, container);
-    });
 
 });

@@ -8,12 +8,13 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
+const ReactMarkdown = require('react-markdown');
 
 
 const propTypes = {
     postId: PropTypes.string,
     title: PropTypes.string,
-    visible: PropTypes.string,
+    visible: PropTypes.bool,
     markdown: PropTypes.string,
     error: PropTypes.string,
     hasError: PropTypes.object,
@@ -30,14 +31,16 @@ class DetailsForm extends React.Component {
 
         this.state = {
             title: props.title,
-            visible: (props.visible ? 'true' : 'false') ,
-            markdown: props.markdown
+            visible: (props.visible),
+            markdown: props.markdown,
+            editing: true
         };
     }
 
     onVisibleChange(event){
 
-        this.setState({ visible: event.target.value });
+
+        this.setState({ visible: event.target.value  === 'true' });
     }
 
     handleSubmit(event) {
@@ -53,6 +56,12 @@ class DetailsForm extends React.Component {
         };
 
         Actions.saveDetails(id, data);
+    }
+
+
+    changeEditing(newValue){
+
+        this.setState({ editing:newValue });
     }
 
     render() {
@@ -76,10 +85,13 @@ class DetailsForm extends React.Component {
             />);
         }
 
-        const formElements = <fieldset>
+        const tabs =  <ul className="nav nav-tabs edition-tabs">
+            <li className={this.state.editing ? 'active' : ''} onClick={this.changeEditing.bind(this,true)}><a href="#">Edit</a></li>
+            <li className={!this.state.editing ? 'active' : ''} onClick={this.changeEditing.bind(this,false)}><a href="#">Preview</a></li>
+        </ul>;
 
-            {alerts}
 
+        const editElements = <div>
             <div className="row">
                 <div className="col-sm-9">
                     <TextControl
@@ -113,6 +125,26 @@ class DetailsForm extends React.Component {
                     rows="10"
                     id="markdown" ></textarea>
             </ControlGroup>
+        </div>;
+
+        const previewElements =    <div>
+            <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} escapeHtml={true}/>
+            { (!this.state.markdown || this.state.markdown.length === 0) &&
+            <i>This page is empty.</i>
+            }
+            </div>;
+
+        const formElements = <fieldset>
+
+            {alerts}
+
+
+            {tabs}
+
+            {this.state.editing && editElements}
+            {!this.state.editing && previewElements}
+
+            <hr/>
 
 
             <ControlGroup hideLabel={true} hideHelp={true}>

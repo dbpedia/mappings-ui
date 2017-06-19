@@ -130,7 +130,7 @@ lab.experiment('Accounts Plugin Result List', () => {
             callback(null, { data: [{}, {}, {}] });
         };
 
-        request.url += '?username=ren&isActive=true&limit=10&page=1';
+        request.url += '?username=ren&isActive=true&limit=10&page=1&group=admin&name=ismael%20rodriguez';
 
         server.inject(request, (response) => {
 

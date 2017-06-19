@@ -18,7 +18,8 @@ const Form = Proxyquire('../../../../../client/pages/posts/edit/details-form.jsx
 const defaultProps = {
     hasError: {},
     help: {},
-    name: ''
+    name: '',
+    markdown: ''
 };
 
 
@@ -60,6 +61,8 @@ lab.experiment('Posts Edit Form', () => {
 
             done();
         };
+
+
 
         const FormEl = React.createElement(Form, defaultProps);
         const form = ReactTestUtils.renderIntoDocument(FormEl);

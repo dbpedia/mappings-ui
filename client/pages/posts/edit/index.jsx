@@ -2,7 +2,7 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
-
+const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -24,6 +24,8 @@ class EditPage extends React.Component {
         Actions.getDetails(this.props.match.params.id);
 
         this.state = Store.getState();
+
+
     }
 
     componentDidMount() {
@@ -57,9 +59,12 @@ class EditPage extends React.Component {
     //Go to the view
     cancelEditing(){
 
+        window.confirm('Are you sure? All unsaved changes will be lost.') &&
         this.props.history.push(`/posts/view/${this.state.details.postId}`);
 
     }
+
+
 
 
     remove(postId) {
@@ -76,6 +81,7 @@ class EditPage extends React.Component {
                     <h1 className="page-header">
                         <Link to="/posts">Posts</Link> / loading...
                     </h1>
+
                 </section>
             );
         }
@@ -118,22 +124,28 @@ class EditPage extends React.Component {
                     <ButtonGroup float='right' buttons={buttons}/>
                     <h1 >
 
-                        <Link to="/posts">Posts</Link> / {title}
-
+                        <Link to="/posts">Posts</Link> / <Link to={'/posts/view/' + this.state.details.postId}>{title}</Link>
                     </h1>
+                    {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.lastEdition.time).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.lastEdition.username}</span>}
+
                 </div>
 
                 <div className="row">
                     <div className="col-sm-8">
-                        <DetailsForm {...this.state.details} />
+
+
+                        <DetailsForm {...this.state.details}/>
+
 
                     </div>
                     <div className="col-sm-4">
                         <h3 className="text-center"><i className="fa fa-info-circle fa-2x"></i></h3>
-                        <p className="lead">
+                        <p className="lead-little">
 
                             <br/>
-                            Edit the post using the Markdown language.<br/><br/>
+                            Edit the post using the <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown language</a>. You can preview it clicking on the "Preview" tab without having to save.<br/>
+                            <br/>When done, click "Save Changes", or click "Cancel" to discard your current changes.
+                            <br/>
 
                         </p>
                     </div>

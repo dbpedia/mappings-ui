@@ -198,7 +198,9 @@ internals.applyRoutes = function (server, next) {
                         if (request.payload.markdown.length > charLimit){
                             return reply(Boom.conflict('Markdown size must be at most ' + charLimit + ' characters long'));
                         }
+
                         //When is trying to change title, check that no repeated
+
                         const newPostId = Post.idFromTitle(request.payload.title);
 
                         //Not trying to change title: no problem

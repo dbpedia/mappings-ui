@@ -23,7 +23,6 @@ let stub;
 const charLimit = Config.get('/posts/charLimit');
 
 
-
 lab.before((done) => {
 
     stub = {
@@ -133,7 +132,7 @@ lab.experiment('Posts Plugin Result List', () => {
             callback(null, { data: [{}, {}, {}] });
         };
 
-        request.url += '?title=ren&lasteditor=me&visible=true';
+        request.url += '?title=ren&lasteditor=me&visible=true&creator=you';
 
         server.inject(request, (response) => {
 

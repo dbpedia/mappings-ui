@@ -42,6 +42,13 @@ internals.applyRoutes = function (server, next) {
     server.route({
         method: 'GET',
         path: '/posts/view/{glob*}',
+        config:{
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+        },
         handler: function (request, reply) {
 
             //Pass credentials to personalize navbar

@@ -1,6 +1,7 @@
 'use strict';
 const PostSearch = require('./search/index.jsx');
 const PostEdit = require('./edit/index.jsx');
+const PostView = require('./view/index.jsx');
 const NotFound = require('./not-found.jsx');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -17,6 +18,7 @@ const App = (
             <Switch>
                 <Route exact path="/posts" component={PostSearch} />
                 <Route exact path="/posts/edit/:id" component={PostEdit} />
+                <Route exact path="/posts/view/:id" component={PostView} />
                 <Route component={NotFound} />
             </Switch>
         </div>
