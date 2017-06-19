@@ -69,6 +69,7 @@ lab.experiment('Posts Edit Details Reducer', () => {
         Store.dispatch({
             type: Constants.SAVE_DETAILS,
             request: {
+                url: '/posts/edit/page',
                 data: {
                     postId: 'page',
                     title: 'Page',

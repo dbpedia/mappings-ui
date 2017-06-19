@@ -29,6 +29,7 @@ class EditPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
+
     }
 
     componentWillUnmount() {
@@ -38,12 +39,19 @@ class EditPage extends React.Component {
 
     onStoreChange() {
 
-        this.setState(Store.getState());
-        if (this.props.history){
-            const path = `/posts/edit/${this.state.details.postId}`;
-            this.props.history.replace(path);
-        }
 
+        this.setState(Store.getState());
+        const path = `/posts/edit/${this.state.details.postId}`;
+        this.changeShownURL(path);
+
+    }
+
+
+    changeShownURL(newPath){
+
+        if (this.props.history){
+            this.props.history.replace(newPath);
+        }
     }
 
     //Go to the view

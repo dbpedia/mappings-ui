@@ -20,12 +20,16 @@ let request;
 let server;
 let stub;
 
+const charLimit = Config.get('/posts/charLimit');
+
+
 
 lab.before((done) => {
 
     stub = {
         Post: MakeMockModel()
     };
+
 
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/post')] = stub.Post;
@@ -269,6 +273,31 @@ lab.experiment('Posts Plugin Create', () => {
     });
 
 
+    lab.test('it returns an error when markdown is more than limit', (done) => {
+
+        let moreThanLimit = '';
+        for (let i = 0; i <= charLimit; i = i + 1){
+            moreThanLimit += 'a';
+        }
+        request = {
+            method: 'PUT',
+            url: '/posts/test-post',
+            payload: {
+                title: 'test-post-modified',
+                markdown: moreThanLimit,
+                visible: false
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
 
 
     lab.test('it returns an error when there is a page with that title already', (done) => {
@@ -353,6 +382,34 @@ lab.experiment('Posts Plugin Update', () => {
             done();
         });
     });
+
+
+    lab.test('it returns an error when markdown is more than limit', (done) => {
+
+        let moreThanLimit = '';
+        for (let i = 0; i <= charLimit; i = i + 1){
+            moreThanLimit += 'a';
+        }
+        request = {
+            method: 'PUT',
+            url: '/posts/test-post',
+            payload: {
+                title: 'test-post-modified',
+                markdown: moreThanLimit,
+                visible: false
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
+
 
 
     lab.test('it returns not found when find by id misses', (done) => {
@@ -474,6 +531,9 @@ lab.experiment('Posts Plugin Delete', () => {
             done();
         });
     });
+
+
+
 
 
     lab.test('it returns a not found when delete by id misses', (done) => {

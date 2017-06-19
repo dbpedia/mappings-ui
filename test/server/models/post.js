@@ -43,13 +43,13 @@ lab.experiment('Post Class Methods', () => {
         });
     });
 
-    lab.test('it returns **This page is empty** when markdown is empty', (done) => {
+    lab.test('it returns empty when markdown is empty', (done) => {
 
         Post.create('Test Page 2','','sampleaccount',true, (err, post) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(post).to.be.an.instanceOf(Post);
-            Code.expect(post.markdown).to.equal('**This page is empty**');
+            Code.expect(post.markdown).to.equal('');
             //Code.expect(accountGroup.hasPermissionTo('SPACE_MADNESS')).to.equal(false);
             done();
         });

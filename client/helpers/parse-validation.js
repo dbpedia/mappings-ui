@@ -28,6 +28,7 @@ const parseValidation = function (response) {
         help: {}
     };
 
+
     if (validation && validation.keys) {
         const forField = validation.keys.pop();
         const reason = parseReason(message);
@@ -42,7 +43,15 @@ const parseValidation = function (response) {
         result.error = error;
     }
 
+    //Fixed, in order to display when a field size is exceeded
+    //if (!result.error){
+    //    result.error = result.help[Object.keys(result.help)[0]];
+    //}
+
+
     return result;
+
+
 };
 
 

@@ -14,8 +14,8 @@ class Post extends MongoModels {
 
 
         const creationDate = new Date();
-        if (!markdown || markdown.length === 0){
-            markdown = '**This page is empty**';
+        if (!markdown){
+            markdown = '';
         }
 
         //_id is automatically generated

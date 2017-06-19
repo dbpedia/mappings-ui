@@ -36,6 +36,9 @@ const config = {
         production: process.env.COOKIE_SECRET,
         $default: '!k3yb04rdK4tz~4qu4~k3yb04rdd0gz!'
     },
+    posts:{
+        charLimit: 100000
+    },
     hapiMongoModels: {
         mongodb: {
             uri: {

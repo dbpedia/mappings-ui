@@ -164,4 +164,31 @@ lab.experiment('Posts Edit Page', () => {
             type: 'UNKNOWN'
         });
     });
+
+
+    lab.test('it changes title state', (done) => {
+
+        Store.dispatch({
+            type: Constants.SAVE_DETAILS_RESPONSE,
+            err: null,
+            response: {
+                title: 'New Page',
+                postId: 'newpage'
+            }
+        });
+
+        defaultProps.ref.impl = function (page) {
+
+            defaultProps.ref.impl = undefined;
+
+            const heading = ReactTestUtils.findRenderedDOMComponentWithTag(page, 'h1');
+
+            Code.expect(heading.textContent).to.include('New Page');
+
+            done();
+        };
+
+        ReactDOM.render(RootEl, container);
+    });
+
 });

@@ -48,7 +48,7 @@ const reducer = function (state = initialState, action) {
             title: action.request.data.title,
             markdown: action.request.data.markdown,
             visible: action.request.data.visible,
-            postId: action.request.data.postId
+            postId:  action.request.url.substring( action.request.url.lastIndexOf('/') + 1,  action.request.url.length)
         });
     }
 
@@ -74,8 +74,10 @@ const reducer = function (state = initialState, action) {
         }
 
         if (action.response.hasOwnProperty('postId')) {
+
             stateUpdates.postId = action.response.postId;
         }
+
 
         return ObjectAssign({}, state, stateUpdates);
     }

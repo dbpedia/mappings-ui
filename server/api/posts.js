@@ -2,7 +2,7 @@
 const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
-
+const Config = require('../../config');
 
 const internals = {};
 
@@ -11,6 +11,7 @@ internals.applyRoutes = function (server, next) {
 
     const Post = server.plugins['hapi-mongo-models'].Post;
 
+    const charLimit = Config.get('/posts/charLimit');
 
     server.route({
         method: 'GET',
@@ -121,6 +122,10 @@ internals.applyRoutes = function (server, next) {
                     method: function (request, reply) {
                         //When is trying to change title, check that no repeated
 
+                        if (request.payload.markdown.length > charLimit){
+                            return reply(Boom.conflict('Markdown size must be at most ' + charLimit + ' characters long'));
+                        }
+
                         const newPostId = Post.idFromTitle(request.payload.title);
 
 
@@ -189,8 +194,11 @@ internals.applyRoutes = function (server, next) {
                 {
                     assign: 'postIdCheck',
                     method: function (request, reply) {
-                        //When is trying to change title, check that no repeated
 
+                        if (request.payload.markdown.length > charLimit){
+                            return reply(Boom.conflict('Markdown size must be at most ' + charLimit + ' characters long'));
+                        }
+                        //When is trying to change title, check that no repeated
                         const newPostId = Post.idFromTitle(request.payload.title);
 
                         //Not trying to change title: no problem
