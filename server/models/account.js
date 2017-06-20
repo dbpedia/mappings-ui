@@ -209,7 +209,7 @@ class Account extends MongoModels {
 
             Object.keys(this._groups).forEach((group) => {
 
-                if (this._groups[group].hasPermissionTo(permission)) {
+                if (this._groups[group].hasPermissionTo && this._groups[group].hasPermissionTo(permission)) {
                     groupHasPermission = true;
                 }
             });

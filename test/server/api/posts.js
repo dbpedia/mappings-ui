@@ -4,6 +4,7 @@ const AccountsPlugin = require('../../../server/api/accounts');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAdmin = require('../fixtures/credentials-admin');
 const AuthenticatedUser = require('../fixtures/credentials-account');
+const AuthenticatedCustom = require('../fixtures/credentials-custom-account');
 
 const Code = require('code');
 const Config = require('../../../config');
@@ -28,12 +29,13 @@ lab.before((done) => {
 
     stub = {
         Post: MakeMockModel(),
-        Account: MakeMockModel
+        Account: MakeMockModel()
     };
 
 
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/post')] = stub.Post;
+    proxy[Path.join(process.cwd(), './server/models/account')] = stub.Account;
 
     const ModelsPlugin = {
         register: Proxyquire('hapi-mongo-models', proxy),
@@ -167,6 +169,40 @@ lab.experiment('Posts Plugin Result List', () => {
         });
     });
 
+
+    lab.test('it returns an error when no needed permission', (done) => {
+
+        request = {
+            method: 'GET',
+            url: '/posts',
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
+
+    lab.test('it returns correctly when account and has can-list-posts permission', (done) => {
+
+        request = {
+            method: 'GET',
+            url: '/posts',
+            credentials: AuthenticatedCustom(['can-list-posts'])
+        };
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
 
 
 
@@ -363,6 +399,52 @@ lab.experiment('Posts Plugin Create', () => {
     });
 
 
+    lab.test('it returns an error when no needed permission', (done) => {
+
+        request = {
+            method: 'POST',
+            url: '/posts',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
+
+    lab.test('it returns correctly when account and has can-create-posts permission', (done) => {
+
+
+        request = {
+            method: 'POST',
+            url: '/posts',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials:   AuthenticatedCustom(['can-create-posts'])
+        };
+
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
+
 
 
 });
@@ -523,6 +605,53 @@ lab.experiment('Posts Plugin Update', () => {
             done();
         });
     });
+
+    lab.test('it returns an error when no needed permission', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/posts/test-post',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
+
+    lab.test('it returns correctly when account and has can-edit-posts permission', (done) => {
+
+
+        request = {
+            method: 'PUT',
+            url: '/posts/test-post',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials:   AuthenticatedCustom(['can-edit-posts'])
+        };
+
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
+
 });
 
 
@@ -588,6 +717,42 @@ lab.experiment('Posts Plugin Delete', () => {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result.success).to.be.true();
 
+            done();
+        });
+    });
+
+    lab.test('it returns an error when no needed permission', (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/posts/test-post',
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
+
+    lab.test('it returns correctly when account and has can-remove-posts permission', (done) => {
+
+
+        request = {
+            method: 'DELETE',
+            url: '/posts/test-post',
+            credentials:   AuthenticatedCustom(['can-remove-posts'])
+        };
+
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
             done();
         });
     });
