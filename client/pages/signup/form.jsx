@@ -27,6 +27,8 @@ class Form extends React.Component {
         if (this.input.name) {
             this.input.name.focus();
         }
+
+        this.setState({ mappingsLang:'all' });
     }
 
     componentWillUnmount() {
@@ -47,6 +49,8 @@ class Form extends React.Component {
 
 
     handleSubmit(event) {
+
+
 
         event.preventDefault();
         event.stopPropagation();

@@ -22,8 +22,10 @@ class Navbar extends React.Component {
         this.state = {
             isAuthenticated: this.props.credentials && this.props.credentials.user,
             username: this.props.credentials && this.props.credentials.user && this.props.credentials.user.username,
-            isAdmin: this.props.credentials && this.props.credentials.user && '111111111111111111111111' in this.props.credentials.user.groups
+            isAdmin: this.props.credentials && this.props.credentials.user && '111111111111111111111111' in this.props.credentials.user.groups,
+            permissions: this.props.credentials && this.props.credentials.user && this.props.credentials.user.permissions
         };
+
 
     }
 
@@ -38,6 +40,10 @@ class Navbar extends React.Component {
 
 
 
+    hasPermission(perm){
+
+        return this.state.permissions && this.state.permissions[perm];
+    }
 
     render() {
 
@@ -69,7 +75,7 @@ class Navbar extends React.Component {
                                     <a href="/accounts">Accounts</a>
                                 </li>
                             }
-                            { this.state.isAdmin &&
+                            { (this.state.isAdmin || this.hasPermission('can-list-posts')) &&
                             <li className={this.tabClass('posts')}>
                                 <a href="/posts">Posts</a>
                             </li>

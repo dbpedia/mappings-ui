@@ -1,4 +1,5 @@
 'use strict';
+const AuthPlugin = require('../../auth');
 
 
 const internals = {};
@@ -11,9 +12,9 @@ internals.applyRoutes = function (server, next) {
         path: '/posts',
         config: {
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
-            }
+                strategy: 'session'
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-list-posts')]
         },
         handler: function (request, reply) {
 
@@ -28,9 +29,9 @@ internals.applyRoutes = function (server, next) {
         path: '/posts/edit/{glob*}',
         config: {
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
-            }
+                strategy: 'session'
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-posts')]
         },
         handler: function (request, reply) {
 

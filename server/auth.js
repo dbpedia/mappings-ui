@@ -36,7 +36,23 @@ internals.applyStrategy = function (server, next) {
                         return done();
                     }
 
-                    Account.findById(results.session.userId, done);
+                    Account.findById(results.session.userId, (err,resultAccount) => {
+
+                        if (err){
+                            return callback(err);
+                        }
+
+                        if (!resultAccount){
+                            return callback(err);
+                        }
+
+                        //Get permissions also from groups of user
+                        resultAccount.populatePermissionsFromGroups((err) => {
+
+                            done(err,resultAccount);
+                        });
+                        //done(err,resultAccount);
+                    });
                 }],
 
                 //The scope of an user/account is their groups
@@ -83,6 +99,57 @@ internals.preware = {
 
             reply();
         }
+    },
+    //Check if the user has any of the passed permissions (OR function) or is admin. If admin, no permissions are checked
+    ensureHasPermissions: function (permissions){
+
+        return {
+            assign: 'ensureHasPermissions',
+            method: function (request,reply){
+
+                //Check if admin
+                if (request.auth.credentials.user.isMemberOf('111111111111111111111111')){
+                    reply();
+                    return;
+                }
+
+                if (Object.prototype.toString.call(permissions) !== '[object Array]') {
+                    permissions = [permissions];
+                }
+
+                let permissionsToCheck = permissions.length;
+                let permissionExists = false;
+                let errorExists = false;
+                permissions.forEach( (permission) => {
+
+                    request.auth.credentials.user.hasPermissionTo(permission, (err,hasPermission) => {
+
+                        if (err){
+                            errorExists = true;
+                        }
+
+                        if (hasPermission){
+                            permissionExists = true;
+                        }
+
+                        permissionsToCheck--;
+                        if (permissionsToCheck === 0){
+                            if (errorExists){
+                                reply(Boom.internal('Internal error'));
+                            }
+                            if (permissionExists){
+                                reply();
+                            }
+                            else {
+                                return reply(Boom.forbidden('You don\'t have the rights to perform this action'));
+                            }
+                        }
+
+                    });
+                });
+
+            }
+        };
     }
     /*,
     ensureAdminGroup: function (groups) {

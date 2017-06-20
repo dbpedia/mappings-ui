@@ -83,6 +83,19 @@ Async.auto({
                     done(err, docs && docs[0]);
                 });
             }],
+            postEditorGroup: ['clean', function (dbResults, done) {
+                //Group with all needed permissions to operate with help posts
+
+                const document = {
+                    name: 'Post Editors',
+                    permissions: { 'can-list-posts':true,'can-create-posts':true,'can-remove-posts':true,'can-edit-posts':true }
+                };
+
+                AccountGroup.insertOne(document, (err, docs) => {
+
+                    done(err, docs && docs[0]);
+                });
+            }],
 
             homePost: ['clean', function (dbResults, done) {
 

@@ -1,4 +1,5 @@
 'use strict';
+const AuthPlugin = require('../auth');
 const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
@@ -18,8 +19,7 @@ internals.applyRoutes = function (server, next) {
         path: '/posts',
         config: {
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
+                strategy: 'session'
             },
             validate: {
                 query: {
@@ -33,7 +33,8 @@ internals.applyRoutes = function (server, next) {
                     limit: Joi.number().default(20),
                     page: Joi.number().default(1)
                 }
-            }
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-list-posts')]
         },
         handler: function (request, reply) {
 
@@ -130,8 +131,7 @@ internals.applyRoutes = function (server, next) {
         config: {
             //Only admins can create posts
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
+                strategy: 'session'
             },
             validate: {
                 payload: {
@@ -141,7 +141,8 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                //AuthPlugin.preware.ensureAdminGroup('root'),
+                AuthPlugin.preware.ensureHasPermissions('can-create-posts'),
+
                 {
                     assign: 'postIdCheck',
                     method: function (request, reply) {
@@ -202,10 +203,8 @@ internals.applyRoutes = function (server, next) {
         method: 'PUT',
         path: '/posts/{id}',
         config: {
-            //Only admins can edit posts
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
+                strategy: 'session'
             },
             validate: {
                 payload: {
@@ -215,7 +214,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                //AuthPlugin.preware.ensureAdminGroup('root'),
+                AuthPlugin.preware.ensureHasPermissions('can-edit-posts'),
                 {
                     assign: 'postIdCheck',
                     method: function (request, reply) {
@@ -301,13 +300,13 @@ internals.applyRoutes = function (server, next) {
         path: '/posts/{id}',
         config: {
             auth: {
-                strategy: 'session',
-                scope: '111111111111111111111111'
+                strategy: 'session'
             },
             validate: {
                 //Account and Admin groups cannot be removed
                 //Todo: home page can't be removed
-            }
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-posts')]
         },
         handler: function (request, reply) {
 

@@ -219,6 +219,34 @@ class Account extends MongoModels {
     }
 
 
+    populatePermissionsFromGroups(callback) {
+
+
+        this.hydrateGroups((err) => {
+
+            if (err) {
+                return callback(err);
+            }
+
+            Object.keys(this._groups).forEach((group) => {
+
+                //For each one of the permissions of said group, assign it
+                for (const permissionKey in this._groups[group].permissions) {
+                    if (this._groups[group].permissions.hasOwnProperty(permissionKey) && this._groups[group].permissions[permissionKey]) {
+                        if (!this.permissions){
+                            this.permissions = {};
+                        }
+                        this.permissions[permissionKey] = true;
+                    }
+                }
+
+            });
+
+            callback(null);
+        });
+    }
+
+
 }
 
 

@@ -1,5 +1,6 @@
 'use strict';
 const AccountGroupsPlugin = require('../../../server/api/posts');
+const AccountsPlugin = require('../../../server/api/accounts');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAdmin = require('../fixtures/credentials-admin');
 const AuthenticatedUser = require('../fixtures/credentials-account');
@@ -26,7 +27,8 @@ const charLimit = Config.get('/posts/charLimit');
 lab.before((done) => {
 
     stub = {
-        Post: MakeMockModel()
+        Post: MakeMockModel(),
+        Account: MakeMockModel
     };
 
 
@@ -48,7 +50,7 @@ lab.before((done) => {
         })[0].plugin.options
     };
 
-    const plugins = [HapiAuth, ModelsPlugin, AuthPlugin, AccountGroupsPlugin];
+    const plugins = [HapiAuth, ModelsPlugin, AuthPlugin, AccountGroupsPlugin,AccountsPlugin];
     server = new Hapi.Server();
     server.connection({ port: Config.get('/port/web') });
     server.register(plugins, (err) => {
@@ -164,6 +166,10 @@ lab.experiment('Posts Plugin Result List', () => {
             done();
         });
     });
+
+
+
+
 });
 
 
