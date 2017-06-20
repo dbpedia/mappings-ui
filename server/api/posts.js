@@ -78,23 +78,48 @@ internals.applyRoutes = function (server, next) {
     server.route({
         method: 'GET',
         path: '/posts/{id}',
-        //Anybody can see a post, no authentication checks
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            pre: [{
+                //Check if page is visible. If not visible and user is not in admin groups -> error
+                assign: 'postRetrieve',
+                method: function (request, reply) {
+
+
+                    //Retrieve the post
+                    const query = { postId: request.params.id };
+                    Post.findOne(query, (err, post) => {
+
+                        if (err) {
+                            return reply(err);
+                        }
+
+                        if (!post) {
+                            return reply(Boom.notFound('Document not found.'));
+                        }
+
+                        //Check visibility. If not visible and user is not loged or is not in admin groups, return error instead of post.
+                        if (!post.visible && (!request.auth.credentials || !('111111111111111111111111' in request.auth.credentials.user.groups))){
+                            return reply(Boom.forbidden('Document not visible'));
+                        }
+
+                        reply(post);
+
+                    });
+
+                }
+            }
+            ]
+        },
         handler: function (request, reply) {
 
+            //Return Post object retrieved in check
+            reply(request.pre.postRetrieve);
 
-            const query = { postId: request.params.id };
-            Post.findOne(query, (err, post) => {
-
-                if (err) {
-                    return reply(err);
-                }
-
-                if (!post) {
-                    return reply(Boom.notFound('Document not found.'));
-                }
-
-                reply(post);
-            });
         }
     });
 

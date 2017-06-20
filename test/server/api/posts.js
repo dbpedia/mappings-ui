@@ -214,11 +214,29 @@ lab.experiment('Post Plugin Read', () => {
     });
 
 
+
+    lab.test('it returns an error when page is not visible and user is no admin', (done) => {
+
+        stub.Post.findOne = function (id, callback) {
+
+            callback(null,{ _id: 'test-post', visible:false });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            Code.expect(response.result.message).to.match(/Document not visible/i);
+
+            done();
+        });
+    });
+
+
     lab.test('it returns a document successfully', (done) => {
 
         stub.Post.findOne = function (id, callback) {
 
-            callback(null, { _id: 'test-post' });
+            callback(null, { _id: 'test-post', visible:true });
         };
 
         server.inject(request, (response) => {
