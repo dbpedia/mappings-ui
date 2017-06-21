@@ -13,7 +13,8 @@ const Store = require('./store');
 const propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+    postId: PropTypes.string
 };
 
 
@@ -22,7 +23,13 @@ class ViewPage extends React.Component {
 
         super(props);
 
-        Actions.getDetails(this.props.match.params.id);
+        //postId property only used when not match param
+        if (this.props.match.params.id){
+            Actions.getDetails(this.props.match.params.id);
+        }
+        else {
+            Actions.getDetails(this.props.postId);
+        }
 
         this.state = Store.getState();
     }
@@ -97,19 +104,19 @@ class ViewPage extends React.Component {
 
         return (
             <section className="container">
-                <div className="page-header">
-                    <ButtonGroup float='right' buttons={buttons}/>
-
-                    <h1 >
-
+                {this.props.postId !== 'home' &&
+                 <div className="page-header">
+                    <ButtonGroup float='right' buttons={buttons}/>s
+                    <h1>
                         {title}
-
                     </h1>
                     Last edited on { Moment(this.state.details.lastEdition.time).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.lastEdition.username}
                 </div>
+                }
 
-                <div className="row">
-                    <div className="col-sm-8">
+
+                <div className={'row' + (this.props.postId === 'home' ? ' home-row' : '')}>
+                    <div className="col-sm-12">
                         <DetailsForm {...this.state.details} />
 
                     </div>

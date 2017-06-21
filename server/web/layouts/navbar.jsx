@@ -85,11 +85,7 @@ class Navbar extends React.Component {
                         <ul className="nav navbar-nav navbar-right">
 
 
-                            { this.state.isAdmin &&
-                                <li className={this.tabClass('adminpanel')}>
-                                    <a href="/adminpanel">Admin Panel</a>
-                                </li>
-                            }
+
                             { this.state.isAuthenticated &&
                                 <li className={this.tabClass('profile')}>
                                     <a href="/profile">My Profile</a>

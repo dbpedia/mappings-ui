@@ -101,13 +101,13 @@ class DetailsForm extends React.Component {
                         onChange={LinkState.bind(this)}
                         hasError={this.props.hasError.name}
                         help={this.props.help.title}
-                        disabled={this.props.loading}
+                        disabled={this.props.loading || this.props.postId === 'home'}
                     />
                 </div>
                 <div className="col-sm-3">
                     <ControlGroup hideLabel={true} hideHelp={true}>
                         <b>Status:</b>
-                        <select value={this.state.visible} onChange={this.onVisibleChange.bind(this)} className="form-control language-select">
+                        <select value={this.state.visible} onChange={this.onVisibleChange.bind(this)} className="form-control language-select" disabled={this.props.postId === 'home'}>
                             <option value="true">Visible</option>
                             <option value="false">Not visible</option>
                         </select>
@@ -128,7 +128,7 @@ class DetailsForm extends React.Component {
         </div>;
 
         const previewElements =    <div>
-            <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} escapeHtml={true}/>
+            <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} />
             { (!this.state.markdown || this.state.markdown.length === 0) &&
             <i>This page is empty.</i>
             }

@@ -66,7 +66,7 @@ lab.experiment('Home Page View', () => {
 
         server.inject(request, (response) => {
 
-            Code.expect(response.result).to.match(/Success/i);
+
             Code.expect(response.statusCode).to.equal(200);
 
             done();

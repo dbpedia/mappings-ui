@@ -557,6 +557,49 @@ lab.experiment('Posts Plugin Update', () => {
 
         stub.Post.findOneAndUpdate = function (id, update, callback) {
 
+            Code.expect(update.$set.title).to.be.equal('test-post-modified');
+            Code.expect(update.$set.visible).to.be.equal(false);
+            Code.expect(update.$set.postId).to.be.equal('test-post-modified');
+            Code.expect(update.$set.markdown).to.be.equal('updated-text');
+            callback(null, update.$set);
+        };
+
+
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result.lastEdition.username).to.equal('admin');
+
+            done();
+        });
+    });
+
+    lab.test('it updates home page successfully, not changing postId, title and visible', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/posts/home',
+            payload: {
+                title: 'newtitle',
+                markdown: 'new markdown',
+                visible: false
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        stub.Post.findOneAndUpdate = function (id, update, callback) {
+
+            Code.expect(update.$set.title).to.be.undefined();
+            Code.expect(update.$set.visible).to.be.undefined();
+            Code.expect(update.$set.postId).to.be.undefined();
+            Code.expect(update.$set.markdown).to.be.equal('new markdown');
+
             callback(null, update.$set);
         };
 
@@ -680,6 +723,22 @@ lab.experiment('Posts Plugin Delete', () => {
         server.inject(request, (response) => {
 
             Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+    lab.test('it returns an error when trying to delete home' , (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/posts/home',
+            credentials: AuthenticatedAdmin
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(405);
+            Code.expect(response.result.message).to.match(/Home page cannot be deleted/i);
             done();
         });
     });

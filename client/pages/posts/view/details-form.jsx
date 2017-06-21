@@ -49,7 +49,7 @@ class DetailsForm extends React.Component {
             {alerts}
 
 
-            <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} escapeHtml={true}/>
+            <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} />
             { (!this.state.markdown || this.state.markdown.length === 0) &&
                 <i>This page is empty.</i>
             }

@@ -70,7 +70,6 @@ lab.experiment('Panel in Home Page, Logged In As Regular Account', () => {
 
 
             //Elements that cant be there
-            Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Admin Panel<\/a><\/li>/i);
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign up<\/a><\/li>/i);
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign in<\/a><\/li>/i);
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Accounts<\/a><\/li>/i);

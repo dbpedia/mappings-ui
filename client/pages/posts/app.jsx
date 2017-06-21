@@ -26,6 +26,7 @@ class App extends React.Component {
             <Router>
                 <div>
                     <Switch>
+                        <Route exact path="/" render={(props) => <PostView user={credentials} postId="home" {...props} />} />
                         <Route exact path="/posts" render={(props) => <PostSearch user={credentials} {...props} />} />
                         <Route exact path="/posts/edit/:id" render={(props) => <PostEdit user={credentials} {...props} />} />
                         <Route exact path="/posts/view/:id" render={(props) => <PostView user={credentials} {...props} />} />

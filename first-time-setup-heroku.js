@@ -10,6 +10,8 @@ Dotenv.config({ silent: true });
 const rootmail = 'root@mail.com';
 const rootpass = 'dbpedia';
 
+const homePageText = '# Welcome to DBpedia Mappings UI!\r\n<div style=\"text-align:center\"><img src =\"\/public\/media\/dbpedia_plain.png\" \/><\/div>\r\n\r\n### DBpedia Mappings Wiki\r\n---\r\n\r\nIn this DBpedia Mappings Wiki you can help to enhance the information in DBpedia. The DBpedia Extraction Framework uses the mappings defined here to homogenize information extracted from Wikipedia before generating structured information in RDF.\r\nAnybody can help by editing:\r\n* the [DBpedia ontology schema](http:\/\/mappings.dbpedia.org\/index.php\/How_to_edit_the_DBpedia_Ontology) (classes, properties, datatypes)\r\n* the [DBpedia infobox-to-ontology mappings](http:\/\/mappings.dbpedia.org\/index.php\/How_to_edit_DBpedia_Mappings)\r\n\r\nMappings can be written for a variety of languages, connecting multiligual information to a language-independent unified ontology schema (language-specific labels can be provided there).\r\n\r\n### Mapping Example\r\n---\r\nThis is how you write a simple infobox mapping.\r\n```js\r\n{{TemplateMapping \r\n| mapToClass = Actor \r\n| mappings = \r\n   {{ PropertyMapping | templateProperty = name | ontologyProperty = foaf:name }}\r\n   {{ PropertyMapping | templateProperty = birth_place | ontologyProperty = birthPlace }}\r\n}}\r\n```\r\n\r\nThis mapping extracts three information bits:\r\n* the type information (Actor)\r\n* the name of the actor\r\n* the actor\'s place of birth.\r\n\r\nTherefore, three RDF triples for each Infobox_actor in the English Wikipedia are extracted. For example for Vince Vaughn:\r\n\r\n```dbpedia:Vince_Vaughn  rdf:type                dbpedia-owl:Actor   .\r\ndbpedia:Vince_Vaughn  foaf:name               \"Vince Vaughn\"@en   .\r\ndbpedia:Vince_Vaughn  dbpedia-owl:birthPlace  dbpedia:Minneapolis .\r\n```';
+
 Async.auto({
 
     testMongo: (done) => {
@@ -100,8 +102,8 @@ Async.auto({
             homePost: ['clean', function (dbResults, done) {
 
                 const d = {
-                    title: 'Home Page',
-                    markdown: '#Welcome!!',
+                    title: 'Home',
+                    markdown: homePageText,
                     username: 'admin',
                     visible: true
                 };

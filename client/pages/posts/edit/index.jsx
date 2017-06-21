@@ -115,7 +115,7 @@ class EditPage extends React.Component {
                 type: 'btn-danger',
                 text: 'Delete permanently',
                 action:this.remove.bind(this, postId),
-                disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-posts')
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-posts') || this.state.details.postId === 'home'
 
             }
 
@@ -146,7 +146,7 @@ class EditPage extends React.Component {
                         <p className="lead-little">
 
                             <br/>
-                            Edit the post using the <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown language</a>. You can preview it clicking on the "Preview" tab without having to save.<br/>
+                            Edit the post using the <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown language</a> and/or HTML. You can preview it clicking on the "Preview" tab without having to save.<br/>
                             <br/>When done, click "Save Changes", or click "Cancel" to discard your current changes.
                             <br/>
 

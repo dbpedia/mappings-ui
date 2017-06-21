@@ -260,12 +260,13 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+            const title = request.payload.title;
             const newId = Post.idFromTitle(request.payload.title);
+            const visible = request.payload.visible;
+
+
             const update = {
                 $set: {
-                    postId: newId,
-                    title: request.payload.title,
-                    visible: request.payload.visible,
                     markdown: request.payload.markdown,
                     lastEdition: {
                         username: request.auth.credentials.user.username,
@@ -273,6 +274,13 @@ internals.applyRoutes = function (server, next) {
                     }
                 }
             };
+
+            if (request.params.id !== 'home'){ //Only update postId, title and visible when not home
+
+                update.$set.postId = newId;
+                update.$set.title = title;
+                update.$set.visible = visible;
+            }
 
             const query = { postId: request.params.id };
 
@@ -306,9 +314,22 @@ internals.applyRoutes = function (server, next) {
                 //Account and Admin groups cannot be removed
                 //Todo: home page can't be removed
             },
-            pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-posts')]
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-posts'),
+                (request,reply) => {
+
+                    if (request.params.id === 'home') {
+                        reply(Boom.methodNotAllowed('Home page cannot be deleted'));
+                    }
+                    else {
+                        reply();
+                    }
+                }
+            ]
+
         },
         handler: function (request, reply) {
+
+
 
             const query = { postId: request.params.id };
             Post.findOneAndDelete(query, (err, post) => {
