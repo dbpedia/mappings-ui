@@ -106,7 +106,7 @@ class ViewPage extends React.Component {
             <section className="container">
                 {this.props.postId !== 'home' &&
                  <div className="page-header">
-                    <ButtonGroup float='right' buttons={buttons}/>s
+                    <ButtonGroup float='right' buttons={buttons}/>
                     <h1>
                         {title}
                     </h1>
