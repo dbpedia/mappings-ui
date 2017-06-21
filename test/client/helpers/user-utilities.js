@@ -9,6 +9,7 @@ const lab = exports.lab = Lab.script();
 
 lab.experiment('User Utilities Helper hasPermission', () => {
 
+
     lab.test('returns true when user has the permission', (done) =>  {
 
         const user = {
@@ -49,6 +50,60 @@ lab.experiment('User Utilities Helper hasPermission', () => {
 
     });
 
-    
 
+
+});
+
+lab.experiment('User Utilities Helper parseUserFromHTML', () => {
+
+
+    lab.test('it returns user when correctly parsed', (done) => {
+
+        const user = { username:'Test', groups: { one: ' One', two: 'Two' } , permissions: { first: true, second:false } };
+
+        const span = document.createElement('span');
+        span.setAttribute('id','userInformation');
+        const text = document.createTextNode(JSON.stringify(user));
+        span.appendChild(text);
+        global.document.body.appendChild(span);
+
+
+        const credentials = UserUtilities.parseUserFromHTML();
+        global.document.body.removeChild(span);
+        Code.expect(credentials).to.be.an.object();
+        Code.expect(credentials).to.include(user);
+        done();
+
+    });
+
+    lab.test('it returns undefined when userInformation span is empty', (done) => {
+
+
+        const span = document.createElement('span');
+        span.setAttribute('id','userInformation');
+        const text = document.createTextNode('');
+        span.appendChild(text);
+        global.document.body.appendChild(span);
+
+
+        const credentials = UserUtilities.parseUserFromHTML();
+        global.document.body.removeChild(span);
+
+        Code.expect(credentials).to.be.equal(undefined);
+        done();
+
+    });
+
+    lab.test('it returns undefined when userInformation element does not exist', (done) => {
+
+
+        const div = document.createElement('div');
+        global.document.body.appendChild(div);
+
+
+        const credentials = UserUtilities.parseUserFromHTML();
+        Code.expect(credentials).to.be.equal(undefined);
+        done();
+
+    });
 });
