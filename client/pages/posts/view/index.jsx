@@ -91,8 +91,8 @@ class ViewPage extends React.Component {
 
         if (UserUtilities.hasPermission(this.props.user,'can-edit-posts')){
             buttons.push({
-                type: 'btn-success',
-                text: 'Edit',
+                type: 'btn-default',
+                text: <span><i className="fa fa-pencil" aria-hidden="true"></i>&nbsp;Edit</span>,
                 action: this.goToEdition.bind(this)
 
             });
@@ -110,18 +110,20 @@ class ViewPage extends React.Component {
                     <h1>
                         {title}
                     </h1>
-                    Last edited on { Moment(this.state.details.lastEdition.time).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.lastEdition.username}
                 </div>
                 }
 
 
                 <div className={'row' + (this.props.postId === 'home' ? ' home-row' : '')}>
                     <div className="col-sm-12">
+                        {this.props.postId === 'home' && <ButtonGroup float='right' buttons={buttons}/>}
+
                         <DetailsForm {...this.state.details} />
 
                     </div>
 
                 </div>
+                <br/>---<br/><i>Last edited on { Moment(this.state.details.lastEdition.time).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.lastEdition.username}</i>
             </section>
         );
     }

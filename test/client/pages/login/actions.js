@@ -86,7 +86,7 @@ lab.experiment('Login Actions', () => {
     });
 
 
-    lab.test('it calls ApiActions.post from login (redirect to admin)', (done) => {
+    lab.test('it calls ApiActions.post from login (redirect to home)', (done) => {
 
         const windowLocation = global.window.location;
 
@@ -96,7 +96,7 @@ lab.experiment('Login Actions', () => {
 
                 global.window.location = windowLocation;
 
-                Code.expect(value).to.equal('/adminpanel');
+                Code.expect(value).to.equal('/');
 
                 done();
             }
@@ -124,7 +124,7 @@ lab.experiment('Login Actions', () => {
     });
 
 
-    lab.test('it calls ApiActions.post from login (redirect to account)', (done) => {
+    lab.test('it calls ApiActions.post from login (redirect to home)', (done) => {
 
         const windowLocation = global.window.location;
 
@@ -134,7 +134,7 @@ lab.experiment('Login Actions', () => {
 
                 global.window.location = windowLocation;
 
-                Code.expect(value).to.equal('/profile');
+                Code.expect(value).to.equal('/');
 
                 done();
             }
