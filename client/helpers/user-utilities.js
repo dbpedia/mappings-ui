@@ -1,8 +1,6 @@
 'use strict';
 
 
-
-
 /*
     Utilities to handle the user object.
  */
@@ -20,6 +18,8 @@ const hasPermission = function (user,permission) {
     if (user.permissions && user.permissions[permission]){
         return true;
     }
+
+    return false;
 
 };
 
