@@ -2,13 +2,13 @@
 'use strict';
 const ReactDOM = require('react-dom');
 const App = require('./app.jsx');
-
+const React = require('react');
 
 const Page = {
     blastoff: function () {
 
         this.mainElement = ReactDOM.render(
-            App,
+            <App/>,
             window.document.getElementById('app-mount')
         );
     }

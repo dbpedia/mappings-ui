@@ -27,6 +27,7 @@ class PostsList extends React.Component {
                 activeTab="posts"
                 credentials={this.props.credentials}>
 
+                {/* From now on, client will be responsible for rendering */}
                 <div id="app-mount"></div>
             </Layout>
         );

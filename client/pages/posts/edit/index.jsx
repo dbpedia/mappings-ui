@@ -2,6 +2,7 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
+const UserUtilities = require('../../../helpers/user-utilities');
 const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -12,7 +13,8 @@ const Store = require('./store');
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
-    match: PropTypes.object
+    match: PropTypes.object,
+    user: PropTypes.object
 };
 
 
@@ -112,7 +114,8 @@ class EditPage extends React.Component {
             {
                 type: 'btn-danger',
                 text: 'Delete permanently',
-                action:this.remove.bind(this, postId)
+                action:this.remove.bind(this, postId),
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-posts')
 
             }
 

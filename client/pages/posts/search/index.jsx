@@ -2,6 +2,7 @@
 const Actions = require('./actions');
 const CreateNewForm = require('./create-new-form.jsx');
 const FilterForm = require('./filter-form.jsx');
+const UserUtilities = require('../../../helpers/user-utilities');
 const ButtonGroup = require('../../../components/button-group.jsx');
 const Paging = require('../../../components/paging.jsx');
 const PropTypes = require('prop-types');
@@ -13,7 +14,8 @@ const Qs = require('qs');
 
 const propTypes = {
     history: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
+    user: PropTypes.object
 };
 
 
@@ -76,8 +78,10 @@ class SearchPage extends React.Component {
     render() {
 
         const buttons = [
-            { type: 'btn-success', text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Post</span>,
-                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c)
+            { type: 'btn-success',
+                text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Post</span>,
+                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c),
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-create-posts')
             }
         ];
 

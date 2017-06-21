@@ -28,7 +28,8 @@ const defaultProps = {
     },
     location: {
         search: ''
-    }
+    },
+    user:{ permissions:{ 'can-create-posts': true } }
 };
 
 
@@ -205,7 +206,7 @@ lab.experiment('Posts Search Page', () => {
     });
 
 
-    lab.test('it handles shows the create new form', (done) => {
+    lab.test('it handles shows the create new form when user has can-create-posts permission', (done) => {
 
         stub.Actions.showCreateNew = function () {
 

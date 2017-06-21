@@ -14,7 +14,29 @@ const propTypes = {
 };
 
 class DefaultLayout extends React.Component {
+
+
+
+
+
+
+
     render() {
+
+
+        const userInfo = this.props.credentials ? this.props.credentials.user : undefined;
+        //This inserts, in addition to the children, a hidden span with the JSON of user information
+        //used to personalize the interface.
+        //Communication method of this information to the frontend should be done in a better way
+        //but I don't come up with anything... Other alternative is that frontend makes a GET to ask for user
+        //details but this is far more efficient.
+        const childrenWithProps =
+            <div>
+                {this.props.children}
+                <span id="userInformation" style={ { display: 'none' } }>{JSON.stringify(userInfo)}</span>
+            </div>;
+
+
 
         const year = new Date().getFullYear();
 
@@ -33,7 +55,7 @@ class DefaultLayout extends React.Component {
                     <Navbar activeTab={this.props.activeTab} credentials={this.props.credentials}/>
                     <div className="page">
                         <div className="container">
-                            {this.props.children}
+                            {childrenWithProps}
                         </div>
                     </div>
                     <div className="footer">

@@ -12,16 +12,36 @@ const Router = ReactRouter.BrowserRouter;
 const Switch = ReactRouter.Switch;
 
 
-const App = (
-    <Router>
-        <div>
-            <Switch>
-                <Route exact path="/profile" component={AccountProfile} />
-                <Route component={NotFound} />
-            </Switch>
-        </div>
-    </Router>
-);
+const UserUtilities = require('../../helpers/user-utilities');
+
+
+
+class App extends React.Component {
+
+
+
+
+    render(){
+
+        const credentials = UserUtilities.parseUserFromHTML();
+
+        return (
+            <Router>
+                <div>
+                    <Switch>
+                        <Route exact path="/profile" render={(props) => <AccountProfile user={credentials} {...props} />} />
+                        <Route component={NotFound} />
+                    </Switch>
+                </div>
+            </Router>
+
+        );
+
+    }
+
+}
+
+
 
 
 module.exports = App;

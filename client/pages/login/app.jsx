@@ -12,18 +12,40 @@ const Route = ReactRouter.Route;
 const Router = ReactRouter.BrowserRouter;
 const Switch = ReactRouter.Switch;
 
+const UserUtilities = require('../../helpers/user-utilities');
 
-const App = (
-    <Router>
-        <Switch>
-            <Route exact path="/login" component={Home} />
-            <Route path="/login/forgot" component={Forgot} />
-            <Route path="/login/reset/:email/:key" component={Reset} />
-            <Route path="/login/logout" component={Logout} />
-            <Route component={NotFound} />
-        </Switch>
-    </Router>
-);
+
+
+class App extends React.Component {
+
+
+
+
+    render(){
+
+        const credentials = UserUtilities.parseUserFromHTML();
+
+        return (
+            <Router>
+                <div>
+                    <Switch>
+                        <Route exact path="/login" render={(props) => <Home user={credentials} {...props} />} />
+                        <Route exact path="/login/forgot" render={(props) => <Forgot user={credentials} {...props} />} />
+                        <Route exact path="/login/reset/:email/:key" render={(props) => <Reset user={credentials} {...props} />} />
+                        <Route exact path="/login/logout" render={(props) => <Logout user={credentials} {...props} />} />
+                        <Route component={NotFound} />
+                    </Switch>
+                </div>
+            </Router>
+
+        );
+
+    }
+
+}
+
+
+
 
 
 module.exports = App;

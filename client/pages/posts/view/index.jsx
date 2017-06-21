@@ -2,6 +2,8 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
+const UserUtilities = require('../../../helpers/user-utilities');
+
 const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -10,7 +12,8 @@ const Store = require('./store');
 
 const propTypes = {
     history: PropTypes.object,
-    match: PropTypes.object
+    match: PropTypes.object,
+    user: PropTypes.object
 };
 
 
@@ -76,15 +79,21 @@ class ViewPage extends React.Component {
         //const postId = this.state.details.postId;
         const title = this.state.details.title;
 
-        const buttons = [
-            {
+
+        const buttons = [];
+
+        if (UserUtilities.hasPermission(this.props.user,'can-edit-posts')){
+            buttons.push({
                 type: 'btn-success',
                 text: 'Edit',
                 action: this.goToEdition.bind(this)
 
-            }
+            });
+        };
 
-        ];
+
+
+
 
         return (
             <section className="container">
