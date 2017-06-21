@@ -516,6 +516,87 @@ lab.experiment('Account Instance Methods', () => {
     });
 
 
+    lab.test('it returns an error when populating permissions and hydrating groups fails', (done) => {
+
+        const realHydrateGroups = Account.prototype.hydrateGroups;
+        Account.prototype.hydrateGroups = function (callback) {
+
+            callback(Error('hydrate groups failed'));
+        };
+
+        const account = new Account({
+            name: {
+                first: 'Ren',
+                last: 'Höek'
+            },
+            groups: {
+                sales: 'Sales'
+            }
+        });
+
+        account.populatePermissionsFromGroups( (err) => {
+
+            Code.expect(err).to.be.an.object();
+
+            Account.prototype.hydrateGroups = realHydrateGroups;
+
+            done();
+        });
+    });
+
+    lab.test('it returns correct populated permissions', (done) => {
+
+
+
+        const account = new Account({
+            name: {
+                first: 'Ren',
+                last: 'Höek'
+            },
+            groups: {
+                sales: 'Sales',
+                support: 'Support'
+            }
+        });
+
+        account._groups = {
+            sales: new AccountGroup({
+                _id: 'sales',
+                name: 'Sales',
+                permissions: {
+                    'can-edit-posts': true,
+                    'can-create-posts': false
+                }
+            }),
+            support: new AccountGroup({
+                _id: 'support',
+                name: 'Support',
+                permissions: {
+                    'can-remove-posts': true,
+                    'can-list-posts': false
+                }
+            })
+        };
+
+
+        account.populatePermissionsFromGroups( (err,result) => {
+
+            Code.expect(err).to.not.exists();
+            Code.expect(result).to.be.an.object();
+            Code.expect(account.permissions).to.be.an.object();
+            Code.expect(account.permissions['can-edit-posts']).to.exist();
+            Code.expect(account.permissions['can-remove-posts']).to.exist();
+            Code.expect(account.permissions['can-create-posts']).to.not.exist();
+            Code.expect(account.permissions['can-list-posts']).to.not.exist();
+
+
+
+            done();
+        });
+    });
+
+
+
     lab.test('it returns correct permission from hydrated group permissions', (done) => {
 
         const account = new Account({

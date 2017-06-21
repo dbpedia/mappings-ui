@@ -465,4 +465,190 @@ lab.experiment('Auth Plugin', () => {
             done();
         });
     });
+
+
+    lab.test('it continues through pre handler when has needed permissions', (done) => {
+
+        stub.Session.findByCredentials = function (username, key, callback) {
+
+            callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
+        };
+
+        stub.Account.findById = function (id, callback) {
+
+            const user = new Account({
+                username: 'myAccount',
+                groups: { 'exampleGroup': 'Example Group' }
+            });
+
+            user._groups =  {
+                exampleGroup: {
+                    _id: 'exampleGroup',
+                    name: 'Example Group',
+                    permissions: {
+                        'can-edit-posts':true
+                    }
+                }
+            };
+
+            callback(null, user);
+        };
+
+        server.route({
+            method: 'GET',
+            path: '/',
+            config: {
+                auth: {
+                    strategy: 'session'
+                },
+                pre: [
+                    AuthPlugin.preware.ensureHasPermissions('can-edit-posts')
+                ]
+            },
+            handler: function (request, reply) {
+
+                Code.expect(request.auth.credentials).to.be.an.object();
+
+                reply('ok');
+            }
+        });
+
+        const request = {
+            method: 'GET',
+            url: '/',
+            headers: {
+                cookie: CookieAdmin
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.result).to.match(/ok/i);
+
+            done();
+        });
+    });
+
+    lab.test('it continues through pre handler when is admin', (done) => {
+
+        stub.Session.findByCredentials = function (username, key, callback) {
+
+            callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
+        };
+
+        stub.Account.findById = function (id, callback) {
+
+            const user = new Account({
+                username: 'admin',
+                groups: { '111111111111111111111111': 'Admin Group' }
+            });
+
+            user._groups =  {
+                '111111111111111111111111': {
+                    _id: '111111111111111111111111',
+                    name: 'Admin Group'
+                }
+            };
+
+            callback(null, user);
+        };
+
+        server.route({
+            method: 'GET',
+            path: '/',
+            config: {
+                auth: {
+                    strategy: 'session'
+                },
+                pre: [
+                    AuthPlugin.preware.ensureHasPermissions('can-edit-posts')
+                ]
+            },
+            handler: function (request, reply) {
+
+                Code.expect(request.auth.credentials).to.be.an.object();
+
+                reply('ok');
+            }
+        });
+
+        const request = {
+            method: 'GET',
+            url: '/',
+            headers: {
+                cookie: CookieAdmin
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.result).to.match(/ok/i);
+
+            done();
+        });
+    });
+
+
+    lab.test('it takes over when account does not have needed permissions', (done) => {
+
+        stub.Session.findByCredentials = function (username, key, callback) {
+
+            callback(null, new Session({ _id: '2D', userId: '1D', key: 'baddog' }));
+        };
+
+        stub.Account.findById = function (id, callback) {
+
+            const user = new Account({
+                username: 'myAccount',
+                groups: { 'exampleGroup': 'Example Group' }
+            });
+
+            user._groups =  {
+                exampleGroup: {
+                    _id: 'exampleGroup',
+                    name: 'Example Group',
+                    permissions: {
+                        'can-edit-posts':false
+                    }
+                }
+            };
+
+            callback(null, user);
+        };
+
+        server.route({
+            method: 'GET',
+            path: '/',
+            config: {
+                auth: {
+                    strategy: 'session'
+                },
+                pre: [
+                    AuthPlugin.preware.ensureHasPermissions('can-edit-posts')
+                ]
+            },
+            handler: function (request, reply) {
+
+                Code.expect(request.auth.credentials).to.be.an.object();
+
+                reply('ok');
+            }
+        });
+
+        const request = {
+            method: 'GET',
+            url: '/',
+            headers: {
+                cookie: CookieAdmin
+            }
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+
+            done();
+        });
+    });
+
 });

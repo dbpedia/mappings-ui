@@ -188,6 +188,7 @@ class Account extends MongoModels {
 
             this._groups = results;
 
+
             callback(null, this._groups);
         });
     }
@@ -219,6 +220,7 @@ class Account extends MongoModels {
     }
 
 
+    //This functions puts all the permissions from the groups inside the permission attribute, for easy manipulating
     populatePermissionsFromGroups(callback) {
 
 
@@ -242,7 +244,7 @@ class Account extends MongoModels {
 
             });
 
-            callback(null);
+            callback(null,this.permissions);
         });
     }
 
