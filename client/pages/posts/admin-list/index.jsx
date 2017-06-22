@@ -90,7 +90,7 @@ class SearchPage extends React.Component {
                 <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}  />
 
-                    <h1>Posts</h1>
+                    <h1>Help Posts <i>(Admin)</i></h1>
                 </div>
                 <div className="row">
                     <div className="col-sm-8"> {/*Left column: results */}

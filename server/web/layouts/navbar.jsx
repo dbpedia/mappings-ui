@@ -76,11 +76,11 @@ class Navbar extends React.Component {
                                     <a href="/accounts">Accounts</a>
                                 </li>
                             }
-                            { (this.state.isAdmin || this.hasPermission('can-list-posts')) &&
+
                             <li className={this.tabClass('posts')}>
-                                <a href="/posts">Posts</a>
+                                <a href="/posts">Help Posts</a>
                             </li>
-                            }
+
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
 

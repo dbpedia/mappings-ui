@@ -69,7 +69,8 @@ lab.experiment('Panel in Home Page, Logged In As Admin Account', () => {
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign Out<\/a><\/li>/i);
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Accounts<\/a><\/li>/i);
             Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Groups<\/a><\/li>/i);
-            Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Posts<\/a><\/li>/i);
+            Code.expect(response.result).to.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Help Posts<\/a><\/li>/i);
+
 
             //Elements that cant be there
             Code.expect(response.result).to.not.match(/<li class="[a-z0-9]*"><a href="\/[a-z0-9\/\-_]*">Sign up<\/a><\/li>/i);

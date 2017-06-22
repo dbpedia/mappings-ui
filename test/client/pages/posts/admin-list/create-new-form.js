@@ -11,7 +11,7 @@ const lab = exports.lab = Lab.script();
 const stub = {
     Actions: {}
 };
-const Form = Proxyquire('../../../../../client/pages/posts/search/create-new-form.jsx', {
+const Form = Proxyquire('../../../../../client/pages/posts/admin-list/create-new-form.jsx', {
     './actions': stub.Actions
 });
 const defaultProps = {

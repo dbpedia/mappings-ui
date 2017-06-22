@@ -29,7 +29,7 @@ internals.applyRoutes = function (server, next) {
                     creator: Joi.string().allow(''),
                     visible: Joi.string().allow(''),
                     fields: Joi.string(),
-                    sort: Joi.string().default('_id'),
+                    sort: Joi.string().default('title'),
                     limit: Joi.number().default(20),
                     page: Joi.number().default(1)
                 }
@@ -74,6 +74,55 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+
+    server.route({
+        method: 'GET',
+        path: '/posts/public',
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            validate: {
+                query: {
+                    //Can search by title, lastEditor username, and visible status
+                    title: Joi.string().allow(''),
+                    fields: Joi.string(),
+                    sort: Joi.string().default('-lastEdition.time'),
+                    limit: Joi.number().default(20),
+                    page: Joi.number().default(1)
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+
+            const query = {};
+            if (request.query.title) {
+                query.title = new RegExp('^.*?' + EscapeRegExp(request.query.title) + '.*$', 'i');
+            }
+
+            query.visible = true;
+
+
+            //Don't return markdown text in the list...
+            const fields = Post.fieldsAdapter('postId title lastEdition');
+
+            const sort = request.query.sort;
+            const limit = request.query.limit;
+            const page = request.query.page;
+
+            Post.pagedFind(query, fields, sort, limit, page, (err, results) => {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                reply(results);
+            });
+        }
+    });
 
 
     server.route({

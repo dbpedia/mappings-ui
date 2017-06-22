@@ -209,6 +209,132 @@ lab.experiment('Posts Plugin Result List', () => {
 });
 
 
+lab.experiment('Posts Plugin Public Result List', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'GET',
+            url: '/posts/public',
+            credentials: AuthenticatedUser
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when paged find fails', (done) => {
+
+        stub.Post.pagedFind = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(Error('paged find failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+
+    lab.test('it returns an array of documents successfully', (done) => {
+
+        stub.Post.pagedFind = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(null, { data: [{}, {}, {}] });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result.data).to.be.an.array();
+            Code.expect(response.result.data[0]).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('it asks only for visible posts', (done) => {
+
+        stub.Post.pagedFind = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            Code.expect(args[0].visible).to.be.true();
+
+
+            callback(null, { data: [{}, {}, {}] });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result.data).to.be.an.array();
+            Code.expect(response.result.data[0]).to.be.an.object();
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns an array of documents successfully (using filters)', (done) => {
+
+        stub.Post.pagedFind = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(null, { data: [{}, {}, {}] });
+        };
+
+        request.url += '?title=ren';
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result.data).to.be.an.array();
+            Code.expect(response.result.data[0]).to.be.an.object();
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error if using wrong filter', (done) => {
+
+        stub.Post.pagedFind = function () {
+
+            const args = Array.prototype.slice.call(arguments);
+            const callback = args.pop();
+
+            callback(null, { data: [{}, {}, {}] });
+        };
+
+        request.url += '?title=ren&_id=wrongfilter';
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(400);
+
+            done();
+        });
+    });
+
+
+
+
+
+});
+
 
 lab.experiment('Post Plugin Read', () => {
 

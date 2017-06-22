@@ -1,8 +1,8 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../../client/pages/posts/search/constants');
+const Constants = require('../../../../../../client/pages/posts/admin-list/constants');
 const Lab = require('lab');
-const Store = require('../../../../../../client/pages/posts/search/store');
+const Store = require('../../../../../../client/pages/posts/admin-list/store');
 
 
 const lab = exports.lab = Lab.script();

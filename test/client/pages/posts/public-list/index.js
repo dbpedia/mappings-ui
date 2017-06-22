@@ -1,12 +1,12 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../client/pages/posts/search/constants');
+const Constants = require('../../../../../client/pages/posts/public-list/constants');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ReactTestUtils = require('react-dom/test-utils');
-const Store = require('../../../../../client/pages/posts/search/store');
+const Store = require('../../../../../client/pages/posts/public-list/store');
 
 
 const lab = exports.lab = Lab.script();
@@ -15,7 +15,7 @@ const stub = {
         getResults: () => {}
     }
 };
-const Page = Proxyquire('../../../../../client/pages/posts/search/index.jsx', {
+const Page = Proxyquire('../../../../../client/pages/posts/public-list/index.jsx', {
     './actions': stub.Actions
 });
 const container = global.document.createElement('div');
@@ -28,12 +28,11 @@ const defaultProps = {
     },
     location: {
         search: ''
-    },
-    user:{ permissions:{ 'can-create-posts': true } }
+    }
 };
 
 
-lab.experiment('Posts Search Page', () => {
+lab.experiment('Posts Public Search Page', () => {
 
     lab.afterEach((done) => {
 
@@ -206,24 +205,5 @@ lab.experiment('Posts Search Page', () => {
     });
 
 
-    lab.test('it handles shows the create new form when user has can-create-posts permission', (done) => {
 
-        stub.Actions.showCreateNew = function () {
-
-            done();
-        };
-
-        defaultProps.ref.impl = function (page) {
-
-            defaultProps.ref.impl = undefined;
-
-            const newButton = page.els.createNew;
-
-            ReactTestUtils.Simulate.click(newButton);
-        };
-
-        const PageEl = React.createElement(Page, defaultProps);
-
-        ReactDOM.render(PageEl, container);
-    });
 });

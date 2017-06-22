@@ -1,6 +1,6 @@
 'use strict';
 const Code = require('code');
-const Constants = require('../../../../../client/pages/posts/search/constants');
+const Constants = require('../../../../../client/pages/posts/admin-list/constants');
 const FluxConstant = require('flux-constant');
 const Lab = require('lab');
 const Proxyquire = require('proxyquire');
@@ -27,7 +27,7 @@ const stub = {
     }
 };
 
-const Actions = Proxyquire('../../../../../client/pages/posts/search/actions', {
+const Actions = Proxyquire('../../../../../client/pages/posts/admin-list/actions', {
     '../../../actions/api': stub.ApiActions,
     './store': stub.Store
 });

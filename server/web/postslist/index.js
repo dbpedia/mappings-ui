@@ -7,14 +7,18 @@ const internals = {};
 
 internals.applyRoutes = function (server, next) {
 
+
+    //Frontend will redirect to admin or normal user view
+    //Therefore, users view more complex view
     server.route({
         method: 'GET',
         path: '/posts',
         config: {
             auth: {
+                mode:'try',
                 strategy: 'session'
             },
-            pre: [AuthPlugin.preware.ensureHasPermissions('can-list-posts')]
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
         },
         handler: function (request, reply) {
 
@@ -22,6 +26,8 @@ internals.applyRoutes = function (server, next) {
             reply.view('postslist/index', { credentials: request.auth.credentials });
         }
     });
+
+
 
 
     server.route({
@@ -56,6 +62,7 @@ internals.applyRoutes = function (server, next) {
             reply.view('postslist/index', { credentials: request.auth.credentials });
         }
     });
+
 
 
 
