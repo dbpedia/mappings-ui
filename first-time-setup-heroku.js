@@ -187,6 +187,39 @@ Async.auto({
                         done(err, docs && docs[0]);
                     });
                 });
+            }],
+            regularUser: ['clean', function (dbResults, done) {
+
+                Async.auto({
+                    passwordHash: Account.generatePasswordHash.bind(this, 'dbpedia')
+                }, (err, passResults) => {
+
+                    if (err) {
+                        return done(err);
+                    }
+
+                    const document = {
+                        isActive: true,
+                        username: 'user',
+                        name: {
+                            first: 'Name',
+                            middle: '',
+                            last: 'Surname'
+                        },
+                        password: passResults.passwordHash.hash,
+                        email: 'user@mail.com',
+                        groups: {
+                            '000000000000000000000000': 'Account'
+                        },
+                        mappingsLang: 'all',
+                        timeCreated: new Date()
+                    };
+
+                    Account.insertOne(document, (err, docs) => {
+
+                        done(err, docs && docs[0]);
+                    });
+                });
             }]
         }, (err, dbResults) => {
 

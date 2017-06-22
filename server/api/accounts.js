@@ -69,7 +69,7 @@ internals.applyRoutes = function (server, next) {
             }
 
 
-            const fields = request.query.fields;
+            const fields = Account.fieldsAdapter('_id isActive username name email timeCreated timeLastLogin groups permissions mappingsLang');
             const sort = request.query.sort;
             const limit = request.query.limit;
             const page = request.query.page;

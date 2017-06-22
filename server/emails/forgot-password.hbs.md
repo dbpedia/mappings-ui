@@ -6,6 +6,6 @@ need this key to do it.
 __Key:__  
 {{baseHref}}/{{email}}/{{key}}
 
-Love,
+Regards,
 
-The Plot Device
+the DBpedia team.

@@ -12,7 +12,7 @@ const criteria = {
 
 const config = {
     $meta: 'This file configures the plot device.',
-    projectName: 'Aqua',
+    projectName: 'DBpedia Mappings UI',
     port: {
         web: {
             $filter: 'env',

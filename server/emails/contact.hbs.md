@@ -6,6 +6,6 @@
 | Email:   | {{email}}   |
 | Message: | {{message}} |
 
-Love,
+Regards,
 
-The Plot Device
+the DBpedia team.

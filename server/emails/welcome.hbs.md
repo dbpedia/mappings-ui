@@ -8,6 +8,6 @@ Here are your login credentials:
 | Username: | {{username}} |
 | Email:    | {{email}}    |
 
-Love,
+Regards,
 
-The Plot Device
+the DBpedia team.
