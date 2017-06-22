@@ -23,7 +23,7 @@ class Actions {
     static changeSearchQuery(data, history) {
 
         history.push({
-            pathname: '/posts/list',
+            pathname: '/posts',
             search: `?${Qs.stringify(data)}`
         });
 
