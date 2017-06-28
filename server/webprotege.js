@@ -1,18 +1,20 @@
 /**
  * Created by ismaro3 on 28/06/17.
- * Class to interact with WebProtege database
+ * Class to interact with WebProtege database.
+ * Could be modified to interact with an API if provided, keeping the same interface.
  */
 'use strict';
 const MongoClient = require('mongodb').MongoClient;
 const Crypto = require('crypto');
+const Config = require('../config');
 
 
-
-//TODO: Get webprotege MongoDB from config
+//TODO: Make tests of this file, once it is verified that we will use WebProtege
 
 let database;
 let projectID;
-
+const URI = Config.get('/webProtegeIntegration/mongodb/uri');
+const PROJECT_NAME = Config.get('/webProtegeIntegration/projectName');
 
 /*
     Returns a database db object and the webprotege dbpedia project _id.
@@ -24,29 +26,34 @@ const connectToWebprotege = function (){
     }
 
     //Returns a promise when everything is finished
-    return MongoClient.connect('mongodb://localhost:27017/webprotege')
+    return MongoClient.connect(URI)
         .then((db) => {
 
             database = db; //Store database object
 
             //Get project ID
             const projectDetails = db.collection('ProjectDetails');
-            return projectDetails.findOne({ displayName: 'dbpedia' });
+            return projectDetails.findOne({ displayName: PROJECT_NAME });
 
 
         })
         .then((result) => {
 
+
+            if (!result){
+                console.log('[ERROR] Please, create a project in webprotege instance called ' + PROJECT_NAME + '. Then, restart the server.');
+                return { };
+            }
+
             //Store project id
             projectID = result._id;
-            console.log('Connected to WebProtege database');
+            console.log('Connected to WebProtege database, ' + PROJECT_NAME + ' project.');
 
             return {
                 db: database,
                 _id: projectID
             };
         })
-
 
         .catch( (err) =>  {
 
@@ -169,6 +176,7 @@ const removeUser = function (username){
 
             const users = res.db.collection('Users');
 
+
             return users.updateOne(
                 { _id: username },
                 {
@@ -278,7 +286,7 @@ const adminPermissions = { 'assignedRoles' : ['CanManage'], 'roleClosure' : ['Is
 
 
 
-
+//Private method.
 const calculateSaltAndHash = function (password,length){
 
     const salt =  Crypto.randomBytes(Math.ceil(length / 2))

@@ -50,6 +50,12 @@ const config = {
         },
         autoIndex: true
     },
+    webProtegeIntegration: {
+        mongodb:{
+            uri:  'mongodb://localhost:27017/webprotege'
+        },
+        projectName: 'dbpedia'
+    },
     nodemailer: {
         host: 'smtp.gmail.com',
         port: 465,
