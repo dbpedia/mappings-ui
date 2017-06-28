@@ -3,6 +3,7 @@ const Async = require('async');
 const Boom = require('boom');
 const Config = require('../../config');
 const Joi = require('joi');
+const WebProtege = require('../webprotege');
 
 
 const internals = {};
@@ -97,6 +98,21 @@ internals.applyRoutes = function (server, next) {
 
                     Account.create(name, username, password, email,mappingsLang, done);
                 },
+                webprotege: ['account',function (results,done){
+
+                    const account = results.account;
+                    //Add user to webprotege
+                    WebProtege.addUser(account.username,request.payload.name,account.email,account.password)
+                        .then( (res) => {
+
+                            done(null,res);
+                        })
+                        .catch( (err) => {
+
+                            done(err,null);
+                        });
+
+                }],
                 welcome: ['account', function (results, done) {
 
                     const emailOptions = {

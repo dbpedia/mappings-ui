@@ -3,7 +3,7 @@
 const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
-
+const WebProtege = require('../webprotege');
 
 const internals = {};
 
@@ -205,6 +205,7 @@ internals.applyRoutes = function (server, next) {
                                 return reply(Boom.conflict('Email already in use.'));
                             }
 
+
                             reply(true);
                         });
                     }
@@ -225,7 +226,18 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                reply(user);
+                //Add user to webprotege
+                WebProtege.addUser(username,name,email,password)
+                    .then( (res) => {
+
+                        reply(user);
+                    })
+                    .catch( (err) => {
+
+                        return reply(err);
+                    });
+
+
             });
         }
     });
@@ -320,7 +332,20 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                reply(account);
+                const isAdmin = '111111111111111111111111' in update.$set.groups;
+
+                //Change permissions in webprotege
+                WebProtege.setAdmin(account.username,isAdmin)
+                    .then( (res) => {
+
+                        reply(account);
+                    })
+                    .catch( (err) => {
+
+                        return reply(err);
+                    });
+
+
             });
         }
     });
@@ -346,7 +371,6 @@ internals.applyRoutes = function (server, next) {
                         middle: Joi.string().allow(''),
                         last: Joi.string().allow('')
                     }).required(),
-                    username: Joi.string().token().lowercase().required(),
                     email: Joi.string().email().lowercase().required(),
                     mappingsLang: Joi.string().lowercase().required()
                 },
@@ -356,7 +380,7 @@ internals.applyRoutes = function (server, next) {
             },
             pre: [
                 //AuthPlugin.preware.ensureAdminGroup('root'),
-                {
+                /*{
                     assign: 'usernameCheck',
                     method: function (request, reply) {
 
@@ -379,7 +403,8 @@ internals.applyRoutes = function (server, next) {
                             reply(true);
                         });
                     }
-                }, {
+                }, */
+                {
                     assign: 'emailCheck',
                     method: function (request, reply) {
 
@@ -416,7 +441,6 @@ internals.applyRoutes = function (server, next) {
                 $set: {
                     name: request.payload.name,
                     email: request.payload.email,
-                    username: request.payload.username,
                     mappingsLang: request.payload.mappingsLang
                 }
             };
@@ -432,8 +456,22 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.notFound('Document not found.'));
                 }
 
-                reply(account);
+                const name = request.payload.name.first + ' ' + request.payload.name.last;
+
+                WebProtege.updateUserDetails(account.username,name,request.payload.email)
+                    .then( (success) => {
+
+                        reply(account);
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
+                //reply(account);
             });
+
+
         }
     });
 
@@ -508,7 +546,18 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                reply(account);
+                const name = request.payload.name.first + ' ' + request.payload.name.last;
+
+                WebProtege.updateUserDetails(account.username,name,request.payload.email)
+                    .then( (success) => {
+
+                        reply(account);
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
             });
         }
     });
@@ -566,7 +615,17 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                reply(user);
+                WebProtege.updateUserPassword(user.username,request.payload.password)
+                    .then( (success) => {
+
+                        reply(user);
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
+
             });
         }
     });
@@ -623,7 +682,16 @@ internals.applyRoutes = function (server, next) {
                     return reply(err);
                 }
 
-                reply(user);
+                WebProtege.updateUserPassword(user.username,request.payload.password)
+                    .then( (success) => {
+
+                        reply(user);
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
             });
         }
     });
@@ -664,7 +732,16 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.notFound('Document not found.'));
                 }
 
-                reply(account);
+                WebProtege.setActive(account.username,account.isActive)
+                    .then( (res) => {
+
+                        reply(account);
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
             });
         }
     });
@@ -743,7 +820,18 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.notFound('Document not found.'));
                 }
 
-                reply({ success: true });
+                WebProtege.removeUser(account.username)
+                    .then( (success) => {
+
+                        reply({ success: true });
+                    })
+                    .catch( (error) => {
+
+                        return reply(error);
+                    });
+
+
+
             });
         }
     });

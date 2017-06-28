@@ -55,7 +55,6 @@ class DetailsForm extends React.Component {
         const data = {
             name: this.state.name,
             email: this.state.email,
-            username: this.state.username,
             mappingsLang: this.state.mappingsLang
         };
 
@@ -94,7 +93,7 @@ class DetailsForm extends React.Component {
                 onChange={LinkState.bind(this)}
                 hasError={this.props.hasError.username}
                 help={this.props.help.username}
-                disabled={this.props.loading || !this.props.enabled}
+                disabled={true}
             />
             <TextControl
                 name="email"

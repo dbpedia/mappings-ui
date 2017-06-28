@@ -11,7 +11,7 @@ const Manifest = require('../../../manifest');
 const Path = require('path');
 const Proxyquire = require('proxyquire');
 const SignupPlugin = require('../../../server/api/signup');
-
+const WebProtege = require('../../../server/webprotege');
 
 const lab = exports.lab = Lab.script();
 let request;
@@ -190,6 +190,13 @@ lab.experiment('Signup Plugin', () => {
 
     lab.test('it finishes successfully (even if sending welcome email fails)', (done) => {
 
+        const old = WebProtege.addUser;
+        WebProtege.addUser = function (username,name,mail,pass){
+
+            WebProtege.addUser = old;
+            return Promise.resolve('ok');
+        };
+
         stub.Account.findOne = function (conditions, callback) {
 
             callback();
@@ -238,6 +245,13 @@ lab.experiment('Signup Plugin', () => {
 
 
     lab.test('it finishes successfully', (done) => {
+
+        const old = WebProtege.addUser;
+        WebProtege.addUser = function (username,name,mail,pass){
+
+            WebProtege.addUser = old;
+            return Promise.resolve('ok');
+        };
 
         stub.Account.findOne = function (conditions, callback) {
 

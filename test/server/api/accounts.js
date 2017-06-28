@@ -12,7 +12,7 @@ const MakeMockModel = require('../fixtures/make-mock-model');
 const Manifest = require('../../../manifest');
 const Path = require('path');
 const Proxyquire = require('proxyquire');
-
+const WebProtege = require('../../../server/webprotege');
 
 const lab = exports.lab = Lab.script();
 let request;
@@ -389,6 +389,7 @@ lab.experiment('Accounts Plugin Create', () => {
 
         stub.Account.create = function (completename,username, password, email, mappingsLang, callback) {
 
+
             callback(Error('create failed'));
         };
 
@@ -401,6 +402,13 @@ lab.experiment('Accounts Plugin Create', () => {
 
 
     lab.test('it creates a document successfully', (done) => {
+
+        const old = WebProtege.addUser;
+        WebProtege.addUser = function (username,name,mail,pass){
+
+            WebProtege.addUser = old;
+            return Promise.resolve('ok');
+        };
 
         stub.Account.create = function (completename,username, password, email,mappingsLang, callback) {
 
@@ -504,10 +512,20 @@ lab.experiment('Accounts Active Update',() => {
     lab.test('it updates the active status successfully', (done) => {
 
 
+        const old = WebProtege.setActive;
+        WebProtege.setActive = function (username,active){
+
+            WebProtege.setActive = old;
+            return Promise.resolve('ok');
+        };
+
+
         stub.Account.findOne = function (conditions, callback) {
 
             callback();
         };
+
+
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
@@ -538,7 +556,6 @@ lab.experiment('Accounts Plugin Update', () => {
                     first: 'Muddy',
                     last: 'Mudskipper'
                 },
-                username: 'muddy',
                 email: 'mrmud@mudmail.mud',
                 mappingsLang:'en'
             },
@@ -558,7 +575,6 @@ lab.experiment('Accounts Plugin Update', () => {
                     first: 'Muddy',
                     last: 'Mudskipper'
                 },
-                username: 'muddy',
                 email: 'mrmud@mudmail.mud'
             },
             credentials: AuthenticatedAdmin
@@ -572,7 +588,7 @@ lab.experiment('Accounts Plugin Update', () => {
         });
     });
 
-    lab.test('it returns an error when find one fails for username check', (done) => {
+    /*lab.test('it returns an error when find one fails for username check', (done) => {
 
         stub.Account.findOne = function (conditions, callback) {
 
@@ -590,9 +606,9 @@ lab.experiment('Accounts Plugin Update', () => {
             done();
         });
     });
+*/
 
-
-    lab.test('it returns a conflict when find one hits for username check', (done) => {
+    /*lab.test('it returns a conflict when find one hits for username check', (done) => {
 
         stub.Account.findOne = function (conditions, callback) {
 
@@ -609,7 +625,7 @@ lab.experiment('Accounts Plugin Update', () => {
             Code.expect(response.statusCode).to.equal(409);
             done();
         });
-    });
+    });*/
 
 
     lab.test('it returns an error when find one fails for email check', (done) => {
@@ -695,6 +711,13 @@ lab.experiment('Accounts Plugin Update', () => {
 
     lab.test('it updates a document successfully', (done) => {
 
+
+        const old = WebProtege.updateUserDetails;
+        WebProtege.updateUserDetails = function (username,newName,newMail){
+
+            WebProtege.updateUserDetails = old;
+            return Promise.resolve('ok');
+        };
 
         stub.Account.findOne = function (conditions, callback) {
 
@@ -810,6 +833,14 @@ lab.experiment('Accounts Plugin (My) Update', () => {
 
     lab.test('it updates a document successfully', (done) => {
 
+        const old = WebProtege.updateUserDetails;
+        WebProtege.updateUserDetails = function (username,newName,newMail){
+
+            WebProtege.updateUserDetails = old;
+            return Promise.resolve('ok');
+        };
+
+
         stub.Account.findOne = function (conditions, callback) {
 
             callback();
@@ -906,6 +937,13 @@ lab.experiment('Accounts Plugin Set Password', () => {
 
 
     lab.test('it sets the password successfully', (done) => {
+
+        const old = WebProtege.updateUserPassword;
+        WebProtege.updateUserPassword = function (username,pass){
+
+            WebProtege.updateUserPassword = old;
+            return Promise.resolve('ok');
+        };
 
         stub.Account.generatePasswordHash = function (password, callback) {
 
@@ -1052,6 +1090,13 @@ lab.experiment('Accounts Plugin (My) Set Password', () => {
 
     lab.test('it sets the password successfully', (done) => {
 
+        const old = WebProtege.updateUserPassword;
+        WebProtege.updateUserPassword = function (username,pass){
+
+            WebProtege.updateUserPassword = old;
+            return Promise.resolve('ok');
+        };
+
         stub.Account.generatePasswordHash = function (password, callback) {
 
             callback(null, { password: '', hash: '' });
@@ -1107,6 +1152,14 @@ lab.experiment('Account Plugin Update Groups', () => {
 
     lab.test('it updates a document successfully', (done) => {
 
+
+        const old = WebProtege.setAdmin;
+        WebProtege.setAdmin = function (username,isAdmin){
+
+            WebProtege.setAdmin = old;
+            return Promise.resolve('ok');
+        };
+
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
             callback(null, {});
@@ -1133,6 +1186,15 @@ lab.experiment('Account Plugin Update Groups', () => {
             },
             credentials: AuthenticatedAdmin
         };
+
+
+        const old = WebProtege.setAdmin;
+        WebProtege.setAdmin = function (username,isAdmin){
+
+            WebProtege.setAdmin = old;
+            return Promise.resolve('ok');
+        };
+
 
         stub.Account.findByIdAndUpdate = function (id, update, callback) {
 
@@ -1272,6 +1334,13 @@ lab.experiment('Accounts Plugin Delete', () => {
 
 
     lab.test('it deletes a document successfully', (done) => {
+
+        const old = WebProtege.removeUser;
+        WebProtege.removeUser = function (username){
+
+            WebProtege.removeUser = old;
+            return Promise.resolve('ok');
+        };
 
         stub.Account.findByIdAndDelete = function (id, callback) {
 
