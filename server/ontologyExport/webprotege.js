@@ -65,6 +65,7 @@ const connectToWebprotege = function (){
 
 
 
+/*
 //Todo: put in a periodic process
 GithubPush.startRepository()
     .then( () => {
@@ -87,6 +88,7 @@ GithubPush.startRepository()
 
         console.log(err);
     });
+*/
 
 
 
