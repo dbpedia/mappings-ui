@@ -6,9 +6,9 @@
 'use strict';
 const MongoClient = require('mongodb').MongoClient;
 const Crypto = require('crypto');
-const Config = require('../config');
-
-
+const Config = require('../../config');
+const OntologyDownloader = require('./webprotegeOntologyExport.js');
+const GithubPush = require('./githubOntologyPush');
 //TODO: Make tests of this file, once it is verified that we will use WebProtege
 
 let database;
@@ -61,6 +61,33 @@ const connectToWebprotege = function (){
         });
 
 };
+
+
+
+
+//Todo: put in a periodic process
+GithubPush.startRepository()
+    .then( () => {
+
+        //console.log('Repo started');
+        return OntologyDownloader.downloadOntology();
+        //return GithubPush.updateGithub();
+    })
+    .then( () => {
+
+        //console.log('ontology downloaded');
+        return GithubPush.updateGithub();
+    })
+    .then( () => {
+
+        //console.log('repository updated');
+    })
+
+    .catch( (err) => {
+
+        console.log(err);
+    });
+
 
 
 /*

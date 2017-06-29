@@ -54,7 +54,14 @@ const config = {
         mongodb:{
             uri:  'mongodb://localhost:27017/webprotege'
         },
-        projectName: 'dbpedia'
+        projectName: 'dbpedia',
+        webProtegeURL: 'http://localhost:8080/webprotege-3.0.0-SNAPSHOT',
+        githubRepositoryFolder: 'ontologytest',
+        githubRepositoryURL: 'https://github.com/ismaro3/ontologytest',
+        tempDirectory: 'temp',
+        ontologyFileNameInputZip: 'root-ontology.owx',
+        ontologyFileNameOutput: 'dbpedia.owx'
+
     },
     nodemailer: {
         host: 'smtp.gmail.com',

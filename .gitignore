@@ -2,8 +2,12 @@ node_modules/*
 public/*
 test/artifacts/*
 .env
+ontologytest/*
+temp/*
 
 ##IntelliJ idea files
 .idea/*
 .idea-modules/*
 *.iws
+*.owl
+*.owx

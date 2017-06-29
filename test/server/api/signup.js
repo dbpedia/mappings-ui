@@ -11,7 +11,7 @@ const Manifest = require('../../../manifest');
 const Path = require('path');
 const Proxyquire = require('proxyquire');
 const SignupPlugin = require('../../../server/api/signup');
-const WebProtege = require('../../../server/webprotege');
+const WebProtege = require('../../../server/ontologyExport/webprotege');
 
 const lab = exports.lab = Lab.script();
 let request;

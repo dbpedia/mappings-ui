@@ -39,6 +39,7 @@
     "flux": "3.x.x",
     "flux-constant": "1.x.x",
     "font-awesome": "4.x.x",
+    "gift": "^0.10.0",
     "glue": "4.x.x",
     "gulp": "3.x.x",
     "gulp-concat": "2.x.x",
@@ -60,6 +61,7 @@
     "lab": "13.x.x",
     "lodash": "4.x.x",
     "merge-stream": "1.x.x",
+    "mkdirp": "^0.5.1",
     "moment": "2.18.x",
     "mongo-models": "1.x.x",
     "mongodb": "2.x.x",
@@ -77,11 +79,14 @@
     "react-router-dom": "4.x.x",
     "redux": "3.x.x",
     "require-dir": "0.3.x",
+    "simple-git": "^1.73.0",
     "slug": "0.9.x",
+    "unzip": "^0.1.11",
     "uuid": "3.x.x",
     "vision": "4.x.x",
     "visionary": "6.x.x",
     "webpack": "2.x.x",
+    "wreck": "^12.2.2",
     "xhr": "2.x.x"
   }
 }

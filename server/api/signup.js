@@ -3,7 +3,7 @@ const Async = require('async');
 const Boom = require('boom');
 const Config = require('../../config');
 const Joi = require('joi');
-const WebProtege = require('../webprotege');
+const WebProtege = require('../ontologyExport/webprotege');
 
 
 const internals = {};
