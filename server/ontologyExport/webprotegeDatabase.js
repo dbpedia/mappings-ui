@@ -7,8 +7,8 @@
 const MongoClient = require('mongodb').MongoClient;
 const Crypto = require('crypto');
 const Config = require('../../config');
-const OntologyDownloader = require('./webprotegeOntologyExport.js');
-const GithubPush = require('./githubOntologyPush');
+
+
 //TODO: Make tests of this file, once it is verified that we will use WebProtege
 
 let database;
@@ -16,8 +16,8 @@ let projectID;
 const URI = Config.get('/webProtegeIntegration/mongodb/uri');
 const PROJECT_NAME = Config.get('/webProtegeIntegration/projectName');
 
-/*
-    Returns a database db object and the webprotege dbpedia project _id.
+/**
+ * Returns a database db object and the webprotege dbpedia project _id.
  */
 const connectToWebprotege = function (){
 
@@ -63,38 +63,29 @@ const connectToWebprotege = function (){
 };
 
 
+/**
+ * Returns a promise with the ID of the project identified with PROJECT_NAME.
+ */
+const getProjectId = function (){
 
+    return connectToWebprotege()
+        .then((res) => {
 
-/*
-//Todo: put in a periodic process
-GithubPush.startRepository()
-    .then( () => {
+            return res._id;
+        })
+        .catch((err) => {
 
-        //console.log('Repo started');
-        return OntologyDownloader.downloadOntology();
-        //return GithubPush.updateGithub();
-    })
-    .then( () => {
-
-        //console.log('ontology downloaded');
-        return GithubPush.updateGithub();
-    })
-    .then( () => {
-
-        //console.log('repository updated');
-    })
-
-    .catch( (err) => {
-
-        console.log(err);
-    });
-*/
+            console.log(err);
+            return undefined;
+        });
+};
 
 
 
-/*
-  Adds user to webprotege database, also replaces if already existing with that username.
-  In addition, sets permissions to regular ones.
+
+/**
+ * Adds user to webprotege database, also replaces if already existing with that username.
+ * In addition, sets permissions to regular ones.
  */
 const addUser = function (username,name,email,password){
 
@@ -137,7 +128,9 @@ const addUser = function (username,name,email,password){
 };
 
 
-/* Updates the password of an already existing user */
+/**
+ *  Updates the password of an already existing user
+ */
 const updateUserPassword = function (username,newPassword){
 
     return connectToWebprotege()
@@ -169,7 +162,9 @@ const updateUserPassword = function (username,newPassword){
         });
 };
 
-//Updates username, name and mail, but not password
+/**
+ * Updates username, name and mail, but not password
+ */
 const updateUserDetails = function (username,newName,newMail){
 
     return connectToWebprotege()
@@ -197,7 +192,11 @@ const updateUserDetails = function (username,newName,newMail){
         });
 };
 
-//Deactivates a user, just putting a deactivated hash
+
+/**
+ * Deactivates a user, just putting a deactivated hash
+ */
+
 const removeUser = function (username){
 
     return connectToWebprotege()
@@ -224,7 +223,10 @@ const removeUser = function (username){
 };
 
 
-//Sets admin permissions
+/**
+ * Sets admin permissions
+ */
+
 const setAdmin = function (username, admin){
 
     return connectToWebprotege()
@@ -268,7 +270,10 @@ const setAdmin = function (username, admin){
 };
 
 
-//Activates or deactivates an account, storing the old hash for when activating again.
+/**
+ * Activates or deactivates an account, storing the old hash for when activating again.
+
+ */
 const setActive = function (username,active){
 
 
@@ -313,9 +318,9 @@ const normalAccountPermissions = { 'assignedRoles' : ['CanEdit'], 'roleClosure' 
 const adminPermissions = { 'assignedRoles' : ['CanManage'], 'roleClosure' : ['IssueCommenter', 'CanView', 'IssueViewer', 'ProjectDownloader', 'ProjectManager', 'CanEdit', 'CanManage', 'ObjectCommenter', 'ProjectEditor', 'IssueManager', 'ProjectViewer', 'CanComment', 'IssueCreator', 'LayoutEditor'], 'actionClosure' : ['AddOrRemovePerspective', 'AddOrRemovePerspective', 'AddOrRemoveView', 'AddOrRemoveView', 'AssignAnyIssueToAnyone', 'AssignOwnIssueToSelf', 'CloseAnyIssue', 'CloseOwnIssue', 'CommentOnIssue', 'CreateClass', 'CreateDatatype', 'CreateIndividual', 'CreateIssue', 'CreateObjectComment', 'CreateProperty', 'DeleteClass', 'DeleteDatatype', 'DeleteIndividual', 'DeleteProperty', 'DownloadProject', 'EditNewEntitySettings', 'EditOntology', 'EditOntologyAnnotations', 'EditOwnObjectComment', 'EditOwnObjectComment', 'EditProjectSettings', 'EditSharingSettings', 'RevertChanges', 'SaveDefaultProjectLayout', 'SetObjectCommentStatus', 'UpdateAnyIssueBody', 'UpdateAnyIssueTitle', 'UploadAndMerge', 'ViewAnyIssue', 'ViewChanges', 'ViewObjectComment', 'ViewProject', 'WatchChanges'] };
 
 
-
-
-//Private method.
+/**
+ * Private method to calculate salt and hash for a password.
+ */
 const calculateSaltAndHash = function (password,length){
 
     const salt =  Crypto.randomBytes(Math.ceil(length / 2))
@@ -337,5 +342,6 @@ module.exports = {
     updateUserDetails,
     removeUser,
     setAdmin,
-    setActive
+    setActive,
+    getProjectId
 };

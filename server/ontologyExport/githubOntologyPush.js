@@ -1,15 +1,23 @@
 /**
  * Created by ismaro3 on 29/06/17.
+ * This module has functions for interacting with Github and uploading the ontology file/s.
  */
 'use strict';
 const Gift = require('gift');
 const Config = require('../../config');
-
-
+const OntologyExport = require('./webprotegeOntologyExport');
 
 const ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
-const ONTOLOGY_FILE = Config.get('/webProtegeIntegration/ontologyFileNameOutput');
 const GITHUB_REPO_URL = Config.get('/webProtegeIntegration/githubRepositoryURL');
+const ONTOLOGY_FILES_BASE_NAME = Config.get('/webProtegeIntegration/ontologyFileBaseName');
+
+const GIT_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
+const LOCAL_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/localOntologyFolder');
+const LOCAL_ONTOLOGY_BASE_PATH = LOCAL_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
+const GIT_ONTOLOGY_BASE_PATH = GIT_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
+
+const ONTOLOGY_FORMATS = Config.get('/webProtegeIntegration/ontologyFormats');
+const FORMATS = ONTOLOGY_FORMATS.split(',');
 
 
 /*
@@ -19,22 +27,27 @@ const GITHUB_REPO_URL = Config.get('/webProtegeIntegration/githubRepositoryURL')
  */
 
 /*
- This adds, commits and pushes the ontology to github project. Public method
+ This adds, commits and pushes the ontology to github project.
+ If there is any conflict, overwrites the repository files with the local ontology files.
  */
-const updateGithub = function (){
+const updateGithub = function (revision){
 
     let repoObject;
 
 
-    getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master')
+    return getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master')
         .then((repo) => {
 
             repoObject = repo;
-            return commitFile(repoObject,ONTOLOGY_FILE,'Ontology revision ' + new Date());
+            return commitFiles(repoObject,ONTOLOGY_FILES_BASE_NAME + '.*','Ontology revision ' + revision);
         })
         .then(() => {
 
             return push(repoObject,0,10);
+        })
+        .catch((err) => {
+
+            throw err;
         });
 };
 
@@ -46,7 +59,7 @@ const updateGithub = function (){
 /**
  * Pushes the repository commits.
  * If needed, makes at most maxTries pulls.
- * If there is a conflict, this does not solve it.
+ * If there is a conflict, solves it overwriting the ontology files with the local ones.
  */
 const push = function (repoObject,tries,maxTries){
 
@@ -54,27 +67,64 @@ const push = function (repoObject,tries,maxTries){
 
         if (tries > maxTries){
             reject('Too many tries');
+            return;
         }
+
         repoObject.remote_push('origin', (err) => {
+
 
             if (err){
                 //If there is an error, then pull latest version
 
                 repoObject.pull( (err2) => {
 
-                    if (err2){
-                        //If there is an error, it is a conflict with our file (should not happen)
-                        console.log('PANIC, someone has modified our file!');
+                    if (err2){ //If there is an error, it is a conflict with our file (should not happen)
 
+                        console.log('[WARNING] External modification of ontologies. Overwriting...');
+
+                        //Copy files back from local folder to git repository, to overwrite remote changes!
+                        const promises = [];
+                        FORMATS.forEach( (format) => {
+
+                            promises.push(OntologyExport.copyFile(LOCAL_ONTOLOGY_BASE_PATH + '.' + format,GIT_ONTOLOGY_BASE_PATH + '.' + format));
+                        });
+
+
+                        Promise.all(promises)
+                            .then( () => {
+
+                                //Commit files again
+                                return commitFiles(repoObject,ONTOLOGY_FILES_BASE_NAME + '.*','Ontology revision X');
+
+                            })
+                            .then( () => {
+
+                                return push(repoObject,tries + 1,maxTries);
+
+                            }).then( () => {
+
+                                resolve('Pushed');
+
+                            });
 
                     }
+                    else {
 
-                    //When pull is done, we can proceed to push
-                    push(repoObject,tries + 1);
+                        //When pull is done, we can proceed to push
+                        push(repoObject,tries + 1,maxTries)
+                        .then( () => {
+
+                            resolve('Pushed');
+
+                        });
+                    }
+
                 });
             }
+            else  {
 
-            resolve('Pushed');
+                resolve('Pushed');
+            }
 
 
         });
@@ -83,13 +133,13 @@ const push = function (repoObject,tries,maxTries){
 
 
 /**
- * Adds and commits a file
+ * Adds and commits files that follow the pattern "filePattern"
  */
-const commitFile = function (repoObject,file,message){
+const commitFiles = function (repoObject,filePattern,message){
 
     return new Promise((resolve, reject)  => {
 
-        repoObject.add(file, (err) => {
+        repoObject.add(filePattern, (err) => {
 
             if (err) {
                 reject(err);
@@ -102,7 +152,7 @@ const commitFile = function (repoObject,file,message){
                     resolve('Nothing to commit');
                 }
 
-                resolve('Commited file ' + file);
+                resolve('Commited files');
             });
         });
 
@@ -110,9 +160,16 @@ const commitFile = function (repoObject,file,message){
 
 };
 
+/*
+ Gets the repository object, accessing the already existing or cloning otherwise.
+ */
 const startRepository = function (){
 
-    return getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master');
+    return getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master')
+        .catch( (err) => {
+
+            throw err;
+        });
 };
 /*
  Returns  a promise with a repository object. If it does not exist, the repository is cloned.
@@ -133,6 +190,10 @@ const getRepository = function (repoURL,destFolder,branch){
 
                         repo = Gift(destFolder);
                         resolve(repo);
+                    })
+                    .catch((err) => {
+
+                        reject(err);
                     });
 
             }

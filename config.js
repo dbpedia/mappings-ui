@@ -56,11 +56,14 @@ const config = {
         },
         projectName: 'dbpedia',
         webProtegeURL: 'http://localhost:8080/webprotege-3.0.0-SNAPSHOT',
+        localOntologyFolder: 'ontology-store',
         githubRepositoryFolder: 'ontologytest',
         githubRepositoryURL: 'https://github.com/ismaro3/ontologytest',
         tempDirectory: 'temp',
-        ontologyFileNameInputZip: 'root-ontology.owx',
-        ontologyFileNameOutput: 'dbpedia.owx'
+        ontologyFileNameInputZip: 'root-ontology',
+        ontologyFileBaseName: 'dbpedia-ontology',
+        ontologyFormats: 'owx,owl,ttl,omx,ofn',
+        ontologyUpdateFrequencyMinutes: 1
 
     },
     nodemailer: {
