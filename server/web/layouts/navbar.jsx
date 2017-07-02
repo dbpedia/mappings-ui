@@ -81,6 +81,12 @@ class Navbar extends React.Component {
                                 <a href="/posts">Help Posts</a>
                             </li>
 
+                            { this.state.isAuthenticated &&
+                            <li className={this.tabClass('editontology')}>
+                                <a href="https://webprotege.herokuapp.com/#projects/f94311e5-1524-4c54-be77-3722380063bb/edit/Classes">Edit Ontology</a>
+                            </li>
+                            }
+
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
 
