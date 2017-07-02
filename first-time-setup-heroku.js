@@ -5,6 +5,7 @@ const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
 Dotenv.config({ silent: true });
 const WPDatabase = require('./server/ontologyExport/webprotegeDatabase');
+const GithubNetrc = require('./github-netrc');
 
 
 
@@ -199,6 +200,7 @@ Async.auto({
 
                 WPDatabase.addUser('admin','Admin',rootmail,rootpass)
                     .then((res) => {
+
                         console.log('Admin user added to WebProtege');
 
                         return WPDatabase.setAdmin('admin',true);
@@ -257,6 +259,7 @@ Async.auto({
 
                 WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
                     .then((res) => {
+
                         console.log('Regular user added to WebProtege');
 
                         return WPDatabase.setAdmin('user',false);
@@ -269,6 +272,18 @@ Async.auto({
                     });
 
 
+
+
+            }],
+            putDetailsInNetRC: ['clean', function (dbResults, done) {
+
+                const correct = GithubNetrc.putLoginIntoNetrc();
+                if (correct){
+                    done(undefined);
+                }
+                else {
+                    done('error putting github loing into netrc');
+                }
 
 
             }]

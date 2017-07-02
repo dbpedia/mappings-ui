@@ -62,11 +62,11 @@ const config = {
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
-            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
+            $default:'http://webprotege.herokuapp.com'
         } ,
         localOntologyFolder: 'ontology-store',
-        githubRepositoryFolder: 'ontologytest',
-        githubRepositoryURL: 'https://github.com/ismaro3/ontologytest',
+        githubRepositoryFolder: 'dbpedia-ontology',
+        githubRepositoryURL: 'https://github.com/ontologypusher/dbpedia-ontology',
         tempDirectory: 'temp',
         ontologyFileNameInputZip: 'root-ontology',
         ontologyFileBaseName: 'dbpedia-ontology',
