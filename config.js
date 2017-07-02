@@ -66,7 +66,11 @@ const config = {
         } ,
         localOntologyFolder: 'ontology-store',
         githubRepositoryFolder: 'dbpedia-ontology',
-        githubRepositoryURL: 'https://github.com/ontologypusher/dbpedia-ontology',
+        githubRepositoryURL: {
+            $filter: 'env',
+            production: 'https://github.com/ontologypusher/dbpedia-ontology',
+            $default: 'https://github.com/ismaro3/ontologytest'
+        },
         tempDirectory: 'temp',
         ontologyFileNameInputZip: 'root-ontology',
         ontologyFileBaseName: 'dbpedia-ontology',
