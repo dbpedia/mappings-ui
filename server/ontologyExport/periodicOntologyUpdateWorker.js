@@ -6,7 +6,7 @@
 const GithubPush = require('./githubOntologyPush');
 const WebprotegeExport = require('./webprotegeOntologyExport');
 const WebprotegeDB = require('./webprotegeDatabase');
-const Config = require('../../config');
+//const Config = require('../../config');
 
 //const UPDATE_FREQUENCY_MINUTES = Config.get('/webProtegeIntegration/ontologyUpdateFrequencyMinutes');
 

@@ -62,10 +62,14 @@ const config = {
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
-            $default:'http://webprotege.herokuapp.com'
+            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
         } ,
         localOntologyFolder: 'ontology-store',
-        githubRepositoryFolder: 'dbpedia-ontology',
+        githubRepositoryFolder: {
+            $filter: 'env',
+            production: 'dbpedia-ontology',
+            $default: 'ontologytest'
+        },
         githubRepositoryURL: {
             $filter: 'env',
             production: 'https://github.com/ontologypusher/dbpedia-ontology',
