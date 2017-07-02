@@ -185,28 +185,37 @@ Async.auto({
 
                     Account.insertOne(document, (err, docs) => {
 
+                        if (!err){
+                            console.log('Admin user added to normal DB');
+                        }
+
                         done(err, docs && docs[0]);
                     });
                 });
             }],
             addRootToWP: ['rootUser', function (dbResults, done) {
 
+
+
                 WPDatabase.addUser('admin','Admin',rootmail,rootpass)
                     .then((res) => {
+                        console.log('Admin user added to WebProtege');
 
                         return WPDatabase.setAdmin('admin',true);
 
                     })
                     .then((res) => {
 
-                        done(res.result);
+                        console.log('Admin user granted admin permissions in WebProtege');
+                        done(undefined,res.result);
                     });
 
 
 
 
             }],
-            regularUser: ['clean', function (dbResults, done) {
+            regularUser: ['addRootToWP', function (dbResults, done) {
+
 
                 Async.auto({
                     passwordHash: Account.generatePasswordHash.bind(this, 'dbpedia')
@@ -233,7 +242,12 @@ Async.auto({
                         timeCreated: new Date()
                     };
 
+
                     Account.insertOne(document, (err, docs) => {
+
+                        if (!err){
+                            console.log('Regular user added to normal DB');
+                        }
 
                         done(err, docs && docs[0]);
                     });
@@ -243,13 +257,15 @@ Async.auto({
 
                 WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
                     .then((res) => {
+                        console.log('Regular user added to WebProtege');
 
                         return WPDatabase.setAdmin('user',false);
 
                     })
                     .then((res) => {
 
-                        done(res.result);
+                        console.log('Regular user granted regular permissions to WebProtege');
+                        done(undefined,res.result);
                     });
 
 
@@ -258,9 +274,10 @@ Async.auto({
             }]
         }, (err, dbResults) => {
 
-            console.log(dbResults);
+            //console.log(dbResults);
 
             if (err) {
+                console.log(err);
                 console.error('Failed to setup root user.');
                 return done(err);
             }

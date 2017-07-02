@@ -25,7 +25,6 @@ const connectToWebprotege = function (){
         return Promise.resolve({ db: database, _id:projectID });
     }
 
-    console.log(URI);
     //Returns a promise when everything is finished
     return MongoClient.connect(URI)
         .then((db) => {
