@@ -52,10 +52,18 @@ const config = {
     },
     webProtegeIntegration: {
         mongodb:{
-            uri:  'mongodb://localhost:27017/webprotege'
+            uri:  {
+                $filter: 'env',
+                production: process.env.MONGODB_WEBPROTEGE_URI,
+                $default: 'mongodb://localhost:27017/webprotege'
+            }
         },
         projectName: 'dbpedia',
-        webProtegeURL: 'http://localhost:8080/webprotege-3.0.0-SNAPSHOT',
+        webProtegeURL:{
+            $filter: 'env',
+            production: process.env.WEBPROTEGE_URL,
+            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
+        } ,
         localOntologyFolder: 'ontology-store',
         githubRepositoryFolder: 'ontologytest',
         githubRepositoryURL: 'https://github.com/ismaro3/ontologytest',
