@@ -51,12 +51,14 @@ const doAction = function (){
 
 
         })
-        .then( () => {
+        .then( (res) => {
 
+            console.log(res);
             //PUSH ONTOLOGY FILES TO GITHUB
             return GithubPush.updateGithub(lastRev);
         })
-        .then( () => {
+        .then( (res) => {
+            console.log(res);
 
             console.log('Pushed ontology v' + lastRev + ' to Github');
 

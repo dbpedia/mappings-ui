@@ -76,6 +76,7 @@ const push = function (repoObject,tries,maxTries){
             if (err){
                 //If there is an error, then pull latest version
 
+                console.log('pulling last version');
                 repoObject.pull( (err2) => {
 
                     if (err2){ //If there is an error, it is a conflict with our file (should not happen)
@@ -113,6 +114,7 @@ const push = function (repoObject,tries,maxTries){
                         //When pull is done, we can proceed to push
                         push(repoObject,tries + 1,maxTries)
                         .then( () => {
+                            console.log('pushed');
 
                             resolve('Pushed');
 
