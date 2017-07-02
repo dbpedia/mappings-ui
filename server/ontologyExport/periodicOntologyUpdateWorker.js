@@ -58,6 +58,7 @@ const doAction = function (){
             return GithubPush.updateGithub(lastRev);
         })
         .then( (res) => {
+            
             console.log(res);
 
             console.log('Pushed ontology v' + lastRev + ' to Github');

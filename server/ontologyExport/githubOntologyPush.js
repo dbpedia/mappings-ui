@@ -114,6 +114,7 @@ const push = function (repoObject,tries,maxTries){
                         //When pull is done, we can proceed to push
                         push(repoObject,tries + 1,maxTries)
                         .then( () => {
+
                             console.log('pushed');
 
                             resolve('Pushed');
