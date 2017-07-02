@@ -22,6 +22,7 @@ let lastRev; //Last revision of ontology in WebProtege
  */
 const doAction = function (){
 
+    console.log('Update cycle');
     //GET PROJECT ID
     WebprotegeDB.getProjectId() //Get projectID from db
         .then((projectID) => {
@@ -77,7 +78,7 @@ const start = function (){
 
     console.log('Github ontology update service started');
 
-    setInterval(doAction,UPDATE_FREQUENCY_MINUTES * 60 * 1000);
+    setInterval(doAction,2000);
 
 };
 
