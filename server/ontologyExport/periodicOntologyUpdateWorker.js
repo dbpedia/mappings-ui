@@ -6,9 +6,9 @@
 const GithubPush = require('./githubOntologyPush');
 const WebprotegeExport = require('./webprotegeOntologyExport');
 const WebprotegeDB = require('./webprotegeDatabase');
-//const Config = require('../../config');
+const Config = require('../../config');
 
-//const UPDATE_FREQUENCY_MINUTES = Config.get('/webProtegeIntegration/ontologyUpdateFrequencyMinutes');
+const UPDATE_FREQUENCY_MINUTES = Config.get('/webProtegeIntegration/ontologyUpdateFrequencyMinutes');
 
 
 
@@ -51,15 +51,13 @@ const doAction = function (){
 
 
         })
-        .then( (res) => {
+        .then( () => {
 
-            console.log(res);
             //PUSH ONTOLOGY FILES TO GITHUB
             return GithubPush.updateGithub(lastRev);
         })
-        .then( (res) => {
+        .then( () => {
 
-            console.log(res);
             console.log('Pushed ontology v' + lastRev + ' to Github');
 
         })
@@ -80,7 +78,7 @@ const start = function (){
 
     console.log('Github ontology update service started');
 
-    setInterval(doAction,2000);
+    setInterval(doAction,UPDATE_FREQUENCY_MINUTES * 60 * 1000);
 
 };
 
