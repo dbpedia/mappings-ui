@@ -191,7 +191,7 @@ Async.auto({
             }],
             addRootToWP: ['rootUser', function (dbResults, done) {
 
-                WPDatabase.addUser('admin','Admin',results.rootEmail.toLowerCase(),results.rootPassword)
+                WPDatabase.addUser('admin','Admin',rootmail,rootpass)
                     .then((res) => {
 
                         return WPDatabase.setAdmin('admin',true);
