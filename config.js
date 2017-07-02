@@ -55,10 +55,10 @@ const config = {
             uri:  {
                 $filter: 'env',
                 production: process.env.MONGODB_WEBPROTEGE_URI,
-                $default: 'mongodb://localhost:27017/webprotege'
+                $default: 'mongodb://heroku_g36p50h2:9999ntcqstiolghjq4qgq14p43@ds147072.mlab.com:47072/webprotege'
             }
         },
-        projectName: 'dbpedia',
+        projectName: 'DBpedia ontology',
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,

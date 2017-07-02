@@ -4,6 +4,7 @@ const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
 Dotenv.config({ silent: true });
+const WPDatabase = require('./server/ontologyExport/webprotegeDatabase');
 
 
 
@@ -188,6 +189,23 @@ Async.auto({
                     });
                 });
             }],
+            addRootToWP: ['rootUser', function (dbResults, done) {
+
+                WPDatabase.addUser('admin','Admin',results.rootEmail.toLowerCase(),results.rootPassword)
+                    .then((res) => {
+
+                        return WPDatabase.setAdmin('admin',true);
+
+                    })
+                    .then((res) => {
+
+                        done(res.result);
+                    });
+
+
+
+
+            }],
             regularUser: ['clean', function (dbResults, done) {
 
                 Async.auto({
@@ -220,6 +238,23 @@ Async.auto({
                         done(err, docs && docs[0]);
                     });
                 });
+            }],
+            addRegularUserToWP: ['regularUser', function (dbResults, done) {
+
+                WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
+                    .then((res) => {
+
+                        return WPDatabase.setAdmin('user',false);
+
+                    })
+                    .then((res) => {
+
+                        done(res.result);
+                    });
+
+
+
+
             }]
         }, (err, dbResults) => {
 

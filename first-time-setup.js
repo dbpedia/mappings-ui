@@ -3,7 +3,7 @@ const Async = require('async');
 const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Promptly = require('promptly');
-
+const WPDatabase = require('./server/ontologyExport/webprotegeDatabase');
 
 const homePageText = '# Welcome to DBpedia Mappings UI!\r\n<div style=\"text-align:center\"><img src =\"\/public\/media\/dbpedia_plain.png\" \/><\/div>\r\n\r\n### DBpedia Mappings Wiki\r\n---\r\n\r\nIn this DBpedia Mappings Wiki you can help to enhance the information in DBpedia. The DBpedia Extraction Framework uses the mappings defined here to homogenize information extracted from Wikipedia before generating structured information in RDF.\r\nAnybody can help by editing:\r\n* the [DBpedia ontology schema](\/posts\/view\/how-to-edit-the-dbpedia-ontology)\r\n* the [DBpedia infobox-to-ontology mappings](\/posts\/view\/how-to-edit-dbpedia-mappings)\r\n\r\nMappings can be written for a variety of languages, connecting multiligual information to a language-independent unified ontology schema (language-specific labels can be provided there).\r\n\r\n### Mapping Example\r\n---\r\nThis is how you write a simple infobox mapping.\r\n```js\r\n{{TemplateMapping \r\n| mapToClass = Actor \r\n| mappings = \r\n   {{ PropertyMapping | templateProperty = name | ontologyProperty = foaf:name }}\r\n   {{ PropertyMapping | templateProperty = birth_place | ontologyProperty = birthPlace }}\r\n}}\r\n```\r\n\r\nThis mapping extracts three information bits:\r\n* the type information (Actor)\r\n* the name of the actor\r\n* the actor\'s place of birth.\r\n\r\nTherefore, three RDF triples for each Infobox_actor in the English Wikipedia are extracted. For example for Vince Vaughn:\r\n\r\n```dbpedia:Vince_Vaughn  rdf:type                dbpedia-owl:Actor   .\r\ndbpedia:Vince_Vaughn  foaf:name               \"Vince Vaughn\"@en   .\r\ndbpedia:Vince_Vaughn  dbpedia-owl:birthPlace  dbpedia:Minneapolis .\r\n```';
 const editMappingsPage = 'This is a test page. Contents are used to illustrate how help posts work.\r\n\r\n### Tools and Resources\r\n---\r\n*  **Mapping Validator**. When you are editing a mapping, there is a validate button on the bottom of the page. Pressing the button validates your changes for syntactic correctness and highlights inconsistencies such as missing property definitions. It checks if your mappings conform to the DBpedia ontology, it is updated once per day.\r\n* **Extraction Tester**. The extraction tester linked on each mapping page tests a mapping against a set of example Wikipedia pages. This gives you direct feedback about whether a mapping works and how the resulting data will look like.\r\n* **MappingTool**. The DBpedia MappingTool is a graphical user interface that supports users to create and edit mappings.\r\n* [DBpedia Mapping Language Grammar](https:\/\/raw.githubusercontent.com\/dbpedia\/extraction-framework\/master\/core\/doc\/mapping_language\/dbpedia_grammar.xml)\r\n* [DBpedia Mapping Language Design](https:\/\/github.com\/dbpedia\/extraction-framework\/raw\/master\/core\/doc\/mapping_language\/DBpedia_Mapping_Language.pdf)';
@@ -195,6 +195,23 @@ Async.auto({
                     });
                 });
             }],
+            addRootToWP: ['rootUser', function (dbResults, done) {
+
+                WPDatabase.addUser('admin','Admin',results.rootEmail.toLowerCase(),results.rootPassword)
+                    .then((res) => {
+
+                        return WPDatabase.setAdmin('admin',true);
+
+                    })
+                    .then((res) => {
+
+                        done(res.result);
+                    });
+
+
+
+
+            }],
             regularUser: ['clean', function (dbResults, done) {
 
                 Async.auto({
@@ -227,6 +244,23 @@ Async.auto({
                         done(err, docs && docs[0]);
                     });
                 });
+            }],
+            addRegularUserToWP: ['regularUser', function (dbResults, done) {
+
+                WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
+                    .then((res) => {
+
+                        return WPDatabase.setAdmin('user',false);
+
+                    })
+                    .then((res) => {
+
+                        done(res.result);
+                    });
+
+
+
+
             }]
         }, (err, dbResults) => {
 
