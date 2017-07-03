@@ -1,7 +1,7 @@
 'use strict';
 const Composer = require('./index');
-const GithubNetrc = require('./github-netrc');
-const Process = require('./server/ontologyExport/periodicOntologyUpdateWorker');
+//const GithubNetrc = require('./github-netrc');
+//const Process = require('./server/ontologyExport/periodicOntologyUpdateWorker');
 
 Composer((err, server) => {
 
@@ -12,8 +12,8 @@ Composer((err, server) => {
     server.start(() => {
 
         console.log('Started the plot device on port ' + server.info.port);
-        GithubNetrc.putLoginIntoNetrc();
-        Process.start();
+        //GithubNetrc.putLoginIntoNetrc();
+        //Process.start();
 
     });
 });
