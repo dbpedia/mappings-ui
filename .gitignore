@@ -4,6 +4,7 @@ test/artifacts/*
 .env
 temp/*
 ontologytest
+dbpedia-ontology
 ontology-store
 ##IntelliJ idea files
 .idea/*
