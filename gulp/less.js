@@ -6,6 +6,7 @@ const Concat = require('gulp-concat');
 const Less = require('gulp-less');
 
 
+
 Gulp.task('less', () => {
 
     const bundleConfigs = [{
@@ -57,6 +58,11 @@ Gulp.task('less', () => {
         entries: './client/pages/posts/index.less',
         dest: './public/pages',
         outputName: 'posts.min.css'
+    },
+    {
+        entries: './client/pages/mappings/index.less',
+        dest: './public/pages',
+        outputName: 'mappings.min.css'
     }
 
     ];

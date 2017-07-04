@@ -151,6 +151,13 @@ const manifest = {
             }
         },
         {
+            plugin: './server/api/mappings',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
+
+        {
             plugin: './server/web/about'
         },
         {
@@ -182,6 +189,9 @@ const manifest = {
         },
         {
             plugin: './server/web/postslist'
+        },
+        {
+            plugin: './server/web/mappings'
         }
     ]
 };

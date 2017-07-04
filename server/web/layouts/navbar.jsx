@@ -80,6 +80,9 @@ class Navbar extends React.Component {
                             <li className={this.tabClass('posts')}>
                                 <a href="/posts">Help Posts</a>
                             </li>
+                            <li className={this.tabClass('mappings')}>
+                                <a href="/mappings">Mappings</a>
+                            </li>
 
                             { this.state.isAuthenticated &&
                             <li className={this.tabClass('editontology')}>
