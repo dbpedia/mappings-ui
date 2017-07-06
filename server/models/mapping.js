@@ -7,49 +7,166 @@ const MappingHistory = require('./mapping-history');
 class Mapping extends MongoModels {
 
 
+
+    //Todo: think about update... should be a method here that is responsible for version??
     //Receive the template name, language, rml and username
-    static create(template,lang,rml,username,comment,version,callback){
+    /**
+     * Used to create a new mapping, not to update it.
+     * TODO: In order to update, call getLastVersion and use findOneAndUpdate as always??
+     */
+    static create(template,lang,rml,username,comment,callback){
 
-        const modificationName = new Date();
-        if (!rml){
-            rml = '';
-        }
+        Mapping.getLastVersion(template,lang, (err,res) => {
 
-        if (!comment){
-            comment = '';
-        }
-
-        const document = {
-            _id: {
-                template,
-                lang
-            },
-            rml,
-            status: 'PENDING',
-            edition: {
-                username,
-                date: modificationName,
-                comment
-            }
-        };
-
-        this.insertOne(document, (err, docs) => {
-
-            if (err) {
+            if (err){
                 return callback(err);
             }
 
-            docs[0].hydrateStats( (err,stats) => {
+            const nextVersion = res + 1;
+            const modificationName = new Date();
+            if (!rml){
+                rml = '';
+            }
 
-                if (err){
+            if (!comment){
+                comment = '';
+            }
+
+            const document = {
+                _id: {
+                    template,
+                    lang
+                },
+                rml,
+                status: 'PENDING',
+                edition: {
+                    username,
+                    date: modificationName,
+                    comment
+                },
+                nextVersion
+            };
+
+            this.insertOne(document, (err, docs) => {
+
+                if (err) {
                     return callback(err);
                 }
 
-                callback(null,docs[0]);
+                docs[0].hydrateStats( (err,stats) => {
+
+                    if (err){
+                        return callback(err);
+                    }
+
+                    callback(null,docs[0]);
+                });
             });
+
         });
+
     }
 
+    //Todo: tests
+    /**
+     * Returns the last version of the document, searching first in active mappings, and then on history.
+     * If not found in none, returns -1
+     */
+    static getLastVersion(template,lang,callback){
+
+        Mapping.findOne({ _id:{ template,lang } }, (err,res) => {
+
+            if (err) {  //Error on query
+                return callback(err);
+            }
+
+            if (res && res.version){ //Found in active mappings
+                return callback(null,res.version);
+            }
+
+            if (res && !res.version){ //Something strange happens
+                return callback('Error, found document has no version attribute!');
+            }
+
+
+
+            //Last option is that version is not found on active mappings, so we query the MappingHistory
+            Mapping.findOne({ _id:{ template,lang } }, (err,res2) => {
+
+                if (err) {  //Error on query
+                    return callback(err);
+                }
+
+                if (res2 && res2.version){ //Found in archived mappings
+                    return callback(null,res2.version);
+                }
+
+                if (res2 && !res2.version){ //Something strange happens
+                    return callback('Error, found document in history and has no version attribute!');
+                }
+
+                //No document found here, so it does not exist... Return -1, so next version will be 0
+                callback(null,-1);
+
+            });
+
+
+        });
+
+
+        callback(null,-1);
+    }
+
+
+    /**
+     * Creates a new mapping from a mapping history object.
+     * Automatically sets the version.
+     */
+    static createFromHistory(doc,callback){
+
+        Mapping.getLastVersion(doc._id.template,doc._id.lang, (err,res) => {
+
+            if (err){
+                callback(err);
+            }
+
+            const newVersion = res + 1; //If -1, then it will be 0
+
+            const oldVersion = doc.version;
+            const d = {
+                _id: {
+                    template: doc._id.template,
+                    lang: doc._id.lang
+                },
+                rml: doc.rml,
+                status: doc.status,
+                edition: {
+                    username: doc.edition.username,
+                    date: doc.edition.date,
+                    comment: doc.edition.comment + ' (Restored from version ' + oldVersion + ').'
+                },
+                version: newVersion
+            };
+
+            this.insertOne(d, (err, docs) => {
+
+                if (err) {
+                    return callback(err);
+                }
+
+                docs[0].hydrateStats( (err,stats) => {
+
+                    if (err){
+                        return callback(err);
+                    }
+
+                    callback(null,docs[0]);
+                });
+            });
+
+        });
+
+    }
 
     constructor(attrs) {
 

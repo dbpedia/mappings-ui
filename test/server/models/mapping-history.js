@@ -32,7 +32,6 @@ lab.experiment('MappingHistory Class Methods', () => {
     });
 
 
-    //template,lang,rml,username,comment,version
 
 
 

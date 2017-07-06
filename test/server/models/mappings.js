@@ -23,6 +23,7 @@ const mongoOptions = Config.get('/hapiMongoModels/mongodb/options');
 lab.experiment('Mapping Class Methods', () => {
 
     let realFind;
+    let realGetLastVersion;
 
     lab.before((done) => {
 
@@ -37,6 +38,13 @@ lab.experiment('Mapping Class Methods', () => {
             callback(null, {});
         };
 
+        //Mock getLastVersion to always return -1, next version will always be 0
+        realGetLastVersion = Mapping.getLastVersion;
+        Mapping.getLastVersion = function (template,lang,callback){
+
+            return callback(null,-1);
+        };
+
     });
 
 
@@ -46,6 +54,7 @@ lab.experiment('Mapping Class Methods', () => {
 
             Mapping.disconnect();
             stub.CurrentMappingStats.findOne = realFind;
+            Mapping.getLastVersion = realGetLastVersion;
 
             done(err);
         });
@@ -56,7 +65,7 @@ lab.experiment('Mapping Class Methods', () => {
 
     lab.test('it returns a new instance when create succeeds', (done) => {
 
-        Mapping.create('Writer','en','RML','user','edition comment',12, (err, result) => {
+        Mapping.create('Writer','en','RML','user','edition comment', (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(Mapping);
@@ -67,7 +76,7 @@ lab.experiment('Mapping Class Methods', () => {
 
     lab.test('it returns RML empty when RML is undefined', (done) => {
 
-        Mapping.create('Artist','en',undefined,'user','edition comment',12, (err, post) => {
+        Mapping.create('Artist','en',undefined,'user','edition comment', (err, post) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(post).to.be.an.instanceOf(Mapping);
@@ -78,7 +87,7 @@ lab.experiment('Mapping Class Methods', () => {
 
     lab.test('it returns comment empty when comment is undefined', (done) => {
 
-        Mapping.create('Test','en','RML','user',undefined,12, (err, post) => {
+        Mapping.create('Test','en','RML','user',undefined, (err, post) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(post).to.be.an.instanceOf(Mapping);
@@ -99,7 +108,7 @@ lab.experiment('Mapping Class Methods', () => {
             callback(Error('insert failed'));
         };
 
-        Mapping.create('Writer','en','RML','user','edition comment',12, (err, result) => {
+        Mapping.create('Writer','en','RML','user','edition comment', (err, result) => {
 
             Code.expect(err).to.be.an.object();
             Code.expect(result).to.not.exist();
@@ -114,7 +123,7 @@ lab.experiment('Mapping Class Methods', () => {
     lab.test('it returns correct username in edition',(done) => {
 
 
-        Mapping.create('Test2','en','RML','user','edition comment',12, (err, result) => {
+        Mapping.create('Test2','en','RML','user','edition comment', (err, result) => {
 
 
             Code.expect(err).to.not.exist();
@@ -126,6 +135,42 @@ lab.experiment('Mapping Class Methods', () => {
         });
 
     });
+
+    lab.test('it returns a new instance when createFromHistory succeeds', (done) => {
+
+        const date = new Date();
+        const historyDocument = {
+            _id: {
+                template: 'template',
+                lang: 'en'
+            },
+            rml: 'rml',
+            status: 'PENDING',
+            edition: {
+                username: 'user',
+                date,
+                comment: 'comment'
+            },
+            version: 3,
+            deleted:false
+
+        };
+        Mapping.createFromHistory(historyDocument, (err, result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.an.instanceOf(Mapping);
+            Code.expect(result._id.template).to.be.equal('template');
+            Code.expect(result.rml).to.be.equal('rml');
+            Code.expect(result.status).to.be.equal('PENDING');
+            Code.expect(result.edition.username).to.be.equal('user');
+            Code.expect(result.edition.date).to.be.equal(date);
+            Code.expect(result.edition.comment).to.be.equal('comment (Restored from version ' + 3 + ').');
+            Code.expect(result.version).to.be.equal(0);
+
+            done();
+        });
+    });
+
 
 
 });

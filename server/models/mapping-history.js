@@ -1,6 +1,7 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
+const Mapping = require('./mapping');
 
 //Represents a Mapping (basic information, without stats)
 class MappingHistory extends MongoModels {
@@ -40,6 +41,16 @@ class MappingHistory extends MongoModels {
         super(attrs);
     }
 
+    //Warning: call archive in the current mapping in the mappings collection before restoring from history
+    //Todo: test. maybe we can skip it and call Mapping.crateFromHistory directly
+    restore(callback){
+
+        Mapping.createFromHistory(this,callback);
+
+    }
+
+
+    //Todo: restoreFromHistory(template,lang,rev) that checks flow, etc.
 
 }
 
