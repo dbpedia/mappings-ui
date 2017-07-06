@@ -1,11 +1,13 @@
 'use strict';
 const stub = {
-    CurrentMappingStats: {}
+    CurrentMappingStats: {},
+    MappingHistory: {}
 };
 const Proxyquire = require('proxyquire');
 
 const Mapping = Proxyquire('../../../server/models/mapping', {
-    './currentMappingStats': stub.CurrentMappingStats
+    './currentMappingStats': stub.CurrentMappingStats,
+    './mapping-history': stub.MappingHistory
 });
 
 const Code = require('code');
@@ -149,6 +151,138 @@ lab.experiment('Mapping Instance Methods', () => {
             done(err);
         });
     });
+
+
+
+
+    lab.test('it correctly archives with delete=false',(done) => {
+
+        const realDelete = Mapping.findOneAndDelete;
+        Mapping.findOneAndDelete = function (query, callback){
+
+            Mapping.findOneAndDelete = realDelete;
+            callback(null,{});
+        };
+
+        const realCreate = stub.MappingHistory.create;
+        stub.MappingHistory.create = function (document,deleted, callback) {
+
+            callback(null, { deleted });
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING'
+        });
+
+        mapping.archive(false, (err,res) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(res.deleted).to.be.false();
+            stub.MappingHistory.create = realCreate;
+            done();
+        });
+
+
+    });
+
+    lab.test('it correctly archives with delete=true',(done) => {
+
+        const realDelete = Mapping.findOneAndDelete;
+        Mapping.findOneAndDelete = function (query, callback){
+
+            Mapping.findOneAndDelete = realDelete;
+            callback(null,{});
+        };
+
+        const realCreate = stub.MappingHistory.create;
+        stub.MappingHistory.create = function (document,deleted, callback) {
+
+            callback(null, { deleted });
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING'
+        });
+
+        mapping.archive(true, (err,res) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(res.deleted).to.be.true();
+            stub.MappingHistory.create = realCreate;
+            done();
+        });
+
+
+    });
+
+
+    lab.test('it returns an error when archive fails (Create Mapping History)',(done) => {
+
+        const realDelete = Mapping.findOneAndDelete;
+        Mapping.findOneAndDelete = function (query, callback){
+
+            Mapping.findOneAndDelete = realDelete;
+            callback(null,{});
+        };
+
+        const realCreate = stub.MappingHistory.create;
+        stub.MappingHistory.create = function (document,deleted, callback) {
+
+            callback({}, null);
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING'
+        });
+
+        mapping.archive(true, (err,res) => {
+
+            Code.expect(err).to.exist();
+            stub.MappingHistory.create = realCreate;
+            done();
+        });
+
+
+    });
+
+    lab.test('it returns an error when archive fails (Deleting current mapping)',(done) => {
+
+        const realDelete = Mapping.findOneAndDelete;
+        Mapping.findOneAndDelete = function (query, callback){
+
+            Mapping.findOneAndDelete = realDelete;
+            callback({},null);
+        };
+
+        const realCreate = stub.MappingHistory.create;
+        stub.MappingHistory.create = function (document,deleted, callback) {
+
+            callback(null, {});
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING'
+        });
+
+        mapping.archive(true, (err,res) => {
+
+            Code.expect(err).to.exist();
+            stub.MappingHistory.create = realCreate;
+            done();
+        });
+
+
+    });
+
+
 
 
     lab.test('it correctly hydrates when information is available',(done) => {

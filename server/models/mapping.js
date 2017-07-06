@@ -2,7 +2,7 @@
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const CurrentMappingStats = require('./currentMappingStats');
-
+const MappingHistory = require('./mapping-history');
 //Represents a Mapping (basic information, without stats)
 class Mapping extends MongoModels {
 
@@ -76,6 +76,32 @@ class Mapping extends MongoModels {
             this.stats = results;
 
             callback(null,this.stats);
+        });
+    }
+
+    /**
+     * Archives the mapping into the mappingHistory collection and deletes the document
+     * from the real collection.
+     * In the callback, returns the created history object.
+     */
+    archive(deleted,callback){
+
+        MappingHistory.create(this,deleted, (err,res) => {
+
+            if (err){
+                return callback(err);
+            }
+
+            Mapping.findOneAndDelete({ _id:{ template:this.template,lang:this.lang } }, (err,res2) => {
+
+                if (err){
+                    return callback(err);
+                }
+
+                callback(null,res);
+            });
+
+
         });
     }
 
