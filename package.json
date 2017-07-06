@@ -66,6 +66,7 @@
     "moment": "2.18.x",
     "mongo-models": "1.x.x",
     "mongodb": "2.x.x",
+    "mongoose-version": "^1.1.0",
     "netrc": "^0.1.4",
     "nodemailer": "4.x.x",
     "nodemailer-markdown": "1.x.x",
