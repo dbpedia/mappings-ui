@@ -168,10 +168,7 @@ class Mapping extends MongoModels {
     constructor(attrs) {
 
         super(attrs);
-        Object.defineProperty(this, 'stats', {
-            writable: true,
-            enumerable: false
-        });
+
     }
 
     hydrateStats(callback) {
@@ -182,17 +179,17 @@ class Mapping extends MongoModels {
         }
 
 
-        CurrentMappingStats.findOne({ _id: { template:this.template ,lang: this.lang } }, (err,results) => {
+        CurrentMappingStats.findOne({ _id: { template:this._id.template ,lang: this._id.lang } }, (err,results) => {
 
             if (err) {
                 return callback(err);
             }
+
             this.stats = results;
 
             callback(null,this.stats);
         });
     }
-
 
     /**
      * Updates a mapping, setting the changes in the setChanges,

@@ -71,7 +71,10 @@ const manifest = {
                         AuthAttempt: './server/models/auth-attempt',
                         Session: './server/models/session',
                         Status: './server/models/status',
-                        Post: './server/models/post'
+                        Post: './server/models/post',
+                        Mapping: './server/models/mapping',
+                        MappingHistory: './server/models/mapping-history',
+                        CurrentMappingStats: './server/models/currentMappingStats'
                     },
                     autoIndex: Config.get('/hapiMongoModels/autoIndex')
                 }
