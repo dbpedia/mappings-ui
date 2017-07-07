@@ -21,6 +21,8 @@ let request;
 let server;
 let stub;
 
+const charLimit = Config.get('/mappings/charLimit');
+
 
 
 lab.before((done) => {
@@ -308,5 +310,162 @@ lab.experiment('Mappings Plugin Read', () => {
             done();
         });
     });
+});
+
+lab.experiment('Mapping Plugin Create', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'POST',
+            url: '/mappings',
+            payload: {
+                template: 'test-template',
+                lang: 'en',
+                rml: 'rml'
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when create fails', (done) => {
+
+        stub.Mapping.create = function (template,lang,rml,username,comment, callback) {
+
+            callback(Error('create failed'));
+        };
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback();
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when rml is more than limit', (done) => {
+
+        let moreThanLimit = '';
+        for (let i = 0; i <= charLimit; i = i + 1){
+            moreThanLimit += 'a';
+        }
+        request = {
+            method: 'POST',
+            url: '/mappings',
+            payload: {
+                template: 'test-template',
+                lang: 'en',
+                rml: moreThanLimit
+            },
+            credentials: AuthenticatedAdmin
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
+
+
+    lab.test('it returns an error when there is a template with that id already', (done) => {
+
+        stub.Mapping.findOne = function (conditions, callback) {
+
+            callback(null,{ _id: { template: 'test-template', lang:'en' } });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(409);
+            done();
+        });
+    });
+
+    /*lab.test('it creates a document successfully', (done) => {
+
+        stub.Post.create = function (title,markdown, username, visible, callback) {
+
+            callback(null, { title,markdown,lastEditor:username,visible });
+        };
+
+        stub.Post.findOne = function (id, callback) {
+
+            callback();
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result.title).to.equal('Test Post');
+            Code.expect(response.result.markdown).to.equal('**Test Text**');
+            Code.expect(response.result.visible).to.equal(true);
+            Code.expect(response.result.lastEditor).to.equal('admin');
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when no needed permission', (done) => {
+
+        request = {
+            method: 'POST',
+            url: '/posts',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
+
+    lab.test('it returns correctly when account and has can-create-posts permission', (done) => {
+
+
+        request = {
+            method: 'POST',
+            url: '/posts',
+            payload: {
+                title: 'Test Post',
+                markdown: '**Test Text**',
+                visible: true
+            },
+            credentials:   AuthenticatedCustom(['can-create-posts'])
+        };
+
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+        });
+    });
+
+*/
+
 });
 

@@ -39,6 +39,9 @@ const config = {
     posts:{
         charLimit: 100000
     },
+    mappings:{
+        charLimit: 1000000
+    },
     hapiMongoModels: {
         mongodb: {
             uri: {

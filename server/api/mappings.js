@@ -2,13 +2,15 @@
 const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
+const Config = require('../../config');
 
 const internals = {};
 
-
+//TODO: Make that URLs are separated with -
 internals.applyRoutes = function (server, next) {
 
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
+    const charLimit = Config.get('/mappings/charLimit');
 
 
     server.route({
@@ -133,6 +135,74 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    server.route({
+        method: 'POST',
+        path: '/mappings',
+        config: {
+            //Only authenticated users can create mappings
+            auth: {
+                strategy: 'session'
+            },
+            validate: {
+                payload: {
+                    template: Joi.string().required(),
+                    lang: Joi.string().required(),
+                    rml: Joi.string().required().allow(''),
+                    comment: Joi.string().allow('')
+                }
+            },
+            pre: [
+                //AuthPlugin.preware.ensureHasPermissions('can-create-posts'),
+
+                {
+                    assign: 'idCheck',
+                    method: function (request, reply) {
+
+                        if (request.payload.rml.length > charLimit){
+                            return reply(Boom.conflict('RML size must be at most ' + charLimit + ' characters long'));
+                        }
+                        //Todo: check that language is correct!
+
+                        const _id = { template: request.payload.template, lang: request.payload.lang };
+                        Mapping.findOne({ _id }, (err, user) => {
+
+                            if (err) {
+                                return reply(err);
+                            }
+
+                            if (user) {
+                                return reply(Boom.conflict('Template already exists.'));
+                            }
+
+                            reply(true);
+                        });
+
+                    }
+                }
+            ]
+        },
+        handler: function (request, reply) {
+
+            const template = request.payload.template;
+            const lang = request.payload.lang;
+            const rml = request.payload.rml;
+            let comment = request.payload.comment;
+            const username = request.auth.credentials.user.username;
+
+            if (!comment || comment.length === 0){
+                comment = 'Mapping created';
+            }
+
+            Mapping.create(template,lang, rml, username,comment, (err, mapping) => {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                reply(mapping);
+            });
+        }
+    });
 
     next();
 };
