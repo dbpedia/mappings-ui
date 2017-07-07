@@ -173,6 +173,150 @@ lab.experiment('Mapping Class Methods', () => {
 
 
 
+
+});
+
+
+lab.experiment('Mapping GetLastVersion Experiments', () => {
+
+    lab.before((done) => {
+
+        Mapping.connect(mongoUri, mongoOptions, (err, db) => {
+
+            done(err);
+        });
+    });
+
+
+    lab.after((done) => {
+
+        Mapping.deleteMany({}, (err, count) => {
+
+            Mapping.disconnect();
+            done(err);
+        });
+    });
+
+    lab.test('it returns -1 when mapping does not exist in mappings nor mapping-history collections', (done) => {
+
+
+
+        const realFindOne1 = Mapping.findOne;
+        Mapping.findOne = function (query, callback) {
+
+            Mapping.findOne = realFindOne1;
+            callback(null, null);
+        };
+
+
+        const realFindOne = stub.MappingHistory.findOne;
+        stub.MappingHistory.findOne = function (query, callback) {
+
+            stub.MappingHistory.findOne = realFindOne;
+            callback(null, null);
+        };
+
+
+        Mapping.getLastVersion('nonExistentTemplate','en',(err,result) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.equal(-1);
+            done();
+        });
+
+
+    });
+
+    lab.test('it returns correct version when mapping only exists on mapping-history collection', (done) => {
+
+
+        const realFindOne1 = Mapping.findOne;
+        Mapping.findOne = function (query, callback) {
+
+            Mapping.findOne = realFindOne1;
+            callback(null, null);
+        };
+
+        const realFindOne = stub.MappingHistory.findOne;
+        stub.MappingHistory.findOne = function (query, callback) {
+
+            stub.MappingHistory.findOne = realFindOne;
+            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 5 });
+        };
+
+
+
+        Mapping.getLastVersion('templateToFind','en',(err,result) => {
+
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.equal(5);
+            done();
+        });
+
+
+    });
+
+    lab.test('it returns correct version when mapping only exists on active collection', (done) => {
+
+
+        const realFindOne1 = Mapping.findOne;
+        Mapping.findOne = function (query, callback) {
+
+            Mapping.findOne = realFindOne1;
+            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 6 });
+        };
+
+        const realFindOne = stub.MappingHistory.findOne;
+        stub.MappingHistory.findOne = function (query, callback) {
+
+            stub.MappingHistory.findOne = realFindOne;
+            callback(null, null);
+        };
+
+
+
+        Mapping.getLastVersion('templateToFind','en',(err,result) => {
+
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.equal(6);
+            done();
+        });
+
+
+    });
+
+    lab.test('it returns correct active version when mapping exists on both collections', (done) => {
+
+
+        const realFindOne1 = Mapping.findOne;
+        Mapping.findOne = function (query, callback) {
+
+            Mapping.findOne = realFindOne1;
+            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 10 });
+        };
+
+        const realFindOne = stub.MappingHistory.findOne;
+        stub.MappingHistory.findOne = function (query, callback) {
+
+            stub.MappingHistory.findOne = realFindOne;
+            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 6 });
+        };
+
+
+
+        Mapping.getLastVersion('templateToFind','en',(err,result) => {
+
+
+            Code.expect(err).to.not.exist();
+            Code.expect(result).to.be.equal(10);
+            done();
+        });
+
+
+    });
+
 });
 
 
@@ -415,6 +559,86 @@ lab.experiment('Mapping Instance Methods', () => {
 
             done();
         });
+
+    });
+
+    lab.test('it updates correctly, upgrading the version',(done) => {
+
+        const realfindOneAndUpdate = Mapping.findOneAndUpdate;
+        Mapping.findOneAndUpdate = function (filter,query, callback){
+
+            Code.expect(query).to.be.an.object();
+            Code.expect(query.$set).to.be.an.object();
+            Code.expect(query.$set.rml).to.be.equal('updatedRML');
+            Code.expect(query.$set.edition.username).to.be.equal('newUsername');
+            Code.expect(query.$set.edition.comment).to.be.equal('newComment');
+            Code.expect(query.$set.version).to.be.equal(4);
+
+            Mapping.findOneAndUpdate = realfindOneAndUpdate;
+            callback(null,{});
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING',
+            edition: {
+                username: 'oldUsername',
+                comment: 'oldComment',
+                date: new Date()
+            },
+            version: 3
+        });
+
+
+        const setObject = { rml: 'updatedRML' };
+
+        mapping.update(setObject,'newUsername','newComment', (err,res) => {
+
+            Code.expect(err).to.not.exist();
+            Code.expect(res).to.be.an.object();
+            done();
+
+        });
+
+
+
+
+    });
+    lab.test('it returns error when update fails',(done) => {
+
+        const realfindOneAndUpdate = Mapping.findOneAndUpdate;
+        Mapping.findOneAndUpdate = function (filter,query, callback){
+
+            Mapping.findOneAndUpdate = realfindOneAndUpdate;
+            callback({},null);
+        };
+
+        const mapping = new Mapping({
+            _id: { template: 'template', lang: 'en' },
+            rml: 'rml',
+            status: 'PENDING',
+            edition: {
+                username: 'oldUsername',
+                comment: 'oldComment',
+                date: new Date()
+            },
+            version: 3
+        });
+
+
+        const setObject = { rml: 'updatedRML' };
+
+        mapping.update(setObject,'newUsername','newComment', (err,res) => {
+
+            Code.expect(err).to.exist();
+            Code.expect(res).to.not.exist();
+            done();
+
+        });
+
+
+
 
     });
 

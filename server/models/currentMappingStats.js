@@ -2,7 +2,6 @@
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
 
-//Represents a Mapping (basic information, without stats)
 class CurrentMappingStats extends MongoModels {
 
 

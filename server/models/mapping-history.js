@@ -3,7 +3,7 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const Mapping = require('./mapping');
 
-//Represents a Mapping (basic information, without stats)
+//Represents a Mapping Archived Version (basic information, without stats)
 class MappingHistory extends MongoModels {
 
 

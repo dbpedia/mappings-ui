@@ -8,11 +8,8 @@ class Mapping extends MongoModels {
 
 
 
-    //Todo: think about update... should be a method here that is responsible for version??
-    //Receive the template name, language, rml and username
     /**
      * Used to create a new mapping, not to update it.
-     * TODO: In order to update, call getLastVersion and use findOneAndUpdate as always??
      */
     static create(template,lang,rml,username,comment,callback){
 
@@ -65,14 +62,14 @@ class Mapping extends MongoModels {
 
         });
 
-    }
+    };
 
-    //Todo: tests
     /**
      * Returns the last version of the document, searching first in active mappings, and then on history.
-     * If not found in none, returns -1
+     * If not found in none of them, returns -1.
      */
     static getLastVersion(template,lang,callback){
+
 
         Mapping.findOne({ _id:{ template,lang } }, (err,res) => {
 
@@ -91,7 +88,7 @@ class Mapping extends MongoModels {
 
 
             //Last option is that version is not found on active mappings, so we query the MappingHistory
-            Mapping.findOne({ _id:{ template,lang } }, (err,res2) => {
+            MappingHistory.findOne({ _id:{ template,lang } }, (err,res2) => {
 
                 if (err) {  //Error on query
                     return callback(err);
@@ -105,6 +102,7 @@ class Mapping extends MongoModels {
                     return callback('Error, found document in history and has no version attribute!');
                 }
 
+
                 //No document found here, so it does not exist... Return -1, so next version will be 0
                 callback(null,-1);
 
@@ -113,9 +111,8 @@ class Mapping extends MongoModels {
 
         });
 
-
-        callback(null,-1);
     }
+
 
 
     /**
@@ -196,6 +193,29 @@ class Mapping extends MongoModels {
         });
     }
 
+
+    /**
+     * Updates a mapping, setting the changes in the setChanges,
+     * and incrementing the version in 1. Also sets the username and comment.
+     */
+    update(setChanges,username,comment,callback){
+
+
+        const updateObject = {
+            $set: setChanges
+        };
+
+        updateObject.$set.version = this.version + 1;
+        updateObject.$set.edition = {
+            username,
+            comment,
+            date: new Date()
+        };
+
+        Mapping.findOneAndUpdate({ _id: this._id }, updateObject, callback);
+
+
+    };
     /**
      * Archives the mapping into the mappingHistory collection and deletes the document
      * from the real collection.
