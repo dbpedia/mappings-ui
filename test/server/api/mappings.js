@@ -2,7 +2,7 @@
 const MappingsPlugin = require('../../../server/api/mappings');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAdmin = require('../fixtures/credentials-admin');
-//const AuthenticatedUser = require('../fixtures/credentials-account');
+const AuthenticatedUser = require('../fixtures/credentials-account');
 //const AuthenticatedCustom = require('../fixtures/credentials-custom-account');
 
 const Code = require('code');
@@ -216,4 +216,97 @@ lab.experiment('Mappings Plugin Result List', () => {
     });
 });
 
+
+lab.experiment('Mappings Plugin Read', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'GET',
+            url: '/mappings/template/en',
+            credentials: AuthenticatedUser
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when find by id fails', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(Error('find by id failed'));
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns a not found when find by id misses', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback();
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(404);
+            Code.expect(response.result.message).to.match(/document not found/i);
+
+            done();
+        });
+    });
+
+
+    lab.test('it returns a document successfully', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            const res = {
+                _id: { template: 'template', lang: 'en' },
+                hydrateStats: function (cb){
+
+                    cb(null, {} );
+                }
+            };
+            callback(null, res);
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+
+    lab.test('it returns error when hydrate fails', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            const res = {
+                _id: { template: 'template', lang: 'en' },
+                hydrateStats: function (cb){
+
+                    cb({}, null );
+                }
+            };
+            callback(null, res);
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            Code.expect(response.result).to.be.an.object();
+
+            done();
+        });
+    });
+});
 

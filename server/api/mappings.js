@@ -74,11 +74,7 @@ internals.applyRoutes = function (server, next) {
                 const promises = [];
                 results.data.forEach((res) => {
 
-                    const p = hydrateStatsPromise(res)
-                        .then((r) => {
-
-                            return r;
-                        });
+                    const p = hydrateStatsPromise(res);
                     promises.push(p);
                 });
 
@@ -97,6 +93,45 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    server.route({
+        method: 'GET',
+        path: '/mappings/{template}/{lang}',
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+        },
+        handler: function (request, reply) {
+
+            //const fields = Mapping.fieldsAdapter(''); //We return everything
+            const _id = { template: request.params.template, lang:request.params.lang };
+            Mapping.findOne({ _id }, (err, mapping) => {
+
+                if (err) {
+                    return reply(err);
+                }
+
+                if (!mapping) {
+                    return reply(Boom.notFound('Document not found.'));
+                }
+
+                //Now, we hydrate
+                hydrateStatsPromise(mapping)
+                    .then( () => {
+
+                        reply(mapping);
+                    })
+                    .catch( () => {
+
+                        return reply(Boom.internal('Error obtaining stats for mapping from DB'));
+                    });
+
+            });
+
+        }
+    });
 
 
     next();
