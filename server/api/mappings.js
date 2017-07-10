@@ -141,7 +141,8 @@ internals.applyRoutes = function (server, next) {
         config: {
             //Only authenticated users can create mappings
             auth: {
-                strategy: 'session'
+                strategy: 'session',
+                scope: ['111111111111111111111111', '000000000000000000000000']
             },
             validate: {
                 payload: {
@@ -203,6 +204,114 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
+
+    /**
+     * First, finds the document. Then, copies it to history. Finally, updates the active document.
+     */
+    server.route({
+        method: 'PUT',
+        path: '/mappings/{template}/{lang}',
+        config: {
+            auth: {
+                strategy: 'session',
+                scope: ['111111111111111111111111', '000000000000000000000000']
+            },
+            validate: {
+                payload: {
+                    rml: Joi.string().required().allow(''),
+                    comment: Joi.string().required().allow('')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            const rml = request.payload.rml;
+            const comment = request.payload.comment;
+            const _id = {
+                template: request.params.template,
+                lang: request.params.lang
+            };
+            const update = { rml };
+            const username = request.auth.credentials.user.username;
+
+
+            if (rml.length > charLimit){
+                return reply(Boom.conflict('RML size must be at most ' + charLimit + ' characters long'));
+            }
+
+            /* First, find the document */
+            Mapping.findOne({ _id }, (err,mapping) => {
+
+
+                if (err){
+                    return reply(Boom.internal('Error while finding mapping'));
+                }
+
+                if (!mapping){
+                    return reply(Boom.notFound('Mapping not found.'));
+                }
+
+                /*Then, archive the document */
+                mapping.archive(false, (err,res) => {
+
+                    if (err){
+                        return reply(Boom.internal('Error while archiving mapping'));
+                    }
+
+                    /*Finally, document is updated */
+                    mapping.update(update,username,comment, (err,updatedRes) => {
+
+                        if (err) {
+                            return reply(Boom.internal('Error while updating mapping'));
+                        }
+
+                        return reply(updatedRes);
+
+                    });
+
+                });
+            });
+        }
+    });
+
+    server.route({
+        method: 'DELETE',
+        path: '/mappings/{template}/{lang}',
+        config: {
+            auth: {
+                strategy: 'session'
+            }
+        },
+        handler: function (request, reply) {
+
+
+
+            const query = { _id: { template: request.params.template, lang: request.params.lang } };
+            Mapping.findOne(query, (err, mapping) => {
+
+                if (err) {
+                    return reply(Boom.internal('Error retrieving mappings'));
+                }
+
+                if (!mapping) {
+                    return reply(Boom.notFound('Mapping not found.'));
+                }
+
+                //Archive and mark as deleted. Automatically deleted from main collection
+                mapping.archive(true, (err, res) => {
+
+                    if (err) {
+                        return reply(Boom.internal('Error archiving the old mapping.'));
+                    }
+
+                    reply({ success:true });
+                });
+
+
+            });
+        }
+    });
+
 
     next();
 };

@@ -393,14 +393,14 @@ lab.experiment('Mapping Plugin Create', () => {
         });
     });
 
-    /*lab.test('it creates a document successfully', (done) => {
+    lab.test('it creates a mapping successfully', (done) => {
 
-        stub.Post.create = function (title,markdown, username, visible, callback) {
+        stub.Mapping.create = function (template,lang,rml,username,comment, callback) {
 
-            callback(null, { title,markdown,lastEditor:username,visible });
+            callback(null, { _id: { template,lang }, rml, edition: { username,comment,date: new Date() }, version:1  });
         };
 
-        stub.Post.findOne = function (id, callback) {
+        stub.Mapping.findOne = function (id, callback) {
 
             callback();
         };
@@ -409,63 +409,263 @@ lab.experiment('Mapping Plugin Create', () => {
 
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result).to.be.an.object();
-            Code.expect(response.result.title).to.equal('Test Post');
-            Code.expect(response.result.markdown).to.equal('**Test Text**');
-            Code.expect(response.result.visible).to.equal(true);
-            Code.expect(response.result.lastEditor).to.equal('admin');
-
+            Code.expect(response.result._id.template).to.equal('test-template');
+            Code.expect(response.result._id.lang).to.equal('en');
+            Code.expect(response.result.rml).to.equal('rml');
+            Code.expect(response.result.version).to.equal(1);
             done();
         });
     });
 
 
-    lab.test('it returns an error when no needed permission', (done) => {
+    lab.test('it redirects when no authenticated', (done) => {
 
         request = {
             method: 'POST',
-            url: '/posts',
+            url: '/mappings',
             payload: {
-                title: 'Test Post',
-                markdown: '**Test Text**',
-                visible: true
+                template: 'test-template',
+                lang: 'en',
+                rml: 'rml'
+            }
+        };
+
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(302);
+            done();
+        });
+    });
+});
+
+
+lab.experiment('Mapping Plugin Update', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/mappings/template/en',
+            payload: {
+                rml: 'updated-rml',
+                comment: 'changes'
+            },
+            credentials: AuthenticatedUser
+        };
+
+        done();
+    });
+
+
+    lab.test('it returns an error when update fails in findOne', (done) => {
+
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback({},null);
+
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+    lab.test('it returns an error when update fails in archive', (done) => {
+
+
+        stub.Mapping.findOne = function (id, callback) {
+
+
+            callback(null,{
+                archive: function (del, c2){
+
+                    c2({},null);
+                }
+            });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+    lab.test('it returns an error when update fails in update', (done) => {
+
+
+        stub.Mapping.findOne = function (id, callback) {
+
+
+            callback(null,{
+                archive: function (del, c2){
+
+                    c2(null,{});
+                },
+                update: function (update,username,comment,c3){
+
+                    c3({},null);
+                }
+            });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+    lab.test('it returns an error when rml is more than limit', (done) => {
+
+        let moreThanLimit = '';
+        for (let i = 0; i <= charLimit; i = i + 1){
+            moreThanLimit += 'a';
+        }
+        request = {
+            method: 'PUT',
+            url: '/mappings/template/en',
+            payload: {
+                rml: moreThanLimit,
+                comment: 'changes'
             },
             credentials: AuthenticatedUser
         };
 
 
+
         server.inject(request, (response) => {
 
-            Code.expect(response.statusCode).to.equal(403);
+            Code.expect(response.statusCode).to.equal(409);
             done();
         });
     });
 
 
-    lab.test('it returns correctly when account and has can-create-posts permission', (done) => {
 
 
-        request = {
-            method: 'POST',
-            url: '/posts',
-            payload: {
-                title: 'Test Post',
-                markdown: '**Test Text**',
-                visible: true
-            },
-            credentials:   AuthenticatedCustom(['can-create-posts'])
+    lab.test('it returns not found when find by id misses', (done) => {
+
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,null);
         };
 
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+    lab.test('it updates a document successfully', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,{
+                _id: { template:'template','lang':'en' },
+                archive: function (del,cb){
+
+                    cb(null,{});
+                },
+                update: function (update,username,comment,cb2){
+
+                    Code.expect(update.rml).to.equal('updated-rml');
+                    Code.expect(username).to.equal('account');
+                    Code.expect(comment).to.equal('changes');
+
+                    cb2(null,{});
+                }
+
+            });
+        };
+
+        server.inject(request, (response) => {
+
+            done();
+        });
+    });
 
 
+
+});
+
+
+lab.experiment('Mapping Plugin Delete', () => {
+
+    lab.beforeEach((done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/mappings/template/en',
+            credentials: AuthenticatedUser
+        };
+
+        done();
+    });
+
+    lab.test('it returns an error when delete by id fails', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback({},null);
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(500);
+            done();
+        });
+    });
+
+
+
+    lab.test('it returns a not found when delete by id misses', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,null);
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+
+    lab.test('it deletes (archives) a document successfully', (done) => {
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,{
+                _id: { template:'template','lang':'en' },
+                archive: function (del,cb){
+
+                    Code.expect(del).to.be.true();
+                    cb(null,{});
+                }
+
+            });
+        };
 
         server.inject(request, (response) => {
 
             Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result.success).to.be.true();
+
             done();
         });
     });
-
-*/
-
 });
+
+
 

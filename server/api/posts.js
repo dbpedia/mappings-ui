@@ -359,10 +359,7 @@ internals.applyRoutes = function (server, next) {
             auth: {
                 strategy: 'session'
             },
-            validate: {
-                //Account and Admin groups cannot be removed
-                //Todo: home page can't be removed
-            },
+
             pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-posts'),
                 (request,reply) => {
 

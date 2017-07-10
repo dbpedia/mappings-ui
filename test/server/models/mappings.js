@@ -346,16 +346,10 @@ lab.experiment('Mapping Instance Methods', () => {
 
     lab.test('it correctly archives with delete=false',(done) => {
 
-        const realDelete = Mapping.findOneAndDelete;
-        Mapping.findOneAndDelete = function (query, callback){
-
-            Mapping.findOneAndDelete = realDelete;
-            callback(null,{});
-        };
-
         const realCreate = stub.MappingHistory.create;
         stub.MappingHistory.create = function (document,deleted, callback) {
 
+            stub.MappingHistory.create = realCreate;
             callback(null, { deleted });
         };
 
@@ -369,14 +363,13 @@ lab.experiment('Mapping Instance Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(res.deleted).to.be.false();
-            stub.MappingHistory.create = realCreate;
             done();
         });
 
 
     });
 
-    lab.test('it correctly archives with delete=true',(done) => {
+    lab.test('it correctly archives and deletes from original collection with delete=true',(done) => {
 
         const realDelete = Mapping.findOneAndDelete;
         Mapping.findOneAndDelete = function (query, callback){
@@ -388,6 +381,7 @@ lab.experiment('Mapping Instance Methods', () => {
         const realCreate = stub.MappingHistory.create;
         stub.MappingHistory.create = function (document,deleted, callback) {
 
+            stub.MappingHistory.create = realCreate;
             callback(null, { deleted });
         };
 
@@ -401,7 +395,6 @@ lab.experiment('Mapping Instance Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(res.deleted).to.be.true();
-            stub.MappingHistory.create = realCreate;
             done();
         });
 
@@ -409,7 +402,7 @@ lab.experiment('Mapping Instance Methods', () => {
     });
 
 
-    lab.test('it returns an error when archive fails (Create Mapping History)',(done) => {
+    lab.test('it returns an error when archive fails (Creating Mapping History)',(done) => {
 
         const realDelete = Mapping.findOneAndDelete;
         Mapping.findOneAndDelete = function (query, callback){
@@ -421,6 +414,7 @@ lab.experiment('Mapping Instance Methods', () => {
         const realCreate = stub.MappingHistory.create;
         stub.MappingHistory.create = function (document,deleted, callback) {
 
+            stub.MappingHistory.create = realCreate;
             callback({}, null);
         };
 
@@ -433,7 +427,6 @@ lab.experiment('Mapping Instance Methods', () => {
         mapping.archive(true, (err,res) => {
 
             Code.expect(err).to.exist();
-            stub.MappingHistory.create = realCreate;
             done();
         });
 
@@ -452,6 +445,7 @@ lab.experiment('Mapping Instance Methods', () => {
         const realCreate = stub.MappingHistory.create;
         stub.MappingHistory.create = function (document,deleted, callback) {
 
+            stub.MappingHistory.create = realCreate;
             callback(null, {});
         };
 
@@ -464,7 +458,7 @@ lab.experiment('Mapping Instance Methods', () => {
         mapping.archive(true, (err,res) => {
 
             Code.expect(err).to.exist();
-            stub.MappingHistory.create = realCreate;
+
             done();
         });
 
@@ -485,7 +479,7 @@ lab.experiment('Mapping Instance Methods', () => {
                 numOcurrences: 12
             };
 
-
+            stub.CurrentMappingStats.findOne = realFind;
             callback(null, stats);
         };
 
@@ -501,8 +495,6 @@ lab.experiment('Mapping Instance Methods', () => {
             Code.expect(mapping.stats._id.template).to.be.equal('template');
             Code.expect(mapping.stats._id.lang).to.be.equal('en');
             Code.expect(mapping.stats.numOcurrences).to.be.equal(12);
-            stub.CurrentMappingStats.findOne = realFind;
-
             done();
         });
 
@@ -514,7 +506,7 @@ lab.experiment('Mapping Instance Methods', () => {
         const realFind = stub.CurrentMappingStats.findOne;
         stub.CurrentMappingStats.findOne = function (query, callback) {
 
-
+            stub.CurrentMappingStats.findOne = realFind;
             callback(null, null);
         };
 
@@ -528,9 +520,6 @@ lab.experiment('Mapping Instance Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(mapping.stats).to.be.equal(null);
-
-            stub.CurrentMappingStats.findOne = realFind;
-
             done();
         });
 
@@ -542,7 +531,7 @@ lab.experiment('Mapping Instance Methods', () => {
         const realFind = stub.CurrentMappingStats.findOne;
         stub.CurrentMappingStats.findOne = function (query, callback) {
 
-
+            stub.CurrentMappingStats.findOne = realFind;
             callback({}, null);
         };
 
@@ -555,8 +544,6 @@ lab.experiment('Mapping Instance Methods', () => {
         mapping.hydrateStats((err) => {
 
             Code.expect(err).to.exist();
-            stub.CurrentMappingStats.findOne = realFind;
-
             done();
         });
 

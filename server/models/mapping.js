@@ -198,6 +198,7 @@ class Mapping extends MongoModels {
     update(setChanges,username,comment,callback){
 
 
+
         const updateObject = {
             $set: setChanges
         };
@@ -214,8 +215,8 @@ class Mapping extends MongoModels {
 
     };
     /**
-     * Archives the mapping into the mappingHistory collection and deletes the document
-     * from the real collection.
+     * Archives the mapping into the mappingHistory collection. Does not delete document from
+     * the original collection
      * In the callback, returns the created history object.
      */
     archive(deleted,callback){
@@ -226,6 +227,9 @@ class Mapping extends MongoModels {
                 return callback(err);
             }
 
+            if (!deleted){
+                return callback(null,res);
+            }
             Mapping.findOneAndDelete({ _id:{ template:this.template,lang:this.lang } }, (err,res2) => {
 
                 if (err){
