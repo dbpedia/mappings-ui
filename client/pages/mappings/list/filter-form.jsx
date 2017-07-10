@@ -115,7 +115,7 @@ class FilterForm extends React.Component {
                             <div className="col-sm-6">
                                 <TextControl
                                     name="minCompletion"
-                                    label="Min completion"
+                                    label="Min completion %"
                                     type="tel"
                                     value={this.props.state.minCompletion}
                                     onChange={this.props.linkInputState}
@@ -125,7 +125,7 @@ class FilterForm extends React.Component {
                             <div className="col-sm-6">
                                 <TextControl
                                     name="maxCompletion"
-                                    label="Max completion"
+                                    label="Max completion %"
                                     type="number"
                                     value={this.props.state.maxCompletion}
                                     onChange={this.props.linkInputState}
