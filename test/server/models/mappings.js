@@ -172,10 +172,6 @@ lab.experiment('Mapping Class Methods', () => {
             done();
         });
     });
-
-
-
-
 });
 
 

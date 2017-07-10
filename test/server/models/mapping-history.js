@@ -1,5 +1,6 @@
 'use strict';
 const MappingHistory = require('../../../server/models/mapping-history');
+const Mapping = require('../../../server/models/mapping');
 const Code = require('code');
 const Config = require('../../../config');
 const Lab = require('lab');
@@ -116,6 +117,107 @@ lab.experiment('MappingHistory Class Methods', () => {
 
             done();
         });
+    });
+
+    lab.test('it correctly restores a historic version when not in active',(done) => {
+
+        const realFindOne = MappingHistory.findOne;
+        MappingHistory.findOne = function (query,callback){
+
+            const _id = query._id;
+            const version = query.version;
+            const mockDoc = {
+                _id,
+                version,
+                templateFullName: 'Full Name',
+                rml: 'oldRml',
+                status: 'OLD-STATUS'
+            };
+            MappingHistory.findOne = realFindOne;
+            callback(null,mockDoc);
+        };
+
+        //In this case, no mapping in active mappings
+        const realMappingFindOne = Mapping.findOne;
+        Mapping.findOne = function (query,callback){
+
+            Mapping.findOne = realMappingFindOne;
+            callback(null,null);
+        };
+
+        const realCreateFromHistory = Mapping.createFromHistory;
+        Mapping.createFromHistory = function (doc,callback){
+
+            Code.expect(doc._id.template).to.be.equal('template');
+            Code.expect(doc._id.lang).to.be.equal('en');
+            Code.expect(doc.version).to.be.equal(1);
+            Code.expect(doc.status).to.be.equal('OLD-STATUS');
+            Code.expect(doc.rml).to.be.equal('oldRml');
+            Mapping.createFromHistory = realCreateFromHistory;
+            callback(null,{});
+        };
+
+        MappingHistory.restoreFromHistory('admin','template','en',1, (err,result) => {
+
+            Code.expect(err).to.not.exist();
+            done();
+        });
+
+
+
+    });
+
+    lab.test('it correctly restores a historic version when is in active',(done) => {
+
+        const realFindOne = MappingHistory.findOne;
+        MappingHistory.findOne = function (query,callback){
+
+            const _id = query._id;
+            const version = query.version;
+            const mockDoc = {
+                _id,
+                version,
+                templateFullName: 'Full Name',
+                rml: 'oldRml',
+                status: 'OLD-STATUS',
+                edition: {
+                    comment: 'Fixed bug'
+                }
+            };
+            MappingHistory.findOne = realFindOne;
+            callback(null,mockDoc);
+        };
+
+        //In this case, mapping is in active mappings
+        const realMappingFindOne = Mapping.findOne;
+        Mapping.findOne = function (query,callback){
+
+
+            Mapping.findOne = realMappingFindOne;
+            callback(null,{
+                archive: function (del,cb){
+
+                    cb(null,{});
+                },
+                update: function (set,username,comment,cb2){
+
+                    Code.expect(set.rml).to.be.equal('oldRml');
+                    Code.expect(set.status).to.be.equal('OLD-STATUS');
+                    Code.expect(username).to.be.equal('admin');
+                    Code.expect(comment).to.be.equal('Fixed bug (Restored from version 1).');
+                    cb2(null,{});
+                }
+            });
+        };
+
+        MappingHistory.restoreFromHistory('admin','template','en',1, (err,result) => {
+
+            Code.expect(err).to.not.exist();
+            done();
+        });
+
+
+
     });
 
 });
