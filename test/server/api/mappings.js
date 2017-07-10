@@ -151,7 +151,7 @@ lab.experiment('Mappings Plugin Result List', () => {
             callback(null, { data: [res,res,res] });
         };
 
-        request.url += '?template=test&lang=en&status=OK&username=user';
+        request.url += '?template=test&lang=en&status=OK&username=user&errored=false';
 
         server.inject(request, (response) => {
 

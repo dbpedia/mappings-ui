@@ -32,12 +32,6 @@ lab.experiment('MappingHistory Class Methods', () => {
         });
     });
 
-
-
-
-
-
-
     lab.test('it returns a new instance when create succeeds', (done) => {
 
         const mappingObject = {

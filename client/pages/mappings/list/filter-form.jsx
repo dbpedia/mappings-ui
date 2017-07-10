@@ -14,16 +14,21 @@ const propTypes = {
     state: PropTypes.object
 };
 const defaultValues = {
-    title: '',
-    sort: '-lastEdition.time',
+    template: '',
+    lang: '',
+    errored: '',
+    minCompletion: 0,
+    maxCompletion: 100,
+    sort: '-template',
     limit: '20',
     page: '1'
 };
 
 
 class FilterForm extends React.Component {
-    render() {
 
+
+    render() {
 
 
 
@@ -43,16 +48,18 @@ class FilterForm extends React.Component {
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
 
-                                    <option value="title">name &#9650;</option>
-                                    <option value="-title">name &#9660;</option>
-                                    <option value="lastEdition.time">ocurrences &#9650;</option>
-                                    <option value="-lastEdition.time">ocurrences &#9660;</option>
-                                    <option value="lastEdition.time">properties &#9650;</option>
-                                    <option value="-lastEdition.time">properties &#9660;</option>
-                                    <option value="lastEdition.time">completion &#9650;</option>
-                                    <option value="-lastEdition.time">completion &#9660;</option>
-                                    <option value="lastEdition.time">status &#9650;</option>
-                                    <option value="-lastEdition.time">status &#9660;</option>
+                                    <option value="_id.template">name &#9650;</option>
+                                    <option value="-_id.template">name &#9660;</option>
+                                    <option value="_id.lang">language &#9650;</option>
+                                    <option value="-_id.lang">language &#9660;</option>
+                                    <option value="stats.numOcurrences">ocurrences &#9650;</option>
+                                    <option value="-stats.numOcurrences">ocurrences &#9660;</option>
+                                    <option value="stats.numProperties">properties &#9650;</option>
+                                    <option value="-stats.numProperties">properties &#9660;</option>
+                                    <option value="status.message">status &#9650;</option>
+                                    <option value="-status.message">status &#9660;</option>
+                                    <option value="stats.completionPercentage">completion &#9650;</option>
+                                    <option value="-stats.completionPercentage">completion &#9660;</option>
 
                                 </SelectControl>
                             </div>
@@ -76,29 +83,32 @@ class FilterForm extends React.Component {
                         <div className="row">
                             <div className="col-sm-12">
                                 <MappingLangSelector
-                                    selectedLang={this.props.state.mappingsLang}
+                                    name="lang"
+                                    selectedLang={this.props.state.lang}
+                                    onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}
                                 />
 
                             </div>
                             <div className="col-sm-12">
                                 <TextControl
-                                    name="name"
+                                    name="template"
                                     label="Name"
-                                    value={this.props.state.name}
+                                    value={this.props.state.template}
+                                    onChange={this.props.linkInputState}
                                     disabled={this.props.loading}
                                 />
                             </div>
                             <div className="col-sm-12">
                                 <SelectControl
-                                    name="status"
+                                    name="errored"
                                     label="Status"
-                                    value={this.props.state.status}
+                                    value={this.props.state.errored}
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
                                     <option value="">Any</option>
-                                    <option value="true">OK</option>
-                                    <option value="false">Errored</option>
+                                    <option value="false">OK</option>
+                                    <option value="true">Errored</option>
 
                                 </SelectControl>
                             </div>
@@ -106,7 +116,8 @@ class FilterForm extends React.Component {
                                 <TextControl
                                     name="minCompletion"
                                     label="Min completion"
-                                    value={0.00}
+                                    type="tel"
+                                    value={this.props.state.minCompletion}
                                     onChange={this.props.linkInputState}
                                     disabled={this.props.loading}
                                 />
@@ -115,7 +126,8 @@ class FilterForm extends React.Component {
                                 <TextControl
                                     name="maxCompletion"
                                     label="Max completion"
-                                    value={100.00}
+                                    type="number"
+                                    value={this.props.state.maxCompletion}
                                     onChange={this.props.linkInputState}
                                     disabled={this.props.loading}
                                 />

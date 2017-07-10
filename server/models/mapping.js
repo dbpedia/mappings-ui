@@ -41,7 +41,10 @@ class Mapping extends MongoModels {
                 },
                 rml,
                 templateFullName,
-                status: 'PENDING',
+                status: {
+                    error: false,
+                    message: 'PENDING'
+                },
                 edition: {
                     username,
                     date: modificationName,
@@ -199,6 +202,10 @@ class Mapping extends MongoModels {
             }
 
             this.stats = results;
+            if (this.stats){
+                this.stats.completionPercentage = (this.stats.numMappedProperties * 100 / this.stats.numProperties).toFixed(2);
+            }
+
 
             callback(null,this.stats);
         });
@@ -272,7 +279,10 @@ Mapping.schema = Joi.object().keys({
     templateFullName: Joi.string().required(), //Original template Name, according to Wikipedia. Used to interact with wikipedia
     version: Joi.number().required(),
     rml: Joi.string().required(),
-    status: Joi.string(),
+    status: Joi.object().keys({
+        error: Joi.bool().required(),
+        message: Joi.string()
+    }),
     edition: Joi.object().keys({
         username: Joi.string().required(),
         date: Joi.date().required(),

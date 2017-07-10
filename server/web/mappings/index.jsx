@@ -21,7 +21,7 @@ class PostsList extends React.Component {
 
         return (
             <Layout
-                title="Posts List"
+                title="Mappings"
                 neck={neck}
                 feet={feet}
                 activeTab="mappings"

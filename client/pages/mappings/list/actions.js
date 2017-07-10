@@ -22,6 +22,7 @@ class Actions {
 
     static changeSearchQuery(data, history) {
 
+
         history.push({
             pathname: '/mappings',
             search: `?${Qs.stringify(data)}`

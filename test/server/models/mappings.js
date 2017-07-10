@@ -147,7 +147,10 @@ lab.experiment('Mapping Class Methods', () => {
                 lang: 'en'
             },
             rml: 'rml',
-            status: 'PENDING',
+            status: {
+                error: false,
+                message: 'PENDING'
+            },
             edition: {
                 username: 'user',
                 date,
@@ -163,7 +166,8 @@ lab.experiment('Mapping Class Methods', () => {
             Code.expect(result).to.be.an.instanceOf(Mapping);
             Code.expect(result._id.template).to.be.equal('template');
             Code.expect(result.rml).to.be.equal('rml');
-            Code.expect(result.status).to.be.equal('PENDING');
+            Code.expect(result.status.error).to.be.false();
+            Code.expect(result.status.message).to.be.equal('PENDING');
             Code.expect(result.edition.username).to.be.equal('user');
             Code.expect(result.edition.date).to.be.equal(date);
             Code.expect(result.edition.comment).to.be.equal('comment (Restored from version ' + 3 + ').');

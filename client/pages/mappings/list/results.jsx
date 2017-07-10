@@ -10,7 +10,11 @@ const propTypes = {
 
 const calculatePercentage = function (record){
 
-    return (record.numMappedProperties * 100 / record.numProperties).toFixed(2);
+    if (!record.stats) {
+        return '-';
+    }
+
+    return (record.stats.numMappedProperties * 100 / record.stats.numProperties).toFixed(2);
 };
 
 /**
@@ -83,11 +87,11 @@ class Results extends React.Component {
         const rows = this.props.data.map((record) => {
 
             return (
-                <tr key={record._id} className={ rowBackground(record) }>
-                    <td>{record.lang}</td>
-                    <td>{record.name}</td>
-                    <td className="hidden-xs hidden-sm">{record.numOcurrences}</td>
-                    <td className="hidden-xs hidden-sm">{record.numProperties}</td>
+                <tr key={record._id.template} className={ rowBackground(record) }>
+                    <td>{record._id.lang}</td>
+                    <td>{record.templateFullName}</td>
+                    <td className="hidden-xs hidden-sm">{record.stats ? record.stats.numOcurrences : '-'}</td>
+                    <td className="hidden-xs hidden-sm">{record.stats ? record.stats.numProperties : '-'}</td>
 
                     <td>
                         <div className="progress">
@@ -101,14 +105,14 @@ class Results extends React.Component {
                     <td>
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`posts/edit/${record.postId}`}>
+                            to={`mappings/edit/${record._id.template}`}>
 
                             <i className="fa fa-pencil" aria-hidden="true"></i>
                         </Link>
 
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`posts/view/${record.postId}`}>
+                            to={`mappings/view/${record._id.template}`}>
                             <i className="fa fa-eye" aria-hidden="true"></i>
                         </Link>
                     </td>

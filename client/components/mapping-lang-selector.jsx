@@ -8,7 +8,9 @@ const ControlGroup = require('./form/control-group.jsx');
 const propTypes = {
     selectedLang: PropTypes.string, //Value selected now
     callback: PropTypes.func,        //Will be called with new value,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    onChange: PropTypes.func, //Will be called with the whole event,
+    name: PropTypes.string
 };
 
 
@@ -16,18 +18,28 @@ class MappingLangSelector extends React.Component {
 
 
 
+    value() {
+
+        return this.input.value;
+    }
+
     //Function that calls the parent and passes the new value.
     //Then, the parent updates the passed prop and the select updates.
     //No state is stored here, but in the parent.
     selectHandler(event){
-        this.props.callback(event.target.value);
+        if (this.props.callback){
+            this.props.callback(event.target.value);
+        }
+        if (this.props.onChange){
+            this.props.onChange(event);
+        }
     }
 
     render() {
 
 
         const languages = [
-            { tag: 'all', name: 'All languages' },
+            { tag: '', name: 'All languages' },
             { tag: 'ar', name: 'Arabic' },
             { tag: 'az', name: 'Azeri' },
             { tag: 'be', name: 'Belarusian' },
@@ -83,7 +95,13 @@ class MappingLangSelector extends React.Component {
 
         const optionElems = [];
         languages.forEach( (elem) => {
-            optionElems.push(<option value={elem.tag} key={elem.tag}>{elem.name} ({elem.tag})</option>);
+            if (elem.tag && elem.tag.length > 0 ){
+                optionElems.push(<option value={elem.tag} key={elem.tag}>{elem.name} ({elem.tag})</option>);
+            }
+            else {
+                optionElems.push(<option value={elem.tag} key={elem.tag}>{elem.name}</option>);
+            }
+
         });
 
         return (
@@ -91,7 +109,7 @@ class MappingLangSelector extends React.Component {
         <ControlGroup hideLabel={true} hideHelp={true}>
             <b>Mapping language:</b>
 
-            <select   disabled={this.props.disabled ? 'disabled' : undefined} className="form-control language-select" value={this.props.selectedLang} onChange={(ev) => this.selectHandler(ev)}>
+            <select  ref={(c) => (this.input = c)} name={this.props.name} disabled={this.props.disabled ? 'disabled' : undefined} className="form-control language-select" value={this.props.selectedLang} onChange={(ev) => this.selectHandler(ev)}>
                 {optionElems}
             </select>
         </ControlGroup>

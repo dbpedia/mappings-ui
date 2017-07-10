@@ -13,6 +13,40 @@ internals.applyRoutes = function (server, next) {
     const charLimit = Config.get('/mappings/charLimit');
 
 
+    const sortByStat = function (array,attr,asc){
+
+        array.sort((a, b) => {
+
+            let aData;
+            let bData;
+            if (!a.stats){
+                aData = 0;
+            }
+            else {
+                aData = a.stats[attr];
+                if (!aData) {
+                    aData = 0;
+                }
+            }
+
+            if (!b.stats){
+                bData = 0;
+            }
+            else {
+                bData = b.stats[attr];
+                if (!bData) {
+                    bData = 0;
+                }
+            }
+            if (asc){
+                return parseFloat(aData) - parseFloat(bData);
+            }
+
+            return parseFloat(bData) - parseFloat(aData);
+        });
+
+
+    };
     server.route({
         method: 'GET',
         path: '/mappings',
@@ -32,9 +66,12 @@ internals.applyRoutes = function (server, next) {
                     template: Joi.string().allow(''),
                     lang: Joi.string().allow(''),
                     username: Joi.string().allow(''),
+                    minCompletion: Joi.number().default(0),
+                    maxCompletion: Joi.number().default(100),
+                    errored: Joi.string().allow(''),
                     status: Joi.string().allow(''),
                     fields: Joi.string(),
-                    sort: Joi.string().default('template'),
+                    sort: Joi.string().default('-_id.template'),
                     limit: Joi.number().default(20),
                     page: Joi.number().default(1)
                 }
@@ -54,11 +91,18 @@ internals.applyRoutes = function (server, next) {
                 query['edition.username'] = new RegExp('^.*?' + EscapeRegExp(request.query.username) + '.*$', 'i');
             }
             if (request.query.status) {
-                query.status = new RegExp('^.*?' + EscapeRegExp(request.query.status) + '.*$', 'i');
+                query['status.message'] = new RegExp('^.*?' + EscapeRegExp(request.query.status) + '.*$', 'i');
+            }
+            if (request.query.errored) {
+                query['status.error'] = request.query.errored === 'true';
             }
 
             const fields = Mapping.fieldsAdapter('_id status edition stats templateFullName');
             const sort = request.query.sort;
+
+            const minCompletion = request.query.minCompletion;
+            const maxCompletion = request.query.maxCompletion;
+
             const limit = request.query.limit;
             const page = request.query.page;
 
@@ -83,6 +127,29 @@ internals.applyRoutes = function (server, next) {
 
                 Promise.all(promises)
                     .then( () => {
+
+                        //Sort fields inside stats. As at most will be 20 per page, no performance problem
+                        if (sort.indexOf('stats') > -1){
+
+                            const statsIndex = sort.indexOf('stats');
+                            const fieldToSort = sort.substring(statsIndex + 'stats'.length + 1,sort.length);
+                            const isAsc = sort[0] !== '-';
+                            sortByStat(results.data,fieldToSort,isAsc);
+                        }
+
+                        if (minCompletion > 0 || maxCompletion < 100){ //We have to filter out based on completionPercentage
+                            results.data =  results.data.filter((val) => {
+
+                                let per;
+                                if (!val.stats || !val.stats.completionPercentage){
+                                    per = 0;
+                                }
+                                else {
+                                    per = val.stats.completionPercentage;
+                                }
+                                return (minCompletion <= per && maxCompletion >= per);
+                            });
+                        }
 
                         reply(results);
                     })

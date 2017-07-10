@@ -17,7 +17,7 @@ const propTypes = {
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     type: PropTypes.string,
-    value: PropTypes.string
+    value: PropTypes.any
 };
 const defaultProps = {
     type: 'text',
