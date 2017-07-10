@@ -65,10 +65,12 @@ lab.experiment('Mapping Class Methods', () => {
 
     lab.test('it returns a new instance when create succeeds', (done) => {
 
-        Mapping.create('Writer','en','RML','user','edition comment', (err, result) => {
+        Mapping.create('Writer with spaces','en','RML','user','edition comment', (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(Mapping);
+            Code.expect(result._id.template).to.be.equal('Writer_with_spaces');
+            Code.expect(result.templateFullName).to.be.equal('Writer with spaces');
 
             done();
         });

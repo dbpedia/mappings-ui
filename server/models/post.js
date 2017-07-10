@@ -58,12 +58,6 @@ class Post extends MongoModels {
         this.findOne(query, callback);
     }
 
-
-
-
-
-
-
     static idFromTitle(title){
 
         return Slug(title).toLowerCase();

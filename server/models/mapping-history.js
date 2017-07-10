@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
-const Mapping = require('./mapping');
 
 //Represents a Mapping Archived Version (basic information, without stats)
 class MappingHistory extends MongoModels {
@@ -15,6 +14,7 @@ class MappingHistory extends MongoModels {
                 template: mappingObject._id.template,
                 lang: mappingObject._id.lang
             },
+            templateFullName: mappingObject.templateFullName,
             rml: mappingObject.rml,
             status: mappingObject.status,
             edition: {
@@ -41,15 +41,6 @@ class MappingHistory extends MongoModels {
         super(attrs);
     }
 
-    //Warning: call archive in the current mapping in the mappings collection before restoring from history
-    //Todo: test. maybe we can skip it and call Mapping.crateFromHistory directly
-    restore(callback){
-
-        Mapping.createFromHistory(this,callback);
-
-    }
-
-
     //Todo: restoreFromHistory(template,lang,rev) that checks flow, etc.
 
 }
@@ -63,6 +54,7 @@ MappingHistory.schema = Joi.object().keys({
         template: Joi.string(),
         lang: Joi.string()
     }),
+    templateFullName: Joi.string().required(),
     version: Joi.number().required(),
     rml: Joi.string().required(),
     status: Joi.string(),

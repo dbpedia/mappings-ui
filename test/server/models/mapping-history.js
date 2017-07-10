@@ -40,9 +40,10 @@ lab.experiment('MappingHistory Class Methods', () => {
     lab.test('it returns a new instance when create succeeds', (done) => {
 
         const mappingObject = {
-            _id: { template: 'Test1', lang: 'en' },
+            _id: { template: 'Test_1', lang: 'en' },
             rml: 'RML',
             status: 'PENDING',
+            templateFullName: 'Test 1',
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
         };
 
@@ -54,6 +55,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             Code.expect(result.rml).to.be.equal(mappingObject.rml);
             Code.expect(result.status).to.be.equal(mappingObject.status);
             Code.expect(result.edition).to.be.equal(mappingObject.edition);
+            Code.expect(result.templateFullName).to.be.equal(mappingObject.templateFullName);
             Code.expect(result.deleted).to.be.equal(false);
 
             done();
@@ -67,6 +69,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             _id: { template: 'Test2', lang: 'en' },
             rml: 'RML',
             status: 'PENDING',
+            templateFullName: 'Test 2',
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
         };
 
@@ -78,6 +81,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             Code.expect(result.rml).to.be.equal(mappingObject.rml);
             Code.expect(result.status).to.be.equal(mappingObject.status);
             Code.expect(result.edition).to.be.equal(mappingObject.edition);
+            Code.expect(result.templateFullName).to.be.equal(mappingObject.templateFullName);
             Code.expect(result.deleted).to.be.equal(true);
 
             done();

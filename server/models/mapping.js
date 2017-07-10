@@ -3,6 +3,8 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const CurrentMappingStats = require('./currentMappingStats');
 const MappingHistory = require('./mapping-history');
+const Slug = require('slug');
+
 //Represents a Mapping (basic information, without stats)
 class Mapping extends MongoModels {
 
@@ -10,10 +12,11 @@ class Mapping extends MongoModels {
 
     /**
      * Used to create a new mapping, not to update it.
+     * Template is the name of the template according to Wikipedia
      */
-    static create(template,lang,rml,username,comment,callback){
+    static create(templateFullName,lang,rml,username,comment,callback){
 
-        Mapping.getLastVersion(template,lang, (err,res) => {
+        Mapping.getLastVersion(templateFullName,lang, (err,res) => {
 
             if (err){
                 return callback(err);
@@ -21,6 +24,8 @@ class Mapping extends MongoModels {
 
             const nextVersion = res + 1;
             const modificationName = new Date();
+            const url = Mapping.urlFromTemplate(templateFullName);
+
             if (!rml){
                 rml = '';
             }
@@ -31,10 +36,11 @@ class Mapping extends MongoModels {
 
             const document = {
                 _id: {
-                    template,
+                    template: url,
                     lang
                 },
                 rml,
+                templateFullName,
                 status: 'PENDING',
                 edition: {
                     username,
@@ -67,6 +73,7 @@ class Mapping extends MongoModels {
     /**
      * Returns the last version of the document, searching first in active mappings, and then on history.
      * If not found in none of them, returns -1.
+     * template is the slugged templateFullName
      */
     static getLastVersion(template,lang,callback){
 
@@ -113,6 +120,11 @@ class Mapping extends MongoModels {
 
     }
 
+    static urlFromTemplate(template){
+
+        return Slug(template,'_');
+
+    };
 
 
     /**
@@ -135,6 +147,7 @@ class Mapping extends MongoModels {
                     template: doc._id.template,
                     lang: doc._id.lang
                 },
+                templateFullName: doc.templateFullName,
                 rml: doc.rml,
                 status: doc.status,
                 edition: {
@@ -214,6 +227,8 @@ class Mapping extends MongoModels {
 
 
     };
+
+
     /**
      * Archives the mapping into the mappingHistory collection. Does not delete document from
      * the original collection
@@ -251,9 +266,10 @@ Mapping.collection  = 'mappings';
 Mapping.schema = Joi.object().keys({
     //Compound id, with template name and lang, as both are needed to identify a mapping
     _id: Joi.object().keys({
-        template: Joi.string(),
+        template: Joi.string(), //In URL format, where spaces are replaced with _, to have a pretty URL.
         lang: Joi.string()
     }),
+    templateFullName: Joi.string().required(), //Original template Name, according to Wikipedia. Used to interact with wikipedia
     version: Joi.number().required(),
     rml: Joi.string().required(),
     status: Joi.string(),

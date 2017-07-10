@@ -3,10 +3,10 @@ const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
 const Config = require('../../config');
+const Slug = require('slug');
 
 const internals = {};
 
-//TODO: Make that URLs are separated with -
 internals.applyRoutes = function (server, next) {
 
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
@@ -28,7 +28,7 @@ internals.applyRoutes = function (server, next) {
             },
             validate: {
                 query: {
-                    //Can search by template, lang, username that edited, status
+                    //Can search by template (full name), lang, username that edited, status
                     template: Joi.string().allow(''),
                     lang: Joi.string().allow(''),
                     username: Joi.string().allow(''),
@@ -44,7 +44,7 @@ internals.applyRoutes = function (server, next) {
 
             const query = {};
             if (request.query.template) {
-                query['_id.template'] = new RegExp('^.*?' + EscapeRegExp(request.query.template) + '.*$', 'i');
+                query.templateFullName = new RegExp('^.*?' + EscapeRegExp(request.query.template) + '.*$', 'i');
             }
             if (request.query.lang) {
                 query['_id.lang'] = new RegExp('^.*?' + EscapeRegExp(request.query.lang) + '.*$', 'i');
@@ -57,7 +57,7 @@ internals.applyRoutes = function (server, next) {
                 query.status = new RegExp('^.*?' + EscapeRegExp(request.query.status) + '.*$', 'i');
             }
 
-            const fields = Mapping.fieldsAdapter('_id status edition stats');
+            const fields = Mapping.fieldsAdapter('_id status edition stats templateFullName');
             const sort = request.query.sort;
             const limit = request.query.limit;
             const page = request.query.page;
@@ -108,7 +108,9 @@ internals.applyRoutes = function (server, next) {
         handler: function (request, reply) {
 
             //const fields = Mapping.fieldsAdapter(''); //We return everything
-            const _id = { template: request.params.template, lang:request.params.lang };
+
+            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
+            const _id = { template: sluggedId, lang:request.params.lang };
             Mapping.findOne({ _id }, (err, mapping) => {
 
                 if (err) {
@@ -225,10 +227,11 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
             const rml = request.payload.rml;
             const comment = request.payload.comment;
             const _id = {
-                template: request.params.template,
+                template: sluggedId,
                 lang: request.params.lang
             };
             const update = { rml };
@@ -286,7 +289,8 @@ internals.applyRoutes = function (server, next) {
 
 
 
-            const query = { _id: { template: request.params.template, lang: request.params.lang } };
+            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
+            const query = { _id: { template: sluggedId, lang: request.params.lang } };
             Mapping.findOne(query, (err, mapping) => {
 
                 if (err) {
