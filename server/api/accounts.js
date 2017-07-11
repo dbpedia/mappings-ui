@@ -160,7 +160,7 @@ internals.applyRoutes = function (server, next) {
                     email: Joi.string().email().lowercase().required(),
                     password: Joi.string().required(),
                     name: Joi.string().required(),
-                    mappingsLang: Joi.string().required()
+                    mappingsLang: Joi.string().required().allow('')
                 }
             },
             pre: [
@@ -371,7 +371,7 @@ internals.applyRoutes = function (server, next) {
                         last: Joi.string().allow('')
                     }).required(),
                     email: Joi.string().email().lowercase().required(),
-                    mappingsLang: Joi.string().lowercase().required()
+                    mappingsLang: Joi.string().lowercase().required().allow('')
                 },
                 params: {
                     id: Joi.string().invalid('111111111111111111111111')
@@ -494,7 +494,7 @@ internals.applyRoutes = function (server, next) {
                         last: Joi.string().allow('')
                     }).required(),
                     email: Joi.string().email().lowercase().required(),
-                    mappingsLang: Joi.string().lowercase().required()
+                    mappingsLang: Joi.string().lowercase().required().allow('')
                 }
             },
             pre: [

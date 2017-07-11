@@ -23,7 +23,9 @@ class Navbar extends React.Component {
             isAuthenticated: this.props.credentials && this.props.credentials.user,
             username: this.props.credentials && this.props.credentials.user && this.props.credentials.user.username,
             isAdmin: this.props.credentials && this.props.credentials.user && '111111111111111111111111' in this.props.credentials.user.groups,
-            permissions: this.props.credentials && this.props.credentials.user && this.props.credentials.user.permissions
+            permissions: this.props.credentials && this.props.credentials.user && this.props.credentials.user.permissions,
+            language: this.props.credentials && this.props.credentials.user && this.props.credentials.user.mappingsLang
+
         };
 
 
@@ -39,6 +41,18 @@ class Navbar extends React.Component {
 
 
 
+    getUserLanguage(){
+
+        if (this.state.isAuthenticated){
+            if (!this.state.language){
+                return '';
+            }
+            return this.state.language;
+        }
+
+        return 'en';
+
+    }
 
     hasPermission(perm){
 
@@ -50,6 +64,7 @@ class Navbar extends React.Component {
 
         return (
             <div className="navbar navbar-default navbar-fixed-top">
+
                 <div className="container">
                     <div className="navbar-header">
                         <a className="navbar-brand" href="/">
@@ -66,22 +81,9 @@ class Navbar extends React.Component {
                                 <a href="/">Home</a>
                             </li>
 
-                            { this.state.isAdmin &&
-                                <li className={this.tabClass('groups')}>
-                                    <a href="/groups">Groups</a>
-                                </li>
-                            }
-                            { this.state.isAdmin &&
-                                <li className={this.tabClass('accounts')}>
-                                    <a href="/accounts">Accounts</a>
-                                </li>
-                            }
 
-                            <li className={this.tabClass('posts')}>
-                                <a href="/posts">Help Posts</a>
-                            </li>
                             <li className={this.tabClass('mappings')}>
-                                <a href="/mappings">Mappings</a>
+                                <a href={'/mappings?lang=' + this.getUserLanguage()}>Mappings</a>
                             </li>
 
                             { this.state.isAuthenticated &&
@@ -89,11 +91,24 @@ class Navbar extends React.Component {
                                 <a href="http://ismaro3.ddns.net/webprotege/#projects/afdf9c97-ecba-4792-b066-2ac043e39859/edit/Classes">Edit Ontology</a>
                             </li>
                             }
+                            <li className={this.tabClass('posts')}>
+                                <a href="/posts">Help Posts</a>
+                            </li>
 
                         </ul>
                         <ul className="nav navbar-nav navbar-right">
 
 
+                            {this.state.isAdmin &&
+                                <li className={'dropdown ' + this.tabClass('accounts') + this.tabClass('groups')}>
+                                    <a className="dropdown-toggle"  role="button"
+                                       aria-haspopup="true" aria-expanded="false">Admin <span className="caret"></span></a>
+                                    <ul className="dropdown-menu">
+                                        <li className={this.tabClass('accounts')}><a href="/accounts">Accounts</a></li>
+                                        <li className={this.tabClass('groups')}><a href="/groups">Groups</a></li>
+                                    </ul>
+                                </li>
+                            }
 
                             { this.state.isAuthenticated &&
                                 <li className={this.tabClass('profile')}>

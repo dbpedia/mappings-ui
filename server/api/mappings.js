@@ -12,41 +12,6 @@ internals.applyRoutes = function (server, next) {
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
     const charLimit = Config.get('/mappings/charLimit');
 
-
-    const sortByStat = function (array,attr,asc){
-
-        array.sort((a, b) => {
-
-            let aData;
-            let bData;
-            if (!a.stats){
-                aData = 0;
-            }
-            else {
-                aData = a.stats[attr];
-                if (!aData) {
-                    aData = 0;
-                }
-            }
-
-            if (!b.stats){
-                bData = 0;
-            }
-            else {
-                bData = b.stats[attr];
-                if (!bData) {
-                    bData = 0;
-                }
-            }
-            if (asc){
-                return parseFloat(aData) - parseFloat(bData);
-            }
-
-            return parseFloat(bData) - parseFloat(aData);
-        });
-
-
-    };
     server.route({
         method: 'GET',
         path: '/mappings',
@@ -83,8 +48,8 @@ internals.applyRoutes = function (server, next) {
             if (request.query.template) {
                 query.templateFullName = new RegExp('^.*?' + EscapeRegExp(request.query.template) + '.*$', 'i');
             }
-            if (request.query.lang) {
-                query['_id.lang'] = new RegExp('^.*?' + EscapeRegExp(request.query.lang) + '.*$', 'i');
+            if (request.query.lang && request.query.lang.length > 0) {
+                query['_id.lang'] = new RegExp( EscapeRegExp(request.query.lang), 'i');
             }
             if (request.query.username) {
 
@@ -93,16 +58,34 @@ internals.applyRoutes = function (server, next) {
             if (request.query.status) {
                 query['status.message'] = new RegExp('^.*?' + EscapeRegExp(request.query.status) + '.*$', 'i');
             }
+
+            if (request.query.minCompletion && request.query.minCompletion > 0) {
+                if (query['stats.mappedPercentage']){
+                    query['stats.mappedPercentage'].$gte = '' + request.query.minCompletion;
+                }
+                else {
+                    query['stats.mappedPercentage'] = { $gte: '' + request.query.minCompletion };
+                }
+
+            }
+
+            if (request.query.maxCompletion && request.query.maxCompletion < 100) {
+                if (query['stats.mappedPercentage']){
+                    query['stats.mappedPercentage'].$lte = '' + request.query.maxCompletion;
+                }
+                else {
+                    query['stats.mappedPercentage'] = { $lte: '' + request.query.maxCompletion };
+                }
+
+            }
+
+
             if (request.query.errored) {
                 query['status.error'] = request.query.errored === 'true';
             }
 
             const fields = Mapping.fieldsAdapter('_id status edition stats templateFullName');
             const sort = request.query.sort;
-
-            const minCompletion = request.query.minCompletion;
-            const maxCompletion = request.query.maxCompletion;
-
             const limit = request.query.limit;
             const page = request.query.page;
 
@@ -116,47 +99,9 @@ internals.applyRoutes = function (server, next) {
                     return reply(results);
                 }
 
-                //Now, we have to populate.
-                const promises = [];
-                results.data.forEach((res) => {
 
-                    const p = hydrateStatsPromise(res);
-                    promises.push(p);
-                });
+                reply(results);
 
-
-                Promise.all(promises)
-                    .then( () => {
-
-                        //Sort fields inside stats. As at most will be 20 per page, no performance problem
-                        if (sort.indexOf('stats') > -1){
-
-                            const statsIndex = sort.indexOf('stats');
-                            const fieldToSort = sort.substring(statsIndex + 'stats'.length + 1,sort.length);
-                            const isAsc = sort[0] !== '-';
-                            sortByStat(results.data,fieldToSort,isAsc);
-                        }
-
-                        if (minCompletion > 0 || maxCompletion < 100){ //We have to filter out based on completionPercentage
-                            results.data =  results.data.filter((val) => {
-
-                                let per;
-                                if (!val.stats || !val.stats.completionPercentage){
-                                    per = 0;
-                                }
-                                else {
-                                    per = val.stats.completionPercentage;
-                                }
-                                return (minCompletion <= per && maxCompletion >= per);
-                            });
-                        }
-
-                        reply(results);
-                    })
-                    .catch( () => {
-
-                        return reply(Boom.internal('Error obtaining stats for mapping from DB'));
-                    });
 
             });
         }

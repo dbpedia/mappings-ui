@@ -43,12 +43,15 @@ class DefaultLayout extends React.Component {
         return (
             <html>
                 <head>
+
                     <title>{this.props.title}</title>
                     <meta charSet="utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <link rel="stylesheet" href="/public/core.min.css" />
                     <link rel="stylesheet" href="/public/layouts/default.min.css" />
                     <link rel="shortcut icon" href="/public/media/favicon.ico" />
+                    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+                    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
                     {this.props.neck}
                 </head>
                 <body>
@@ -71,8 +74,10 @@ class DefaultLayout extends React.Component {
                         </div>
                     </div>
                     <script src="/public/core.min.js"></script>
+
                     {this.props.feet}
                 </body>
+
             </html>
         );
     }

@@ -28,7 +28,7 @@ class Form extends React.Component {
             this.input.name.focus();
         }
 
-        this.setState({ mappingsLang:'all' });
+        this.setState({ mappingsLang:'en' });
     }
 
     componentWillUnmount() {

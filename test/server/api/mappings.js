@@ -191,31 +191,7 @@ lab.experiment('Mappings Plugin Result List', () => {
         });
     });
 
-    lab.test('it returns an error if fail while hydrating', (done) => {
 
-        stub.Mapping.pagedFind = function () {
-
-            const args = Array.prototype.slice.call(arguments);
-            const callback = args.pop();
-
-            const res = {
-                _id: { template: 'template', lang: 'en' },
-                hydrateStats: function (cb){
-
-                    cb({}, null );
-                }
-            };
-            callback(null, { data: [res,res,res] });
-        };
-
-
-        server.inject(request, (response) => {
-
-            Code.expect(response.statusCode).to.equal(500);
-
-            done();
-        });
-    });
 });
 
 

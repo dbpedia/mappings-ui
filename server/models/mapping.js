@@ -1,13 +1,11 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
-const CurrentMappingStats = require('./currentMappingStats');
 const MappingHistory = require('./mapping-history');
 const Slug = require('slug');
 
 //Represents a Mapping (basic information, without stats)
 class Mapping extends MongoModels {
-
 
 
     /**
@@ -34,6 +32,7 @@ class Mapping extends MongoModels {
                 comment = '';
             }
 
+            //Stats are empty yet
             const document = {
                 _id: {
                     template: url,
@@ -50,6 +49,8 @@ class Mapping extends MongoModels {
                     date: modificationName,
                     comment
                 },
+                stats: {
+                },
                 nextVersion
             };
 
@@ -59,14 +60,15 @@ class Mapping extends MongoModels {
                     return callback(err);
                 }
 
-                docs[0].hydrateStats( (err,stats) => {
+                callback(null,docs[0]);
+               /* docs[0].hydrateStats( (err,stats) => {
 
                     if (err){
                         return callback(err);
                     }
 
                     callback(null,docs[0]);
-                });
+                });*/
             });
 
         });
@@ -158,6 +160,7 @@ class Mapping extends MongoModels {
                     date: doc.edition.date,
                     comment: doc.edition.comment + ' (Restored from version ' + oldVersion + ').'
                 },
+                stats: doc.stats,
                 version: newVersion
             };
 
@@ -166,15 +169,16 @@ class Mapping extends MongoModels {
                 if (err) {
                     return callback(err);
                 }
+                callback(null,docs[0]);
 
-                docs[0].hydrateStats( (err,stats) => {
+               /* docs[0].hydrateStats( (err,stats) => {
 
                     if (err){
                         return callback(err);
                     }
 
                     callback(null,docs[0]);
-                });
+                });*/
             });
 
         });
@@ -187,7 +191,7 @@ class Mapping extends MongoModels {
 
     }
 
-    hydrateStats(callback) {
+    /*hydrateStats(callback) {
 
 
         if (this.stats) {
@@ -209,7 +213,7 @@ class Mapping extends MongoModels {
 
             callback(null,this.stats);
         });
-    }
+    }*/
 
     /**
      * Updates a mapping, setting the changes in the setChanges,
@@ -234,6 +238,9 @@ class Mapping extends MongoModels {
 
 
     };
+
+
+
 
 
     /**
@@ -287,6 +294,15 @@ Mapping.schema = Joi.object().keys({
         username: Joi.string().required(),
         date: Joi.date().required(),
         comment: Joi.string()
+    }),
+    stats: Joi.object().keys({
+        numOcurrences: Joi.number(),
+        numProperties: Joi.number(),
+        numMappedProperties: Joi.number(),
+        mappedPercentage: Joi.number(),
+        numPropertyOcurrences: Joi.number(),
+        numMappedPropertyOcurrences: Joi.number(),
+        numPropertiesNotFound: Joi.number()
     })
 });
 

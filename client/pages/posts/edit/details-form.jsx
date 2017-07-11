@@ -9,6 +9,10 @@ const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 const ReactMarkdown = require('react-markdown');
+//const Brace = require('brace').default;
+const AceEditor = require('react-ace').default;
+require('brace/mode/markdown');
+require('brace/theme/github');
 
 
 const propTypes = {
@@ -35,6 +39,11 @@ class DetailsForm extends React.Component {
             markdown: props.markdown,
             editing: true
         };
+    }
+
+    onChange(newValue) {
+
+        this.setState({ markdown:newValue });
     }
 
     onVisibleChange(event){
@@ -115,16 +124,19 @@ class DetailsForm extends React.Component {
                 </div>
             </div>
 
-            <ControlGroup hideLabel={true} hideHelp={true}>
-                <b>Content</b>
-                <textarea
-                    name="markdown"
-                    value={this.state.markdown}
-                    onChange={LinkState.bind(this)}
-                    className="form-control vertical-form"
-                    rows="10"
-                    id="markdown" ></textarea>
-            </ControlGroup>
+            <AceEditor
+                mode="markdown"
+                theme="github"
+                onChange={this.onChange.bind(this)}
+                name="edition"
+                value={this.state.markdown ? this.state.markdown : ''}
+                width="100%"
+                fontSize={15}
+                wrapEnabled={true}
+                maxLines={40}
+                editorProps={ { $blockScrolling: true } }
+            />
+
         </div>;
 
         const previewElements =    <div>
@@ -140,6 +152,7 @@ class DetailsForm extends React.Component {
 
 
             {tabs}
+
 
             {this.state.editing && editElements}
             {!this.state.editing && previewElements}

@@ -19,7 +19,7 @@ const defaultValues = {
     errored: '',
     minCompletion: 0,
     maxCompletion: 100,
-    sort: '-template',
+    sort: '-_id.template',
     limit: '20',
     page: '1'
 };

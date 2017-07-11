@@ -23,6 +23,7 @@ class MappingHistory extends MongoModels {
                 date: mappingObject.edition.date,
                 comment: mappingObject.edition.comment
             },
+            stats: mappingObject.stats,
             deleted
         };
 
