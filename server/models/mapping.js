@@ -2,7 +2,6 @@
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const MappingHistory = require('./mapping-history');
-const Slug = require('slug');
 
 //Represents a Mapping (basic information, without stats)
 class Mapping extends MongoModels {
@@ -22,7 +21,7 @@ class Mapping extends MongoModels {
 
             const nextVersion = res + 1;
             const modificationName = new Date();
-            const url = Mapping.urlFromTemplate(templateFullName);
+            const url = templateFullName;
 
             if (!rml){
                 rml = '';
@@ -125,11 +124,7 @@ class Mapping extends MongoModels {
 
     }
 
-    static urlFromTemplate(template){
 
-        return Slug(template,'_');
-
-    };
 
 
     /**
@@ -253,6 +248,7 @@ class Mapping extends MongoModels {
         MappingHistory.create(this,deleted, (err,res) => {
 
             if (err){
+                console.log(err);
                 return callback(err);
             }
 

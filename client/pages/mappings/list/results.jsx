@@ -105,14 +105,14 @@ class Results extends React.Component {
                     <td>
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`mappings/edit/${record._id.template}`}>
+                            to={`mappings/edit/${record._id.template}/${record._id.lang}`}>
 
                             <i className="fa fa-pencil" aria-hidden="true"></i>
                         </Link>
 
                         <Link
                             className="btn btn-default btn-sm btn-table"
-                            to={`mappings/view/${record._id.template}`}>
+                            to={`mappings/view/${record._id.template}/${record._id.lang}`}>
                             <i className="fa fa-eye" aria-hidden="true"></i>
                         </Link>
                     </td>

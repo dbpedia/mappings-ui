@@ -69,7 +69,7 @@ lab.experiment('Mapping Class Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(Mapping);
-            Code.expect(result._id.template).to.be.equal('Writer_with_spaces');
+            Code.expect(result._id.template).to.be.equal('Writer with spaces');
             Code.expect(result.templateFullName).to.be.equal('Writer with spaces');
 
             done();

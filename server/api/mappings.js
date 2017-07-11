@@ -121,8 +121,8 @@ internals.applyRoutes = function (server, next) {
 
             //const fields = Mapping.fieldsAdapter(''); //We return everything
 
-            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
-            const _id = { template: sluggedId, lang:request.params.lang };
+            //const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
+            const _id = { template: request.params.template, lang:request.params.lang };
             Mapping.findOne({ _id }, (err, mapping) => {
 
                 if (err) {
@@ -133,16 +133,8 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.notFound('Document not found.'));
                 }
 
-                //Now, we hydrate
-                hydrateStatsPromise(mapping)
-                    .then( () => {
+                reply(mapping);
 
-                        reply(mapping);
-                    })
-                    .catch( () => {
-
-                        return reply(Boom.internal('Error obtaining stats for mapping from DB'));
-                    });
 
             });
 
@@ -239,7 +231,7 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
+            const sluggedId =  request.params.template;
             const rml = request.payload.rml;
             const comment = request.payload.comment;
             const _id = {
@@ -333,22 +325,6 @@ internals.applyRoutes = function (server, next) {
 };
 
 
-const hydrateStatsPromise = function (mappingObject){
-
-    return new Promise((resolve, reject)  => {
-
-        mappingObject.hydrateStats((err,res) => {
-
-            if (err){
-                reject(err);
-            }
-            else {
-                resolve(res);
-            }
-        });
-    });
-
-};
 
 exports.register = function (server, options, next) {
 

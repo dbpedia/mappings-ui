@@ -18,6 +18,7 @@ class MappingHistory extends MongoModels {
             templateFullName: mappingObject.templateFullName,
             rml: mappingObject.rml,
             status: mappingObject.status,
+            version: mappingObject.version,
             edition: {
                 username: mappingObject.edition.username,
                 date: mappingObject.edition.date,
@@ -129,7 +130,16 @@ MappingHistory.schema = Joi.object().keys({
         date: Joi.date().required(),
         comment: Joi.string()
     }),
-    deleted: Joi.bool().required()
+    deleted: Joi.bool().required(),
+    stats: Joi.object().keys({
+        numOcurrences: Joi.number(),
+        numProperties: Joi.number(),
+        numMappedProperties: Joi.number(),
+        mappedPercentage: Joi.number(),
+        numPropertyOcurrences: Joi.number(),
+        numMappedPropertyOcurrences: Joi.number(),
+        numPropertiesNotFound: Joi.number()
+    })
 });
 
 

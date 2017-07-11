@@ -264,28 +264,7 @@ lab.experiment('Mappings Plugin Read', () => {
         });
     });
 
-    lab.test('it returns error when hydrate fails', (done) => {
 
-        stub.Mapping.findOne = function (id, callback) {
-
-            const res = {
-                _id: { template: 'template', lang: 'en' },
-                hydrateStats: function (cb){
-
-                    cb({}, null );
-                }
-            };
-            callback(null, res);
-        };
-
-        server.inject(request, (response) => {
-
-            Code.expect(response.statusCode).to.equal(500);
-            Code.expect(response.result).to.be.an.object();
-
-            done();
-        });
-    });
 });
 
 lab.experiment('Mapping Plugin Create', () => {
