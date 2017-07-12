@@ -8,13 +8,14 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
-
+const WikipediaPageSearcher = require('../../../components/wikipediaPageSearcher.jsx');
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
     match: PropTypes.object,
     user: PropTypes.object
 };
+
 
 
 class EditPage extends React.Component {
@@ -26,8 +27,9 @@ class EditPage extends React.Component {
 
         this.state = Store.getState();
 
-
     }
+
+
 
     getPercentage(up,down){
 
@@ -40,6 +42,7 @@ class EditPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
+        this.setState({ 'wikiSearchValue':'' });
 
     }
 
@@ -55,6 +58,10 @@ class EditPage extends React.Component {
 
     }
 
+    onWikiSearchChange(event,{ newValue }){
+
+        this.setState({ 'wikiSearchValue':newValue });
+    }
 
     changeShownURL(newPath){
 
@@ -113,6 +120,7 @@ class EditPage extends React.Component {
 
         ];
 
+
         return (
             <section className="container">
                 <div className="page-header">
@@ -159,12 +167,25 @@ class EditPage extends React.Component {
                                 <h3 className="panel-title text-center"><b>Mapping test</b></h3>
                             </div>
                             <div className="panel-body">
-                                <div className="input-group">
+                                <div className="row">
+                                    <div className="col-sm-12">
+                                        <WikipediaPageSearcher
+                                            value={this.state.wikiSearchValue}
+                                            onChange={this.onWikiSearchChange.bind(this)}/>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-sm-12">
+                                        <button className="btn btn-primary btn-block" type="button">Extract</button>
+                                    </div>
+                                </div>
+
+                                {/*<div className="input-group">
                                     <input type="text" className="form-control" placeholder="Type Wikipedia page name..."/>
                                     <span className="input-group-btn">
                                         <button className="btn btn-default" type="button">Extract</button>
                                     </span>
-                                </div>
+                                </div>*/}
                                 <br/>
                                 <i><i className="fa fa-question-circle-o" aria-hidden="true"></i>
                                     &nbsp; Use this to test the mapping on a real Wikipedia Page and extract the resulting RDF. </i>
