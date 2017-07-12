@@ -211,11 +211,22 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
         };
 
 
-        const realFindOne = stub.MappingHistory.findOne;
-        stub.MappingHistory.findOne = function (query, callback) {
+        const realFind = stub.MappingHistory.find;
+        stub.MappingHistory.find = function (query) {
 
-            stub.MappingHistory.findOne = realFindOne;
-            callback(null, null);
+            stub.MappingHistory.find = realFind;
+            return {
+                sort: function (){
+
+                    return {
+                        limit: function (query3, callback){
+
+                            callback(null,null);
+                        }
+                    };
+                }
+            };
+
         };
 
 
@@ -239,14 +250,24 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
             callback(null, null);
         };
 
-        const realFindOne = stub.MappingHistory.findOne;
-        stub.MappingHistory.findOne = function (query, callback) {
 
-            stub.MappingHistory.findOne = realFindOne;
-            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 5 });
+        const realFind = stub.MappingHistory.find;
+        stub.MappingHistory.find = function (query) {
+
+            stub.MappingHistory.find = realFind;
+            return {
+                sort: function (){
+
+                    return {
+                        limit: function (query3, callback){
+
+                            callback(null, { _id: { template: 'templateToFind', lang: 'en', version: 5 }  });
+                        }
+                    };
+                }
+            };
+
         };
-
-
 
         Mapping.getLastVersion('templateToFind','en',(err,result) => {
 
@@ -269,14 +290,23 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
             callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 6 });
         };
 
-        const realFindOne = stub.MappingHistory.findOne;
-        stub.MappingHistory.findOne = function (query, callback) {
+        const realFind = stub.MappingHistory.find;
+        stub.MappingHistory.find = function (query) {
 
-            stub.MappingHistory.findOne = realFindOne;
-            callback(null, null);
+            stub.MappingHistory.find = realFind;
+            return {
+                sort: function (){
+
+                    return {
+                        limit: function (query3, callback){
+
+                            callback(null,null);
+                        }
+                    };
+                }
+            };
+
         };
-
-
 
         Mapping.getLastVersion('templateToFind','en',(err,result) => {
 
@@ -299,14 +329,23 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
             callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 10 });
         };
 
-        const realFindOne = stub.MappingHistory.findOne;
-        stub.MappingHistory.findOne = function (query, callback) {
+        const realFind = stub.MappingHistory.find;
+        stub.MappingHistory.find = function (query) {
 
-            stub.MappingHistory.findOne = realFindOne;
-            callback(null, { _id: { template: 'templateToFind', lang: 'en' }, version: 6 });
+            stub.MappingHistory.find = realFind;
+            return {
+                sort: function (){
+
+                    return {
+                        limit: function (query3, callback){
+
+                            callback(null, { _id: { template: 'templateToFind', lang: 'en', version:6 } });
+                        }
+                    };
+                }
+            };
+
         };
-
-
 
         Mapping.getLastVersion('templateToFind','en',(err,result) => {
 

@@ -37,6 +37,7 @@ lab.experiment('MappingHistory Class Methods', () => {
         const mappingObject = {
             _id: { template: 'Test_1', lang: 'en' },
             rml: 'RML',
+            version: 3,
             status: 'PENDING',
             templateFullName: 'Test 1',
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
@@ -46,7 +47,9 @@ lab.experiment('MappingHistory Class Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(MappingHistory);
-            Code.expect(result._id).to.be.equal(mappingObject._id);
+            Code.expect(result._id.template).to.be.equal(mappingObject._id.template);
+            Code.expect(result._id.lang).to.be.equal(mappingObject._id.lang);
+            Code.expect(result._id.version).to.be.equal(mappingObject.version);
             Code.expect(result.rml).to.be.equal(mappingObject.rml);
             Code.expect(result.status).to.be.equal(mappingObject.status);
             Code.expect(result.edition).to.be.equal(mappingObject.edition);
@@ -63,6 +66,7 @@ lab.experiment('MappingHistory Class Methods', () => {
         const mappingObject = {
             _id: { template: 'Test2', lang: 'en' },
             rml: 'RML',
+            version: 3,
             status: 'PENDING',
             templateFullName: 'Test 2',
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
@@ -72,7 +76,9 @@ lab.experiment('MappingHistory Class Methods', () => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(MappingHistory);
-            Code.expect(result._id).to.be.equal(mappingObject._id);
+            Code.expect(result._id.template).to.be.equal(mappingObject._id.template);
+            Code.expect(result._id.lang).to.be.equal(mappingObject._id.lang);
+            Code.expect(result._id.version).to.be.equal(mappingObject.version);
             Code.expect(result.rml).to.be.equal(mappingObject.rml);
             Code.expect(result.status).to.be.equal(mappingObject.status);
             Code.expect(result.edition).to.be.equal(mappingObject.edition);
@@ -87,7 +93,7 @@ lab.experiment('MappingHistory Class Methods', () => {
     lab.test('it returns an error when create fails', (done) => {
 
         const mappingObject = {
-            _id: { template: 'Test3', lang: 'en' },
+            _id: { template: 'Test3', lang: 'en',version:3 },
             rml: 'RML',
             status: 'PENDING',
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
@@ -119,10 +125,8 @@ lab.experiment('MappingHistory Class Methods', () => {
         MappingHistory.findOne = function (query,callback){
 
             const _id = query._id;
-            const version = query.version;
             const mockDoc = {
                 _id,
-                version,
                 templateFullName: 'Full Name',
                 rml: 'oldRml',
                 status: 'OLD-STATUS'
@@ -144,7 +148,7 @@ lab.experiment('MappingHistory Class Methods', () => {
 
             Code.expect(doc._id.template).to.be.equal('template');
             Code.expect(doc._id.lang).to.be.equal('en');
-            Code.expect(doc.version).to.be.equal(1);
+            Code.expect(doc._id.version).to.be.equal(1);
             Code.expect(doc.status).to.be.equal('OLD-STATUS');
             Code.expect(doc.rml).to.be.equal('oldRml');
             Mapping.createFromHistory = realCreateFromHistory;

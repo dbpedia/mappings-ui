@@ -99,17 +99,17 @@ class Mapping extends MongoModels {
 
 
             //Last option is that version is not found on active mappings, so we query the MappingHistory
-            MappingHistory.findOne({ _id:{ template,lang } }, (err,res2) => {
+            MappingHistory.find({ _id:{ template,lang } }).sort({ '_id.version':-1 }).limit(1, (err,res2) => {
 
                 if (err) {  //Error on query
                     return callback(err);
                 }
 
-                if (res2 && res2.version){ //Found in archived mappings
-                    return callback(null,res2.version);
+                if (res2 && res2._id.version){ //Found in archived mappings
+                    return callback(null,res2._id.version);
                 }
 
-                if (res2 && !res2.version){ //Something strange happens
+                if (res2 && !res2._id.version){ //Something strange happens
                     return callback('Error, found document in history and has no version attribute!');
                 }
 
@@ -248,7 +248,6 @@ class Mapping extends MongoModels {
         MappingHistory.create(this,deleted, (err,res) => {
 
             if (err){
-                console.log(err);
                 return callback(err);
             }
 

@@ -13,12 +13,12 @@ class MappingHistory extends MongoModels {
         const document = {
             _id: {
                 template: mappingObject._id.template,
-                lang: mappingObject._id.lang
+                lang: mappingObject._id.lang,
+                version: mappingObject.version
             },
             templateFullName: mappingObject.templateFullName,
             rml: mappingObject.rml,
             status: mappingObject.status,
-            version: mappingObject.version,
             edition: {
                 username: mappingObject.edition.username,
                 date: mappingObject.edition.date,
@@ -54,7 +54,7 @@ class MappingHistory extends MongoModels {
     static restoreFromHistory(username,template,lang,version,callback){
 
         //1. Get document corresponding to rev
-        MappingHistory.findOne({ _id: { template,lang }, version }, (err, archivedMapping) => {
+        MappingHistory.findOne({ _id: { template,lang,version } }, (err, archivedMapping) => {
 
             if (err){
                 return callback(err);
@@ -76,7 +76,7 @@ class MappingHistory extends MongoModels {
                             return callback(err);
                         }
 
-                        const newComment = archivedMapping.edition.comment + ' (Restored from version ' + archivedMapping.version + ').';
+                        const newComment = archivedMapping.edition.comment + ' (Restored from version ' + archivedMapping._id.version + ').';
 
                         //Update current mapping
                         activeMapping.update({ rml: archivedMapping.rml, status: archivedMapping.status },username,newComment, (err,updatedRes) => {
@@ -119,10 +119,10 @@ MappingHistory.schema = Joi.object().keys({
     //Compound id, with template name and lang, as both are needed to identify a mapping
     _id: Joi.object().keys({
         template: Joi.string(),
-        lang: Joi.string()
+        lang: Joi.string(),
+        version: Joi.number()
     }),
     templateFullName: Joi.string().required(),
-    version: Joi.number().required(),
     rml: Joi.string().required(),
     status: Joi.string(),
     edition: Joi.object().keys({

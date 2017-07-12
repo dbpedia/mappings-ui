@@ -92,6 +92,12 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
             throw err;
         }
 
+        const errorRate = Math.floor((Math.random() * 100)); //0-100
+        const hasError = errorRate < 20;
+        let statusMessage = 'OK';
+        if (hasError){
+            statusMessage = 'ERROR';
+        }
         const mappingToInsert = {
             _id: {
                 template: templateName,
@@ -101,8 +107,8 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
             rml: data,
             version: 1,
             status: {
-                error: false,
-                message: 'OK'
+                error: hasError,
+                message: statusMessage
             },
             edition:{
                 username: 'admin',
@@ -112,6 +118,7 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
         };
 
         //Random construction of stats
+
         const numOcurrences = Math.floor((Math.random() * 5000) + 1); //1-5000
         const numProperties = Math.floor((Math.random() * 300) + 1); //1-300
         const numMappedProperties = Math.floor((Math.random() * numProperties) ); //0-numProperties
@@ -174,9 +181,9 @@ const process = function (lang,dir,mappingsCollection,statsCollection){
 
 let mappingsCollection;
 let statsCollection;
-const URI = 'mongodb://localhost:27017/aqua';
-const REPO = 'https://github.com/dbpedia/extraction-framework.git';
-const BRANCH = 'rml';
+const URI = 'mongodb://heroku_07m9xl4r:cc620dn44mi81rvc3ae92hcpga@ds147052.mlab.com:47052/heroku_07m9xl4r';
+const REPO = 'https://github.com/dbpedia/mappings-tracker.git';
+const BRANCH = 'master';
 const DESTINATION = 'ef';
 MongoClient.connect(URI)
     .then((db) => {
@@ -189,7 +196,7 @@ MongoClient.connect(URI)
     })
     .then((repo) => {
         //console.log('ok');
-        const basePath = './' + DESTINATION + '/mappings/rml/';
+        const basePath = './' + DESTINATION + '/mappings/';
         const languageDirs = getDirectories(basePath);
 
         languageDirs.forEach((langDir) => {
