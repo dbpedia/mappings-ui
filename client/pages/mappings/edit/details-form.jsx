@@ -6,10 +6,7 @@ const LinkState = require('../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
-//const Brace = require('brace').default;
-const AceEditor = require('react-ace').default;
-require('brace/mode/markdown');
-require('brace/theme/github');
+const Editor = require('../../../components/editor.jsx');
 
 
 const propTypes = {
@@ -32,10 +29,12 @@ class DetailsForm extends React.Component {
 
         super(props);
 
+
         this.state = {
             _id: props._id,
             version: props.version,
             rml: props.rml,
+            editedRml: props.rml,
             edition: props.edition,
             status: props.status,
             stats: props.stats
@@ -63,14 +62,15 @@ class DetailsForm extends React.Component {
             comment: this.state.edition.comment
         };
 
+        this.setState({
+            'edition': Object.assign({}, this.state.edition, {
+                comment: ''
+            })
+        });
         Actions.saveDetails(this.props._id.template,this.props._id.lang, data);
     }
 
 
-    changeEditing(newValue){
-
-        this.setState({ editing:newValue });
-    }
 
     render() {
 
@@ -94,17 +94,16 @@ class DetailsForm extends React.Component {
         }
 
 
-
-
         const editElements = <div>
             <div className="row">
                 <div className="col-sm-9">
 
                         <input type="text"
                                name="edition.comment"
+                               maxLength="140"
                                value={this.state.edition.comment}
                                onChange={LinkState.bind(this)}
-                               className="form-control" placeholder="Type edition comment (optional)"/>
+                               className="form-control" placeholder="Type edition comment (optional, max 140 char)"/>
 
                 </div>
                 <div className="col-sm-3">
@@ -120,19 +119,8 @@ class DetailsForm extends React.Component {
 
             </div>
 
-            <AceEditor
-                className="rml-editor"
-                mode="markdown"
-                theme="github"
-                onChange={this.onChange.bind(this)}
-                name="edition"
-                value={this.state.rml ? this.state.rml : ''}
-                width="100%"
-                fontSize={15}
-                wrapEnabled={true}
-                maxLines={40}
-                editorProps={ { $blockScrolling: true } }
-            />
+            <Editor content={this.state.editedRml}
+                    onChange={this.onChange.bind(this)}/>
 
         </div>;
 

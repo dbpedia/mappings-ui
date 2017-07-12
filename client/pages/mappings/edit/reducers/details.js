@@ -29,8 +29,9 @@ const reducer = function (state = initialState, action) {
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const validation = ParseValidation(action.response);
 
-        console.log('d');
-        return ObjectAssign({}, state, {
+
+        //oldComment will store the old comment, while edition.comment will store the new one
+        const stateUpdates = {
             hydrated: true,
             loading: false,
             showFetchFailure: !!action.err,
@@ -40,10 +41,13 @@ const reducer = function (state = initialState, action) {
             version: action.response.version,
             status: action.response.status,
             stats: action.response.stats,
+            oldComment: action.response.edition ? action.response.edition.comment : '',
             edition: action.response.edition
+        };
 
 
-        });
+        stateUpdates.edition.comment = '';
+        return ObjectAssign({}, state, stateUpdates);
     }
 
     if (action.type === Constants.SAVE_DETAILS) {
@@ -68,9 +72,14 @@ const reducer = function (state = initialState, action) {
             stateUpdates.rml = action.response.rml;
         }
         if (action.response.hasOwnProperty('edition')) {
-            stateUpdates.edition = action.response.edition;
-        }
+            stateUpdates.edition = {
+                username: action.response.edition.username,
+                date: action.response.edition.date,
+                comment: ''
+            };
+            stateUpdates.oldComment = action.response.edition.comment;
 
+        }
 
 
         return ObjectAssign({}, state, stateUpdates);

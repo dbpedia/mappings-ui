@@ -44,8 +44,6 @@ class EditPage extends React.Component {
 
 
         this.setState(Store.getState());
-       /* const path = `/mappings/edit/${this.state.details.postId}`;
-        this.changeShownURL(path);*/
 
     }
 
@@ -130,8 +128,8 @@ class EditPage extends React.Component {
                         <Link to="/posts">Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
                     </h1>
                     {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
-                    {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.edition.comment}</span>}
-
+                    {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
+                    {this.state.details.edition.comment}
                 </div>
 
                 <div className="row">

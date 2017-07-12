@@ -6,7 +6,7 @@
   "scripts": {
     "start": "gulp",
     "first-time-setup": "node first-time-setup.js",
-    "test": "lab -S -T   ./test/lab/transform -L --leaks --lint-options '{\"extensions\":[\".js\",\".jsx\"]}' ./test/lab/client-before.js ./test/client/ ./test/lab/client-after.js ./test/server/ ./test/lab/server-after.js ./test/misc/",
+    "test": "lab -S -T   ./test/lab/transform -L --leaks  --lint-options '{\"extensions\":[\".js\",\".jsx\"]}' ./test/lab/client-before.js ./test/client/ ./test/lab/client-after.js ./test/server/ ./test/lab/server-after.js ./test/misc/",
     "test-client": "lab --leaks -v -t 99 -S -T ./test/lab/transform ./test/lab/client-before.js $TEST_TARGET ./test/lab/client-after.js || true",
     "test-server": "lab --leaks -v -t 99 -S -T ./test/lab/transform $TEST_TARGET ./test/lab/server-after.js || true",
     "postinstall": "gulp build",
@@ -78,6 +78,7 @@
     "qs": "6.x.x",
     "react": "15.x.x",
     "react-ace": "^5.1.0",
+    "react-async-script-loader": "^0.3.0",
     "react-dom": "15.x.x",
     "react-markdown": "^2.5.0",
     "react-portal-tooltip": "^1.1.5",
