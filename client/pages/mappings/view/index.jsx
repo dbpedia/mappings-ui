@@ -176,7 +176,7 @@ class EditPage extends React.Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-sm-12">
-                                        <button className="btn btn-primary btn-block" type="button">Extract</button>
+                                        <button className="btn btn-primary btn-block" type="button" onClick={() => alert('Not implemented yet.')}>Extract</button>
                                     </div>
                                 </div>
 

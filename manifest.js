@@ -159,6 +159,12 @@ const manifest = {
                 routes: { prefix: '/api' }
             }
         },
+        {
+            plugin: './server/api/search',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
 
         {
             plugin: './server/web/about'

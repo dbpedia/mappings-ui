@@ -4,6 +4,7 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const Autosuggest = require('react-autosuggest');
+const JsonFetch = require('../helpers/json-fetch');
 const propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func
@@ -67,17 +68,6 @@ const theme = {
 };
 
 
-const pages = [
-    {
-        title: 'David_Beckham',
-        url: 'http://wikipedia.org/wiki/David_Beckham'
-    },
-    {
-        title: 'Abcd_efgh_ijklm_nopqrs_uvwxyz',
-        url: 'http://wikipedia.org/wiki/David_Beckham'
-    }
-];
-
 const getSuggestionValue = (suggestion) => suggestion.title;
 
 const renderSuggestion = (suggestion) => (
@@ -108,20 +98,24 @@ class WikipediaPageSearcher extends React.Component {
             isLoading: true
         });
 
+        let result = [];
+        const request = { method: 'GET', url: '/api/search/wiki', query: { title: value } };
+        JsonFetch(request, (err, response) => {
 
-        //Todo: get wiki pages from backend
-        const inputValue = value.trim().toLowerCase();
-        const inputLength = inputValue.length;
+            if (err || !response){
+                result = [];
+            }
 
-        const result =  inputLength === 0 ? [] : pages.filter((page) =>
+            if (response){
+                result = response;
+            }
 
-            page.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
-        );
-
-        this.setState({
-            isLoading: false,
-            suggestions: result
+            this.setState({
+                isLoading: false,
+                suggestions: result
+            });
         });
+
     }
 
 
