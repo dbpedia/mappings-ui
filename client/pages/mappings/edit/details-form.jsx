@@ -6,7 +6,7 @@ const LinkState = require('../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
-const Editor = require('../../../components/editor.jsx');
+const Editor = require('../../../components/turtle-editor.jsx');
 
 
 const propTypes = {

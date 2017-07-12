@@ -1,4 +1,7 @@
 /* eslint-disable hapi/hapi-scope-start */
+/* Component to show a ace turtle editor. Has to use different instance
+as react-ace, as react-ace does not support turtle yet.
+ */
 'use strict';
 
 const PropTypes = require('prop-types');
@@ -54,7 +57,7 @@ class Editor extends React.Component {
 
         editor.setOptions(options);
 
-        this.setState({ editor });
+        this.setState({ editor,initialized:true });
     }
 
     render() {
@@ -66,8 +69,8 @@ class Editor extends React.Component {
             <div>
 
 
-                    <div id="editor">{this.props.content}</div>
-
+                    <div id="editor" style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content }</div>
+                    <i style={{ visibility: !this.state.initialized ? 'visible' : 'hidden' }}>Loading editor...</i>
 
 
             </div>
