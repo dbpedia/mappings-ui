@@ -3,8 +3,6 @@ const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
 const Config = require('../../config');
-const Slug = require('slug');
-
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
@@ -291,9 +289,7 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-
-
-            const sluggedId =  Slug(request.params.template,'_'); //So it works with slugged and non-slugged url
+            const sluggedId = request.params.template;
             const query = { _id: { template: sluggedId, lang: request.params.lang } };
             Mapping.findOne(query, (err, mapping) => {
 

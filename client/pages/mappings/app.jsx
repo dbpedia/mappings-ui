@@ -1,6 +1,7 @@
 'use strict';
 const MappingList = require('./list/index.jsx');
 const MappingEdit = require('./edit/index.jsx');
+const MappingView = require('./view/index.jsx');
 
 const NotFound = require('./not-found.jsx');
 const React = require('react');
@@ -25,6 +26,7 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path="/mappings" render={(props) => <MappingList user={credentials} {...props} />} />
                         <Route exact path="/mappings/edit/:template/:lang" render={(props) => <MappingEdit user={credentials} {...props} />} />
+                        <Route exact path="/mappings/view/:template/:lang" render={(props) => <MappingView user={credentials} {...props} />} />
                         <Route component={NotFound} />
                     </Switch>
                 </div>

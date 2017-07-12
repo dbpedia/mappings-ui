@@ -254,7 +254,8 @@ class Mapping extends MongoModels {
             if (!deleted){
                 return callback(null,res);
             }
-            Mapping.findOneAndDelete({ _id:{ template:this.template,lang:this.lang } }, (err,res2) => {
+
+            Mapping.findOneAndDelete({ _id:{ template:this._id.template,lang:this._id.lang } }, (err,res2) => {
 
                 if (err){
                     return callback(err);

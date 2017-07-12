@@ -12,7 +12,8 @@ const propTypes = {
     content: PropTypes.string,
     onChange: PropTypes.func,
     isScriptLoaded: PropTypes.bool,
-    isScriptLoadSucceed: PropTypes.bool
+    isScriptLoadSucceed: PropTypes.bool,
+    readOnly:  PropTypes.bool
 };
 
 
@@ -47,7 +48,8 @@ class Editor extends React.Component {
             maxLines: 40,
             wrap:true,
             theme: 'ace/theme/github',
-            enableBasicAutocompletion: true
+            enableBasicAutocompletion: true,
+            readOnly: this.props.readOnly === true
         };
 
 

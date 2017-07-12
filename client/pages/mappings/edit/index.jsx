@@ -59,7 +59,7 @@ class EditPage extends React.Component {
     cancelEditing(){
 
         window.confirm('Are you sure? All unsaved changes will be lost.') &&
-        this.props.history.push(`/mappings/view/${this.state.details.postId}`);
+        this.props.history.push(`/mappings/view/${this.state.details._id.template}/${this.state.details._id.lang}`);
 
     }
 
@@ -111,7 +111,7 @@ class EditPage extends React.Component {
             },
             {
                 type: 'btn-danger',
-                text: 'Delete permanently',
+                text: 'Delete',
                 action:this.remove.bind(this, postId),
                 disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-mappings') || this.state.details.postId === 'home'
 

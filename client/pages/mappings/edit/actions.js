@@ -38,10 +38,10 @@ class Actions {
 
 
 
-    static delete(id, history) {
+    static delete(template,lang, history) {
 
         ApiActions.delete(
-            `/api/posts/${id}`,
+            `/api/mappings/${template}/${lang}`,
             undefined,
             Store,
             Constants.DELETE,
@@ -49,7 +49,7 @@ class Actions {
             (err, response) => {
 
                 if (!err) {
-                    history.push('/posts');
+                    history.push('/mappings');
 
                     window.scrollTo(0, 0);
                 }
