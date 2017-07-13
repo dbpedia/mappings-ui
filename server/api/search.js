@@ -18,6 +18,49 @@ internals.applyRoutes = function (server, next) {
         }
     ];
 
+
+    const classes = [
+        {
+            name: 'dbo:Soccer_Player',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 2352
+        },
+        {
+            name: 'dbp:BirthPlace',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 1234
+        },
+        {
+            name: 'dbo:Politician',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 123
+        }
+    ];
+
+    const properties = [
+        {
+            name: 'dbo:project',
+            domain: 'dbo:Person',
+            range: 'dbo:Project',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 2352
+        },
+        {
+            name: 'dbo:population',
+            domain: 'dbo:PopulatedPlace',
+            range: 'dbo:Population',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 1234
+        },
+        {
+            name: 'dbo:musicBand',
+            domain: 'dbo:MusicalArtist',
+            range: 'dbo:Band',
+            uri: 'http://wikipedia.org/wiki/David_Beckham',
+            count: 742
+        }
+    ];
+
     server.route({
         method: 'GET',
         path: '/search/wiki',
@@ -45,7 +88,59 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    server.route({
+        method: 'GET',
+        path: '/search/classes',
+        config: {
+            auth: {
+                strategy: 'session'
+            },
+            validate: {
+                query: {
+                    //Can search by title, lastEditor username, and visible status
+                    name: Joi.string().allow('').default('')
+                }
+            }
+        },
+        handler: function (request, reply) {
 
+            const input = request.query.name;
+
+            const results =  input.length === 0 ? [] : classes.filter((page) =>
+
+                page.name.toLowerCase().indexOf(input.toLowerCase()) > -1
+            );
+
+            reply(results);
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/search/properties',
+        config: {
+            auth: {
+                strategy: 'session'
+            },
+            validate: {
+                query: {
+                    //Can search by title, lastEditor username, and visible status
+                    name: Joi.string().allow('').default('')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            const input = request.query.name;
+
+            const results =  input.length === 0 ? [] : properties.filter((page) =>
+
+                page.name.toLowerCase().indexOf(input.toLowerCase()) > -1
+            );
+
+            reply(results);
+        }
+    });
 
 
     next();

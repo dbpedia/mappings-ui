@@ -8,7 +8,7 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
-const WikipediaPageSearcher = require('../../../components/wikipediaPageSearcher.jsx');
+const MappingTester = require('../../../components/mappingTesterPanel.jsx');
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
@@ -42,7 +42,23 @@ class EditPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-        this.setState({ 'wikiSearchValue':'' });
+        this.setState({ 'wikiSearchValue':'',
+            language: this.props.user && this.props.user.mappingsLang,
+            isAuthenticated: this.props.user
+        });
+
+    }
+
+    getUserLanguage(){
+
+        if (this.state.isAuthenticated){
+            if (!this.state.language){
+                return '';
+            }
+            return this.state.language;
+        }
+
+        return 'en';
 
     }
 
@@ -127,7 +143,7 @@ class EditPage extends React.Component {
                     <ButtonGroup float='right' buttons={buttons}/>
                     <h1 >
 
-                        <Link to="/mappings">Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
+                        <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
                     </h1>
                     {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
                     {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
@@ -148,50 +164,27 @@ class EditPage extends React.Component {
                                 <h3 className="panel-title text-center"><b>Mapping info</b></h3>
                             </div>
                             <div className="panel-body">
-
                                 <b>Status:  <span style={{ color: this.state.details.status.error ? 'red' : 'green' }}>{this.state.details.status.message}</span></b><br/>
                                 <hr/>
-                                <b>Ocurrences: </b> {this.state.details.stats.numOcurrences}<br/>
-                                <b>Total properties: </b> {this.state.details.stats.numProperties}<br/>
-                                <b>Mapped properties: </b> {this.state.details.stats.numMappedProperties}
-                                     &nbsp;({this.getPercentage(this.state.details.stats.numMappedProperties,this.state.details.stats.numProperties)} %)<br/>
-                                <b>Property ocurrences: </b> {this.state.details.stats.numPropertyOcurrences}<br/>
-                                <b>Mapped property ocurrences: </b> {this.state.details.stats.numMappedPropertyOcurrences}
-                                    &nbsp;({this.getPercentage(this.state.details.stats.numMappedPropertyOcurrences,this.state.details.stats.numPropertyOcurrences)} %)<br/>
-                                <b>Not found properties: </b> {this.state.details.stats.numPropertiesNotFound}
-                                    &nbsp;({this.getPercentage(this.state.details.stats.numPropertiesNotFound,this.state.details.stats.numProperties)} %)<br/>
-                            </div>
-                        </div>
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                <h3 className="panel-title text-center"><b>Mapping test</b></h3>
-                            </div>
-                            <div className="panel-body">
-                                <div className="row">
-                                    <div className="col-sm-12">
-                                        <WikipediaPageSearcher
-                                            value={this.state.wikiSearchValue}
-                                            onChange={this.onWikiSearchChange.bind(this)}/>
-                                    </div>
+                                { this.state.details.stats && Object.keys(this.state.details.stats).length > 0 && <div>
+                                    <b>Ocurrences: </b> {this.state.details.stats.numOcurrences}<br/>
+                                    <b>Total properties: </b> {this.state.details.stats.numProperties}<br/>
+                                    <b>Mapped properties: </b> {this.state.details.stats.numMappedProperties}
+                                         &nbsp;({this.getPercentage(this.state.details.stats.numMappedProperties,this.state.details.stats.numProperties)} %)<br/>
+                                    <b>Property ocurrences: </b> {this.state.details.stats.numPropertyOcurrences}<br/>
+                                    <b>Mapped property ocurrences: </b> {this.state.details.stats.numMappedPropertyOcurrences}
+                                        &nbsp;({this.getPercentage(this.state.details.stats.numMappedPropertyOcurrences,this.state.details.stats.numPropertyOcurrences)} %)<br/>
+                                    <b>Not found properties: </b> {this.state.details.stats.numPropertiesNotFound}
+                                        &nbsp;({this.getPercentage(this.state.details.stats.numPropertiesNotFound,this.state.details.stats.numProperties)} %)<br/>
+                                </div> }
+                                { (!this.state.details.stats || Object.keys(this.state.details.stats).length === 0) &&  <div>
+                                    No statistics available yet.
                                 </div>
-                                <div className="row">
-                                    <div className="col-sm-12">
-                                        <button className="btn btn-primary btn-block" type="button" onClick={() => alert('Not implemented yet.')}>Extract</button>
-                                    </div>
-                                </div>
-
-                                {/*<div className="input-group">
-                                    <input type="text" className="form-control" placeholder="Type Wikipedia page name..."/>
-                                    <span className="input-group-btn">
-                                        <button className="btn btn-default" type="button">Extract</button>
-                                    </span>
-                                </div>*/}
-                                <br/>
-                                <i><i className="fa fa-question-circle-o" aria-hidden="true"></i>
-                                    &nbsp; Use this to test the mapping on a real Wikipedia Page and extract the resulting RDF. </i>
+                                }
 
                             </div>
                         </div>
+                        <MappingTester/>
                     </div>
 
                 </div>

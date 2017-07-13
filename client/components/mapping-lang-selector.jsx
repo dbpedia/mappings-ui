@@ -10,7 +10,8 @@ const propTypes = {
     callback: PropTypes.func,        //Will be called with new value,
     disabled: PropTypes.bool,
     onChange: PropTypes.func, //Will be called with the whole event,
-    name: PropTypes.string
+    name: PropTypes.string,
+    disableAll: PropTypes.bool //To hide 'all languages' if true
 };
 
 
@@ -39,7 +40,6 @@ class MappingLangSelector extends React.Component {
 
 
         const languages = [
-            { tag: '', name: 'All languages' },
             { tag: 'ar', name: 'Arabic' },
             { tag: 'az', name: 'Azeri' },
             { tag: 'be', name: 'Belarusian' },
@@ -91,6 +91,9 @@ class MappingLangSelector extends React.Component {
             { tag: 'zh', name: 'Chinese' }
         ];
 
+        if (!this.props.disableAll){
+            languages.unshift({ tag: '', name: 'All languages' });
+        }
 
 
         const optionElems = [];

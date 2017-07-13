@@ -21,6 +21,12 @@ const jsonFetch = function (options, callback) {
         config.headers['X-CSRF-Token'] = cookies.crumb;
     }
 
+    if (options.minimalHeaders){
+        config.headers = {
+            'Accept': 'application/json'
+        };
+    }
+
     if (options.query) {
         config.url += '?' + Qs.stringify(options.query);
     }

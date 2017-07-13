@@ -11,6 +11,7 @@ const ScriptLoader = require('react-async-script-loader').default;
 const propTypes = {
     content: PropTypes.string,
     onChange: PropTypes.func,
+    onLoad: PropTypes.func,
     isScriptLoaded: PropTypes.bool,
     isScriptLoadSucceed: PropTypes.bool,
     readOnly:  PropTypes.bool
@@ -37,7 +38,6 @@ class Editor extends React.Component {
     }
 
 
-
     initEditor(){
 
         const editor = ace.edit('editor');
@@ -46,11 +46,15 @@ class Editor extends React.Component {
         const options = {
             fontSize: 15,
             maxLines: 40,
+            minLines: 20,
             wrap:true,
             theme: 'ace/theme/github',
             enableBasicAutocompletion: true,
-            readOnly: this.props.readOnly === true
+            readOnly: this.props.readOnly,
+            highlightActiveLine: !this.props.readOnly
         };
+
+
 
 
         editor.getSession().on('change', () => {
@@ -59,7 +63,16 @@ class Editor extends React.Component {
 
         editor.setOptions(options);
 
+        if (options.readOnly) {
+            editor.renderer.$cursorLayer.element.style.display = 'none';
+        }
+
         this.setState({ editor,initialized:true });
+
+        if (this.props.onLoad){
+            this.props.onLoad(editor);
+        }
+
     }
 
     render() {

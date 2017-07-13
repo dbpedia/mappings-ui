@@ -10,7 +10,7 @@ const propTypes = {
 
 const calculatePercentage = function (record){
 
-    if (!record.stats) {
+    if (!record.stats || Object.keys(record.stats).length === 0 ) {
         return '-';
     }
 
@@ -81,6 +81,10 @@ const rowBackground = function (record){
 };
 
 
+const statsExist = function (record){
+
+    return record.stats && Object.keys(record.stats).length > 0;
+};
 class Results extends React.Component {
     render() {
 
@@ -89,9 +93,9 @@ class Results extends React.Component {
             return (
                 <tr key={record._id.template} className={ rowBackground(record) }>
                     <td>{record._id.lang}</td>
-                    <td>{record.templateFullName}</td>
-                    <td className="hidden-xs hidden-sm">{record.stats ? record.stats.numOcurrences : '-'}</td>
-                    <td className="hidden-xs hidden-sm">{record.stats ? record.stats.numProperties : '-'}</td>
+                    <td><a href={`mappings/view/${record._id.template}/${record._id.lang}`}>{record.templateFullName}</a></td>
+                    <td className="hidden-xs hidden-sm">{statsExist(record) ? record.stats.numOcurrences : '-'}</td>
+                    <td className="hidden-xs hidden-sm">{statsExist(record) ? record.stats.numProperties : '-'}</td>
 
                     <td>
                         <div className="progress">

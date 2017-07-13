@@ -1,14 +1,9 @@
 /* eslint-disable hapi/hapi-scope-start */
 'use strict';
 
-const PropTypes = require('prop-types');
 const React = require('react');
 const Autosuggest = require('react-autosuggest');
 const JsonFetch = require('../helpers/json-fetch');
-const propTypes = {
-    value: PropTypes.string,
-    onChange: PropTypes.func
-};
 
 
 const theme = {
@@ -79,7 +74,7 @@ const renderSuggestion = (suggestion) => (
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
 
-class WikipediaPageSearcher extends React.Component {
+class MappingTesterPanel extends React.Component {
 
 
     constructor(){
@@ -143,29 +138,44 @@ class WikipediaPageSearcher extends React.Component {
         const  { suggestions } = this.state;
         const inputProps = {
             placeholder: 'Wikipedia page...',
-            value: this.props.value,
-            onChange: this.props.onChange
+            value: this.state.value,
+            onChange: this.onChange.bind(this)
         };
 
 
         return (
 
-            <div>
-                <Autosuggest
-                    suggestions={suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
-                    getSuggestionValue={getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
-                    inputProps={inputProps}
-                    theme={theme}
-                />
+            <div className="panel panel-default">
+                <div className="panel-heading">
+                    <h3 className="panel-title text-center"><b>Mapping test</b></h3>
+                </div>
+                <div className="panel-body">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <Autosuggest
+                                suggestions={suggestions}
+                                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
+                                onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
+                                getSuggestionValue={getSuggestionValue}
+                                renderSuggestion={renderSuggestion}
+                                inputProps={inputProps}
+                                theme={theme}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <button className="btn btn-primary btn-block" type="button" onClick={() => alert('Not implemented yet.')}>Extract</button>
+                        </div>
+                    </div>
+                    <br/>
+                    <i><i className="fa fa-question-circle-o" aria-hidden="true"></i>
+                        &nbsp; Use this to test the mapping on a real Wikipedia Page and extract the resulting RDF. </i>
+                </div>
             </div>
-
         );
     }
 }
 
 
-WikipediaPageSearcher.propTypes = propTypes;
-module.exports = WikipediaPageSearcher;
+module.exports = MappingTesterPanel;

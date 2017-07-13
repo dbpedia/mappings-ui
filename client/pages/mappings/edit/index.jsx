@@ -2,13 +2,14 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
-const UserUtilities = require('../../../helpers/user-utilities');
+//const UserUtilities = require('../../../helpers/user-utilities');
 const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
-
+const MappingTesterPanel = require('../../../components/mappingTesterPanel.jsx');
+const OntologySearchPanel = require('../../../components/ontologySearchPanel.jsx');
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
@@ -32,6 +33,25 @@ class EditPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
+        this.setState({
+            language: this.props.user && this.props.user.mappingsLang,
+            isAuthenticated: this.props.user
+        });
+
+
+
+    }
+
+    getUserLanguage(){
+
+        if (this.state.isAuthenticated){
+            if (!this.state.language){
+                return '';
+            }
+            return this.state.language;
+        }
+
+        return 'en';
 
     }
 
@@ -47,6 +67,11 @@ class EditPage extends React.Component {
 
     }
 
+    //Introduce value in editor
+    onOntologySearchSubmit(value){
+
+        this.refs.details.insertTextAtCursor(value);
+    }
 
     changeShownURL(newPath){
 
@@ -66,9 +91,9 @@ class EditPage extends React.Component {
 
 
 
-    remove(postId) {
+    remove(template,lang) {
 
-        window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(postId,this.props.history);
+        window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(template,lang,this.props.history);
     }
 
 
@@ -98,7 +123,6 @@ class EditPage extends React.Component {
             );
         }
 
-        const postId = this.state.details.postId;
         const title = this.state.details._id.template;
         const lang = this.state.details._id.lang;
 
@@ -112,8 +136,7 @@ class EditPage extends React.Component {
             {
                 type: 'btn-danger',
                 text: 'Delete',
-                action:this.remove.bind(this, postId),
-                disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-mappings') || this.state.details.postId === 'home'
+                action:this.remove.bind(this, title,lang)
 
             }
 
@@ -125,7 +148,7 @@ class EditPage extends React.Component {
                     <ButtonGroup float='right' buttons={buttons}/>
                     <h1 >
 
-                        <Link to="/posts">Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
+                        <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
                     </h1>
                     {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
                     {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
@@ -136,17 +159,13 @@ class EditPage extends React.Component {
                     <div className="col-sm-8">
 
 
-                        <DetailsForm {...this.state.details}/>
+                        <DetailsForm ref="details" {...this.state.details}/>
 
 
                     </div>
                     <div className="col-sm-4">
-                        <h3 className="text-center"><i className="fa fa-info-circle fa-2x"></i></h3>
-                        <p className="lead-little">
-
-                            TODO: Put second column
-
-                        </p>
+                        <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
+                        <MappingTesterPanel/>
                     </div>
                 </div>
             </section>

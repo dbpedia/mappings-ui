@@ -200,7 +200,9 @@ internals.applyRoutes = function (server, next) {
 
             Mapping.create(template,lang, rml, username,comment, (err, mapping) => {
 
+
                 if (err) {
+
                     return reply(err);
                 }
 

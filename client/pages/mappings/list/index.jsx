@@ -1,7 +1,11 @@
 'use strict';
 const Actions = require('./actions');
 const FilterForm = require('./filter-form.jsx');
+const ButtonGroup = require('../../../components/button-group.jsx');
 const Paging = require('../../../components/paging.jsx');
+//const UserUtilities = require('../../../helpers/user-utilities');
+const CreateNewForm = require('./create-new-form.jsx');
+
 const PropTypes = require('prop-types');
 const React = require('react');
 const Results = require('./results.jsx');
@@ -52,6 +56,11 @@ class SearchPage extends React.Component {
         this.setState(Store.getState());
     }
 
+    onNewClick() {
+
+        Actions.showCreateNew();
+    }
+
     onFiltersChange(event) {
 
         if (event) {
@@ -84,26 +93,22 @@ class SearchPage extends React.Component {
     render() {
 
 
+        const buttons = [
+            { type: 'btn-success',
+                text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Mapping</span>,
+                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c)
+            }
+        ];
+
+
 
         return (
             <section className="container">
                 <div className="page-header">
-
+                    <ButtonGroup float='right' buttons={buttons}  />
                     <div className="row">
                         <div className="col-sm-8">
                             <h1 style={ { margin:0 } }>Mapping List</h1>
-                        </div>
-                        <div className="col-sm-4">
-                            <div className="input-group"> <input type="text" className="form-control pull-right"
-                                                                 placeholder="Template name/Wikipedia page URL"/>
-
-                                <span className="input-group-btn">
-                                    <button className="btn btn-secondary btn-success" type="button">
-                                        <span><i className="fa fa-plus" aria-hidden="true"></i></span>
-                                    </button>
-                                </span>
-
-                            </div>
                         </div>
                     </div>
 
@@ -120,7 +125,11 @@ class SearchPage extends React.Component {
                             onChange={this.onPageChange.bind(this)}
                         />
                     </div>
-
+                    <CreateNewForm
+                        history={this.props.history}
+                        location={this.props.location}
+                        {...this.state.createNew}
+                    />
                     <div className="col-sm-4"> {/*Right column: filters */}
                         <FilterForm
                             ref={(c) => (this.els.filters = c)}

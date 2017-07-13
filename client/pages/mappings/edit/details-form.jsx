@@ -24,6 +24,7 @@ const propTypes = {
 };
 
 
+let editorRef;
 class DetailsForm extends React.Component {
     constructor(props) {
 
@@ -71,6 +72,15 @@ class DetailsForm extends React.Component {
     }
 
 
+    insertTextAtCursor(value){
+
+        editorRef.session.insert(editorRef.getCursorPosition(), value);
+    };
+
+    onEditorLoad(editor){
+
+        editorRef = editor;
+    }
 
     render() {
 
@@ -120,6 +130,8 @@ class DetailsForm extends React.Component {
             </div>
 
             <Editor content={this.state.editedRml}
+                    ref="editor"
+                    onLoad={this.onEditorLoad.bind(this)}
                     onChange={this.onChange.bind(this)}/>
 
         </div>;

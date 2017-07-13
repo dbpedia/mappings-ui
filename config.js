@@ -66,7 +66,7 @@ const config = {
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
             $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
-        } ,
+        },
         localOntologyFolder: 'ontology-store',
         githubRepositoryFolder: {
             $filter: 'env',

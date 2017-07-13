@@ -95,29 +95,33 @@ class Mapping extends MongoModels {
             if (res && !res.version){ //Something strange happens
                 return callback('Error, found document has no version attribute!');
             }
-
-
-
-            //Last option is that version is not found on active mappings, so we query the MappingHistory
-            MappingHistory.find({ _id:{ template,lang } }).sort({ '_id.version':-1 }).limit(1, (err,res2) => {
-
-                if (err) {  //Error on query
-                    return callback(err);
-                }
-
-                if (res2 && res2._id.version){ //Found in archived mappings
-                    return callback(null,res2._id.version);
-                }
-
-                if (res2 && !res2._id.version){ //Something strange happens
-                    return callback('Error, found document in history and has no version attribute!');
-                }
-
-
-                //No document found here, so it does not exist... Return -1, so next version will be 0
+            const findRes = MappingHistory.find({ _id:{ template,lang } });
+            if (!findRes){
                 callback(null,-1);
+            }
+            else {
+                //Last option is that version is not found on active mappings, so we query the MappingHistory
+                findRes.sort({ '_id.version':-1 }).limit(1, (err,res2) => {
 
-            });
+                    if (err) {  //Error on query
+                        return callback(err);
+                    }
+
+                    if (res2 && res2._id.version){ //Found in archived mappings
+                        return callback(null,res2._id.version);
+                    }
+
+                    if (res2 && !res2._id.version){ //Something strange happens
+                        return callback('Error, found document in history and has no version attribute!');
+                    }
+
+
+                    //No document found here, so it does not exist... Return -1, so next version will be 0
+                    callback(null,-1);
+
+                });
+            }
+
 
 
         });
