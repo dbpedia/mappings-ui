@@ -3,7 +3,7 @@ const Actions = require('./actions');
 const FilterForm = require('./filter-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
 const Paging = require('../../../components/paging.jsx');
-//const UserUtilities = require('../../../helpers/user-utilities');
+const UserUtilities = require('../../../helpers/user-utilities');
 const CreateNewForm = require('./create-new-form.jsx');
 
 const PropTypes = require('prop-types');
@@ -96,7 +96,8 @@ class SearchPage extends React.Component {
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Mapping</span>,
-                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c)
+                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c),
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-create-mappings')
             }
         ];
 
@@ -116,7 +117,7 @@ class SearchPage extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-8"> {/*Left column: results */}
-                        <Results data={this.state.results.data} />
+                        <Results data={this.state.results.data} canEdit={ UserUtilities.hasPermission(this.props.user,'can-edit-mappings')} />
                         <Paging
                             ref={(c) => (this.els.paging = c)}
                             pages={this.state.results.pages}

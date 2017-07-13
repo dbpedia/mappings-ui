@@ -241,7 +241,10 @@ Async.auto({
                             '000000000000000000000000': 'Account'
                         },
                         mappingsLang: 'all',
-                        timeCreated: new Date()
+                        timeCreated: new Date(),
+                        permissions: {
+                            'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true
+                        }
                     };
 
 

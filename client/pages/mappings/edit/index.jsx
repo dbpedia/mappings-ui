@@ -2,7 +2,7 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
-//const UserUtilities = require('../../../helpers/user-utilities');
+const UserUtilities = require('../../../helpers/user-utilities');
 const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -136,7 +136,8 @@ class EditPage extends React.Component {
             {
                 type: 'btn-danger',
                 text: 'Delete',
-                action:this.remove.bind(this, title,lang)
+                action:this.remove.bind(this, title,lang),
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-mappings')
 
             }
 

@@ -3,7 +3,7 @@ const MappingsPlugin = require('../../../server/api/mappings');
 const AuthPlugin = require('../../../server/auth');
 const AuthenticatedAdmin = require('../fixtures/credentials-admin');
 const AuthenticatedUser = require('../fixtures/credentials-account');
-//const AuthenticatedCustom = require('../fixtures/credentials-custom-account');
+const AuthenticatedCustom = require('../fixtures/credentials-custom-account');
 
 const Code = require('code');
 const Config = require('../../../config');
@@ -372,6 +372,61 @@ lab.experiment('Mapping Plugin Create', () => {
         });
     });
 
+    lab.test('it creates a mapping successfully when has can-create-mappings permission', (done) => {
+
+        request = {
+            method: 'POST',
+            url: '/mappings',
+            payload: {
+                template: 'test-template',
+                lang: 'en',
+                rml: 'rml'
+            },
+            credentials:   AuthenticatedCustom(['can-create-mappings'])
+        };
+
+        stub.Mapping.create = function (template,lang,rml,username,comment, callback) {
+
+            callback(null, { _id: { template,lang }, rml, edition: { username,comment,date: new Date() }, version:1  });
+        };
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback();
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result).to.be.an.object();
+            Code.expect(response.result._id.template).to.equal('test-template');
+            Code.expect(response.result._id.lang).to.equal('en');
+            Code.expect(response.result.rml).to.equal('rml');
+            Code.expect(response.result.version).to.equal(1);
+            done();
+        });
+    });
+
+    lab.test('it returns an error when no can-create-mappings permission', (done) => {
+
+        request = {
+            method: 'POST',
+            url: '/mappings',
+            payload: {
+                template: 'test-template',
+                lang: 'en',
+                rml: 'rml'
+            },
+            credentials: AuthenticatedUser
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
+            done();
+        });
+    });
+
 
     lab.test('it redirects when no authenticated', (done) => {
 
@@ -407,7 +462,7 @@ lab.experiment('Mapping Plugin Update', () => {
                 rml: 'updated-rml',
                 comment: 'changes'
             },
-            credentials: AuthenticatedUser
+            credentials: AuthenticatedAdmin
         };
 
         done();
@@ -490,7 +545,7 @@ lab.experiment('Mapping Plugin Update', () => {
                 rml: moreThanLimit,
                 comment: 'changes'
             },
-            credentials: AuthenticatedUser
+            credentials: AuthenticatedAdmin
         };
 
 
@@ -533,6 +588,44 @@ lab.experiment('Mapping Plugin Update', () => {
                 update: function (update,username,comment,cb2){
 
                     Code.expect(update.rml).to.equal('updated-rml');
+                    Code.expect(username).to.equal('admin');
+                    Code.expect(comment).to.equal('changes');
+
+                    cb2(null,{});
+                }
+
+            });
+        };
+
+        server.inject(request, (response) => {
+
+            done();
+        });
+    });
+
+    lab.test('it updates a document successfully with can-edit-mappings permission', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/mappings/template/en',
+            payload: {
+                rml: 'updated-rml',
+                comment: 'changes'
+            },
+            credentials: AuthenticatedCustom(['can-edit-mappings'])
+        };
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,{
+                _id: { template:'template','lang':'en' },
+                archive: function (del,cb){
+
+                    cb(null,{});
+                },
+                update: function (update,username,comment,cb2){
+
+                    Code.expect(update.rml).to.equal('updated-rml');
                     Code.expect(username).to.equal('account');
                     Code.expect(comment).to.equal('changes');
 
@@ -544,6 +637,25 @@ lab.experiment('Mapping Plugin Update', () => {
 
         server.inject(request, (response) => {
 
+            done();
+        });
+    });
+
+    lab.test('it returns error with no can-edit-mappings permission', (done) => {
+
+        request = {
+            method: 'PUT',
+            url: '/mappings/template/en',
+            payload: {
+                rml: 'updated-rml',
+                comment: 'changes'
+            },
+            credentials: AuthenticatedUser
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
             done();
         });
     });
@@ -560,7 +672,7 @@ lab.experiment('Mapping Plugin Delete', () => {
         request = {
             method: 'DELETE',
             url: '/mappings/template/en',
-            credentials: AuthenticatedUser
+            credentials: AuthenticatedAdmin
         };
 
         done();
@@ -617,6 +729,52 @@ lab.experiment('Mapping Plugin Delete', () => {
             Code.expect(response.statusCode).to.equal(200);
             Code.expect(response.result.success).to.be.true();
 
+            done();
+        });
+    });
+
+    lab.test('it deletes (archives) a document successfully with can-remove-mappings permission', (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/mappings/template/en',
+            credentials: AuthenticatedCustom(['can-remove-mappings'])
+        };
+
+        stub.Mapping.findOne = function (id, callback) {
+
+            callback(null,{
+                _id: { template:'template','lang':'en' },
+                archive: function (del,cb){
+
+                    Code.expect(del).to.be.true();
+                    cb(null,{});
+                }
+
+            });
+        };
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(200);
+            Code.expect(response.result.success).to.be.true();
+
+            done();
+        });
+    });
+
+    lab.test('it returns error with no can-remove-mappings permission', (done) => {
+
+        request = {
+            method: 'DELETE',
+            url: '/mappings/template/en',
+            credentials: AuthenticatedUser
+        };
+
+
+        server.inject(request, (response) => {
+
+            Code.expect(response.statusCode).to.equal(403);
             done();
         });
     });

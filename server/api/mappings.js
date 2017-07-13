@@ -3,6 +3,7 @@ const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
 const Config = require('../../config');
+const AuthPlugin = require('../auth');
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
@@ -157,7 +158,7 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-                //AuthPlugin.preware.ensureHasPermissions('can-create-posts'),
+                AuthPlugin.preware.ensureHasPermissions('can-create-mappings'),
 
                 {
                     assign: 'idCheck',
@@ -202,11 +203,10 @@ internals.applyRoutes = function (server, next) {
 
 
                 if (err) {
-
                     return reply(err);
                 }
 
-                reply(mapping);
+                reply(null,mapping);
             });
         }
     });
@@ -227,7 +227,8 @@ internals.applyRoutes = function (server, next) {
                     rml: Joi.string().required().allow(''),
                     comment: Joi.string().required().allow('')
                 }
-            }
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings')]
         },
         handler: function (request, reply) {
 
@@ -287,7 +288,8 @@ internals.applyRoutes = function (server, next) {
         config: {
             auth: {
                 strategy: 'session'
-            }
+            },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-mappings')]
         },
         handler: function (request, reply) {
 

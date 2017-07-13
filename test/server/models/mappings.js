@@ -212,20 +212,11 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
 
 
         const realFind = stub.MappingHistory.find;
-        stub.MappingHistory.find = function (query) {
+        stub.MappingHistory.find = function (query,params,callback) {
 
             stub.MappingHistory.find = realFind;
-            return {
-                sort: function (){
+            callback(null,null);
 
-                    return {
-                        limit: function (query3, callback){
-
-                            callback(null,null);
-                        }
-                    };
-                }
-            };
 
         };
 
@@ -252,20 +243,10 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
 
 
         const realFind = stub.MappingHistory.find;
-        stub.MappingHistory.find = function (query) {
+        stub.MappingHistory.find = function (query,params,callback) {
 
             stub.MappingHistory.find = realFind;
-            return {
-                sort: function (){
-
-                    return {
-                        limit: function (query3, callback){
-
-                            callback(null, { _id: { template: 'templateToFind', lang: 'en', version: 5 }  });
-                        }
-                    };
-                }
-            };
+            callback(null, [{ _id: { template: 'templateToFind', lang: 'en', version: 5 }  }]);
 
         };
 
@@ -291,20 +272,10 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
         };
 
         const realFind = stub.MappingHistory.find;
-        stub.MappingHistory.find = function (query) {
+        stub.MappingHistory.find = function (query,params,callback) {
 
             stub.MappingHistory.find = realFind;
-            return {
-                sort: function (){
-
-                    return {
-                        limit: function (query3, callback){
-
-                            callback(null,null);
-                        }
-                    };
-                }
-            };
+            callback(null,null);
 
         };
 
@@ -339,7 +310,7 @@ lab.experiment('Mapping GetLastVersion Experiments', () => {
                     return {
                         limit: function (query3, callback){
 
-                            callback(null, { _id: { template: 'templateToFind', lang: 'en', version:6 } });
+                            callback(null, [{ _id: { template: 'templateToFind', lang: 'en', version:6 } }]);
                         }
                     };
                 }

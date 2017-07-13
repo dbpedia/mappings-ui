@@ -110,6 +110,21 @@ Async.auto({
                 });
             }],
 
+
+            mappingEditorGroup: ['clean', function (dbResults, done) {
+                //Group with all needed permissions to operate with help posts
+
+                const document = {
+                    name: 'Mapping Editors',
+                    permissions: { 'can-create-mappings':true,'can-edit-mappings':true,'can-remove-mappings':true }
+                };
+
+                AccountGroup.insertOne(document, (err, docs) => {
+
+                    done(err, docs && docs[0]);
+                });
+            }],
+
             homePost: ['clean', function (dbResults, done) {
 
                 const d = {
@@ -187,7 +202,7 @@ Async.auto({
                             '111111111111111111111111': 'Admin',
                             '000000000000000000000000': 'Account'
                         },
-                        mappingsLang: 'all',
+                        mappingsLang: '',
                         timeCreated: new Date()
                     };
 
@@ -237,7 +252,10 @@ Async.auto({
                         groups: {
                             '000000000000000000000000': 'Account'
                         },
-                        mappingsLang: 'all',
+                        mappingsLang: 'en',
+                        permissions: {
+                            'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true
+                        },
                         timeCreated: new Date()
                     };
 

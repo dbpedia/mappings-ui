@@ -2,7 +2,7 @@
 const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
-//const UserUtilities = require('../../../helpers/user-utilities');
+const UserUtilities = require('../../../helpers/user-utilities');
 const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
@@ -130,7 +130,8 @@ class EditPage extends React.Component {
             {
                 type: 'btn-default',
                 text: <span><i className="fa fa-pencil" aria-hidden="true"></i>&nbsp;Edit</span>,
-                action: this.goToEdition.bind(this)
+                action: this.goToEdition.bind(this),
+                disabled: !UserUtilities.hasPermission(this.props.user,'can-edit-mappings')
 
             }
 

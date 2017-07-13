@@ -39,7 +39,7 @@ class CreateNewForm extends React.Component {
             username:'',
             email: '',
             password:'',
-            mappingsLang: 'all'
+            mappingsLang: ''
         };
     }
 

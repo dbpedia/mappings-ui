@@ -5,7 +5,8 @@ const ReactRouter = require('react-router-dom');
 const Link = ReactRouter.Link;
 
 const propTypes = {
-    data: PropTypes.array
+    data: PropTypes.array,
+    canEdit: PropTypes.bool
 };
 
 const calculatePercentage = function (record){
@@ -107,12 +108,11 @@ class Results extends React.Component {
 
                     <td>{record.status.message}</td>
                     <td>
-                        <Link
+                        {this.props.canEdit && <Link
                             className="btn btn-default btn-sm btn-table"
                             to={`mappings/edit/${record._id.template}/${record._id.lang}`}>
-
                             <i className="fa fa-pencil" aria-hidden="true"></i>
-                        </Link>
+                        </Link>}
 
                         <Link
                             className="btn btn-default btn-sm btn-table"

@@ -57,7 +57,10 @@ class Account extends MongoModels {
                     email: email.toLowerCase(),
                     mappingsLang: mappingsLang.toLowerCase(),
                     groups: { '000000000000000000000000':'Account' },
-                    timeCreated: new Date()
+                    timeCreated: new Date(),
+                    permissions: {
+                        'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true
+                    }
                 };
 
                 self.insertOne(document, done);
