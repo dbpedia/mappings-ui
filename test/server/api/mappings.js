@@ -492,7 +492,7 @@ lab.experiment('Mapping Plugin Update', () => {
 
 
             callback(null,{
-                archive: function (del, c2){
+                archive: function (del, u, c2){
 
                     c2({},null);
                 }
@@ -513,7 +513,7 @@ lab.experiment('Mapping Plugin Update', () => {
 
 
             callback(null,{
-                archive: function (del, c2){
+                archive: function (del, u, c2){
 
                     c2(null,{});
                 },
@@ -581,7 +581,7 @@ lab.experiment('Mapping Plugin Update', () => {
 
             callback(null,{
                 _id: { template:'template','lang':'en' },
-                archive: function (del,cb){
+                archive: function (del, u, cb){
 
                     cb(null,{});
                 },
@@ -619,7 +619,7 @@ lab.experiment('Mapping Plugin Update', () => {
 
             callback(null,{
                 _id: { template:'template','lang':'en' },
-                archive: function (del,cb){
+                archive: function (del, u, cb){
 
                     cb(null,{});
                 },
@@ -715,7 +715,7 @@ lab.experiment('Mapping Plugin Delete', () => {
 
             callback(null,{
                 _id: { template:'template','lang':'en' },
-                archive: function (del,cb){
+                archive: function (del,u, cb){
 
                     Code.expect(del).to.be.true();
                     cb(null,{});
@@ -745,7 +745,7 @@ lab.experiment('Mapping Plugin Delete', () => {
 
             callback(null,{
                 _id: { template:'template','lang':'en' },
-                archive: function (del,cb){
+                archive: function (del,u,cb){
 
                     Code.expect(del).to.be.true();
                     cb(null,{});

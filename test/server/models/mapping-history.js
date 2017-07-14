@@ -43,7 +43,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
         };
 
-        MappingHistory.create(mappingObject, false,  (err, result) => {
+        MappingHistory.create(mappingObject, false,'username',  (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(MappingHistory);
@@ -72,7 +72,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             edition: { username: 'user', date: new Date(), comment: 'Comment' }
         };
 
-        MappingHistory.create(mappingObject, true,  (err, result) => {
+        MappingHistory.create(mappingObject, true,'username',   (err, result) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(result).to.be.an.instanceOf(MappingHistory);
@@ -108,7 +108,7 @@ lab.experiment('MappingHistory Class Methods', () => {
             callback(Error('insert failed'));
         };
 
-        MappingHistory.create(mappingObject,false, (err, result) => {
+        MappingHistory.create(mappingObject,false,'username',  (err, result) => {
 
             Code.expect(err).to.be.an.object();
             Code.expect(result).to.not.exist();
@@ -133,6 +133,11 @@ lab.experiment('MappingHistory Class Methods', () => {
             };
             MappingHistory.findOne = realFindOne;
             callback(null,mockDoc);
+        };
+
+        MappingHistory.findOneAndUpdate = function (query,update,callback){
+
+            callback(null,{});
         };
 
         //In this case, no mapping in active mappings

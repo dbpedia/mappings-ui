@@ -1,11 +1,10 @@
 'use strict';
 const Actions = require('./actions');
 const FilterForm = require('./filter-form.jsx');
-const ButtonGroup = require('../../../components/button-group.jsx');
 const Paging = require('../../../components/paging.jsx');
 const UserUtilities = require('../../../helpers/user-utilities');
-const CreateNewForm = require('./create-new-form.jsx');
-
+const ReactRouter = require('react-router-dom');
+const Link = ReactRouter.Link;
 const PropTypes = require('prop-types');
 const React = require('react');
 const Results = require('./results.jsx');
@@ -85,48 +84,41 @@ class SearchPage extends React.Component {
         this.els.filters.changePage(page);
     }
 
-    onNewClick() {
+    restore(template,lang,version) {
 
-        Actions.showCreateNew();
+        window.confirm('Are you sure?') &&
+        Actions.restore(template,lang,version,this.props.history);
     }
 
-    goToDeleted(){
+    delete(template,lang) {
 
-        this.props.history.push('/mappings/history/deleted');
+        window.confirm('Are you sure? This action CANNOT be undone') &&
+        Actions.delete(template,lang,this.props.history);
+    }
+
+    getUserLanguage(){
+
+        if (this.state.isAuthenticated){
+            if (!this.state.language){
+                return '';
+            }
+            return this.state.language;
+        }
+
+        return 'en';
+
     }
 
     render() {
-
-
-        const buttons = [
-            { type: 'btn-success',
-                text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Mapping</span>,
-                action:this.onNewClick.bind(this), ref:(c) => (this.els.createNew = c),
-                disabled: !UserUtilities.hasPermission(this.props.user,'can-create-mappings')
-            }
-        ];
-
-
-        const buttonsDeleted = [
-            { type: 'btn-default',
-                text: <span><i className="fa fa-trash" aria-hidden="true"></i>&nbsp;View deleted mappings</span>,
-                action:this.goToDeleted.bind(this),
-                disabled: !UserUtilities.hasPermission(this.props.user,'can-create-mappings')
-            }
-        ];
 
 
 
         return (
             <section className="container">
                 <div className="page-header">
-                    <ButtonGroup float='right' buttons={buttons}  />
-                    <span style={{ float: 'right' }}>&nbsp;</span>
-                    <ButtonGroup float='right' buttons={buttonsDeleted}/>
-
                     <div className="row">
                         <div className="col-sm-8">
-                            <h1 style={ { margin:0 } }>Mapping List</h1>
+                            <h1 style={ { margin:0 } }><Link to={'/mappings?lang=' + this.getUserLanguage()}>Mapping List</Link> / Deleted</h1>
                         </div>
                     </div>
 
@@ -134,7 +126,12 @@ class SearchPage extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-8"> {/*Left column: results */}
-                        <Results data={this.state.results.data} canEdit={ UserUtilities.hasPermission(this.props.user,'can-edit-mappings')} />
+                        <Results data={this.state.results.data}
+                                 onRestore={this.restore.bind(this)}
+                                 canRestore={UserUtilities.hasPermission(this.props.user,'can-restore-mappings')}
+                                 onDelete={this.delete.bind(this)}
+                                 canDelete={UserUtilities.hasPermission(this.props.user,'can-remove-mappings-history')}
+                        />
                         <Paging
                             ref={(c) => (this.els.paging = c)}
                             pages={this.state.results.pages}
@@ -143,11 +140,6 @@ class SearchPage extends React.Component {
                             onChange={this.onPageChange.bind(this)}
                         />
                     </div>
-                    <CreateNewForm
-                        history={this.props.history}
-                        location={this.props.location}
-                        {...this.state.createNew}
-                    />
                     <div className="col-sm-4"> {/*Right column: filters */}
                         <FilterForm
                             ref={(c) => (this.els.filters = c)}

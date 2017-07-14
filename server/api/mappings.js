@@ -260,7 +260,7 @@ internals.applyRoutes = function (server, next) {
                 }
 
                 /*Then, archive the document */
-                mapping.archive(false, (err,res) => {
+                mapping.archive(false,username, (err,res) => {
 
                     if (err){
                         return reply(Boom.internal('Error while archiving mapping'));
@@ -295,6 +295,7 @@ internals.applyRoutes = function (server, next) {
 
             const sluggedId = request.params.template;
             const query = { _id: { template: sluggedId, lang: request.params.lang } };
+            const username = request.auth.credentials.user.username;
             Mapping.findOne(query, (err, mapping) => {
 
                 if (err) {
@@ -306,7 +307,7 @@ internals.applyRoutes = function (server, next) {
                 }
 
                 //Archive and mark as deleted. Automatically deleted from main collection
-                mapping.archive(true, (err, res) => {
+                mapping.archive(true, username, (err, res) => {
 
                     if (err) {
                         return reply(Boom.internal('Error archiving the old mapping.'));

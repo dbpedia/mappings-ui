@@ -7,7 +7,7 @@ class MappingHistory extends MongoModels {
 
 
     //Receives a mappingObject and a 'deleted' status
-    static create(mappingObject,deleted,callback){
+    static create(mappingObject,deleted,username,callback){
 
         const document = {
             _id: {
@@ -26,6 +26,14 @@ class MappingHistory extends MongoModels {
             stats: mappingObject.stats,
             deleted
         };
+
+
+        if (deleted){
+            document.deletion = {
+                username,
+                date: new Date()
+            };
+        }
 
         this.insertOne(document, (err, docs) => {
 
@@ -99,8 +107,14 @@ class MappingHistory extends MongoModels {
                             return callback(err);
                         }
 
-                        //Todo: set deleted status to false
-                        return callback(null,result);
+                        MappingHistory.findOneAndUpdate({ _id: archivedMapping._id },{ $set:{ deleted:false } }, (err,res) => {
+
+                            if (err) {
+                                return callback(err);
+                            }
+                            return callback(null,result);
+                        });
+
                     });
                 }
 

@@ -144,7 +144,7 @@ class Mapping extends MongoModels {
 
             const newVersion = res + 1; //If -1, then it will be 0
 
-            const oldVersion = doc.version;
+            const oldVersion = doc._id.version;
             const d = {
                 _id: {
                     template: doc._id.template,
@@ -246,9 +246,9 @@ class Mapping extends MongoModels {
      * the original collection
      * In the callback, returns the created history object.
      */
-    archive(deleted,callback){
+    archive(deleted,username,callback){
 
-        MappingHistory.create(this,deleted, (err,res) => {
+        MappingHistory.create(this,deleted,username, (err,res) => {
 
             if (err){
                 return callback(err);

@@ -144,7 +144,8 @@ lab.experiment('Mapping Class Methods', () => {
         const historyDocument = {
             _id: {
                 template: 'template',
-                lang: 'en'
+                lang: 'en',
+                version: 3
             },
             rml: 'rml',
             status: {
@@ -156,7 +157,6 @@ lab.experiment('Mapping Class Methods', () => {
                 date,
                 comment: 'comment'
             },
-            version: 3,
             deleted:false
 
         };
@@ -359,7 +359,7 @@ lab.experiment('Mapping Instance Methods', () => {
     lab.test('it correctly archives with delete=false',(done) => {
 
         const realCreate = stub.MappingHistory.create;
-        stub.MappingHistory.create = function (document,deleted, callback) {
+        stub.MappingHistory.create = function (document,deleted,username, callback) {
 
             stub.MappingHistory.create = realCreate;
             callback(null, { deleted });
@@ -371,7 +371,7 @@ lab.experiment('Mapping Instance Methods', () => {
             status: 'PENDING'
         });
 
-        mapping.archive(false, (err,res) => {
+        mapping.archive(false,'username', (err,res) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(res.deleted).to.be.false();
@@ -391,7 +391,7 @@ lab.experiment('Mapping Instance Methods', () => {
         };
 
         const realCreate = stub.MappingHistory.create;
-        stub.MappingHistory.create = function (document,deleted, callback) {
+        stub.MappingHistory.create = function (document,deleted,username,callback) {
 
             stub.MappingHistory.create = realCreate;
             callback(null, { deleted });
@@ -403,7 +403,7 @@ lab.experiment('Mapping Instance Methods', () => {
             status: 'PENDING'
         });
 
-        mapping.archive(true, (err,res) => {
+        mapping.archive(true, 'username',(err,res) => {
 
             Code.expect(err).to.not.exist();
             Code.expect(res.deleted).to.be.true();
@@ -424,7 +424,7 @@ lab.experiment('Mapping Instance Methods', () => {
         };
 
         const realCreate = stub.MappingHistory.create;
-        stub.MappingHistory.create = function (document,deleted, callback) {
+        stub.MappingHistory.create = function (document,deleted,username, callback) {
 
             stub.MappingHistory.create = realCreate;
             callback({}, null);
@@ -436,7 +436,7 @@ lab.experiment('Mapping Instance Methods', () => {
             status: 'PENDING'
         });
 
-        mapping.archive(true, (err,res) => {
+        mapping.archive(true,'username', (err,res) => {
 
             Code.expect(err).to.exist();
             done();
@@ -455,7 +455,7 @@ lab.experiment('Mapping Instance Methods', () => {
         };
 
         const realCreate = stub.MappingHistory.create;
-        stub.MappingHistory.create = function (document,deleted, callback) {
+        stub.MappingHistory.create = function (document,deleted,username, callback) {
 
             stub.MappingHistory.create = realCreate;
             callback(null, {});
@@ -467,7 +467,7 @@ lab.experiment('Mapping Instance Methods', () => {
             status: 'PENDING'
         });
 
-        mapping.archive(true, (err,res) => {
+        mapping.archive(true,'username', (err,res) => {
 
             Code.expect(err).to.exist();
 
