@@ -84,8 +84,6 @@ internals.applyRoutes = function (server, next) {
                     template: Joi.string().allow(''),
                     lang: Joi.string().allow(''),
                     username: Joi.string().allow(''),
-                    minCompletion: Joi.number().default(0),
-                    maxCompletion: Joi.number().default(100),
                     errored: Joi.string().allow(''),
                     status: Joi.string().allow(''),
                     fields: Joi.string(),
