@@ -180,7 +180,7 @@ Async.auto({
                             '111111111111111111111111': 'Admin',
                             '000000000000000000000000': 'Account'
                         },
-                        mappingsLang: '',
+                        mappingsLang: 'en',
                         timeCreated: new Date()
                     };
 
@@ -240,10 +240,10 @@ Async.auto({
                         groups: {
                             '000000000000000000000000': 'Account'
                         },
-                        mappingsLang: '',
+                        mappingsLang: 'en',
                         timeCreated: new Date(),
                         permissions: {
-                            'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true
+                            'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true,'can-restore-mappings':true
                         }
                     };
 

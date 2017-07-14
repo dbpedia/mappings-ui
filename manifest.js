@@ -160,6 +160,12 @@ const manifest = {
             }
         },
         {
+            plugin: './server/api/mappings-history',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
+        {
             plugin: './server/api/search',
             options: {
                 routes: { prefix: '/api' }

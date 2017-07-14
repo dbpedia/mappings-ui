@@ -18,11 +18,12 @@ class ButtonGroup extends React.Component {
     render() {
 
         const buttonElems = [];
+        let currentIndex = 0;
         this.props.buttons.forEach(
 
             (b) => {
 
-                const but =  <button ref={b.ref} key={b.text} type="button" className={'btn ' + b.type} onClick={b.action} disabled={b.disabled}>
+                const but =  <button ref={b.ref} key={currentIndex} type="button" className={'btn ' + b.type} onClick={b.action} disabled={b.disabled}>
                     {b.text}
                     <Spinner space="left" show={b.loading} />
 
@@ -31,6 +32,7 @@ class ButtonGroup extends React.Component {
 
 
                 buttonElems.push(but);
+                currentIndex++;
 
 
             });

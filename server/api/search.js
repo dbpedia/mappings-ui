@@ -66,8 +66,10 @@ internals.applyRoutes = function (server, next) {
         path: '/search/wiki',
         config: {
             auth: {
+                mode:'try',
                 strategy: 'session'
             },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
             validate: {
                 query: {
                     //Can search by title, lastEditor username, and visible status

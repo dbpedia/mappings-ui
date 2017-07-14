@@ -59,7 +59,7 @@ class Account extends MongoModels {
                     groups: { '000000000000000000000000':'Account' },
                     timeCreated: new Date(),
                     permissions: {
-                        'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true
+                        'can-create-mappings': true, 'can-edit-mappings':true, 'can-remove-mappings':true, 'can-restore-mappings':true
                     }
                 };
 

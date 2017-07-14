@@ -1,11 +1,8 @@
 'use strict';
 const Actions = require('./actions');
 const Alert = require('../../../components/alert.jsx');
-const Button = require('../../../components/form/button.jsx');
-const LinkState = require('../../../helpers/link-state');
 const PropTypes = require('prop-types');
 const React = require('react');
-const Spinner = require('../../../components/form/spinner.jsx');
 const Editor = require('../../../components/turtle-editor.jsx');
 
 
@@ -24,7 +21,6 @@ const propTypes = {
 };
 
 
-let editorRef;
 class DetailsForm extends React.Component {
     constructor(props) {
 
@@ -72,15 +68,6 @@ class DetailsForm extends React.Component {
     }
 
 
-    insertTextAtCursor(value){
-
-        editorRef.session.insert(editorRef.getCursorPosition(), value);
-    };
-
-    onEditorLoad(editor){
-
-        editorRef = editor;
-    }
 
     render() {
 
@@ -105,34 +92,9 @@ class DetailsForm extends React.Component {
 
 
         const editElements = <div>
-            <div className="row editionComment">
-                <div className="col-sm-9">
-
-                        <input type="text"
-                               name="edition.comment"
-                               maxLength="140"
-                               value={this.state.edition.comment}
-                               onChange={LinkState.bind(this)}
-                               className="form-control" placeholder="Type edition comment (optional, max 140 char)"/>
-
-                </div>
-                <div className="col-sm-3">
-                    <Button
-                        type="submit"
-                        inputClasses={{ 'btn-primary': true, 'btn-block':true }}
-                        disabled={this.props.loading}>
-
-                        Save changes
-                        <Spinner space="left" show={this.props.loading} />
-                    </Button>
-                </div>
-
-            </div>
 
             <Editor content={this.state.editedRml}
-                    ref="editor"
-                    onLoad={this.onEditorLoad.bind(this)}
-                    onChange={this.onChange.bind(this)}/>
+                    onChange={this.onChange.bind(this)} readOnly={true}/>
 
         </div>;
 
@@ -141,9 +103,6 @@ class DetailsForm extends React.Component {
             {alerts}
 
             {editElements}
-
-
-
 
 
         </fieldset>;

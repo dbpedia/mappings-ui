@@ -63,6 +63,22 @@ internals.applyRoutes = function (server, next) {
     });
 
 
+    server.route({
+        method: 'GET',
+        path: '/mappings/history/{glob*}',
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+        },
+        handler: function (request, reply) {
+
+            //Pass credentials to personalize navbar
+            reply.view('mappings/index', { credentials: request.auth.credentials });
+        }
+    });
 
 
 

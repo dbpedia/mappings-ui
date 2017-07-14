@@ -116,7 +116,7 @@ Async.auto({
 
                 const document = {
                     name: 'Mapping Editors',
-                    permissions: { 'can-create-mappings':true,'can-edit-mappings':true,'can-remove-mappings':true }
+                    permissions: { 'can-create-mappings':true,'can-edit-mappings':true,'can-remove-mappings':true,'can-restore-mappings':true }
                 };
 
                 AccountGroup.insertOne(document, (err, docs) => {

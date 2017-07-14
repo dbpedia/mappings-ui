@@ -1,7 +1,6 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
-const Mapping = require('./mapping');
 //Represents a Mapping Archived Version (basic information, without stats)
 class MappingHistory extends MongoModels {
 
@@ -61,6 +60,7 @@ class MappingHistory extends MongoModels {
             }
 
 
+            const Mapping = require('./mapping');
             //2. Get document from active mappings
             Mapping.findOne({ _id: { template,lang } }, (err,activeMapping) => {
 
@@ -92,13 +92,14 @@ class MappingHistory extends MongoModels {
                     });
                 }
 
-                else { //No active mapping, so we create new
+                else { //No active mapping, so we create new and set our deleted status to false
                     Mapping.createFromHistory(archivedMapping, (err,result) => {
 
                         if (err) {
                             return callback(err);
                         }
 
+                        //Todo: set deleted status to false
                         return callback(null,result);
                     });
                 }

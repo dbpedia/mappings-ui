@@ -88,7 +88,10 @@ class EditPage extends React.Component {
 
     }
 
+    goToHistory(){
 
+        window.confirm('Are you sure? Unsaved content will be lost.') && this.props.history.push('/mappings/history/' + this.state.details._id.template + '/' + this.state.details._id.lang);
+    }
 
 
     remove(template,lang) {
@@ -143,17 +146,30 @@ class EditPage extends React.Component {
 
         ];
 
+        const buttonRestore = [
+
+            {
+                type: 'btn-default',
+                text: <span><i className="fa fa-history" aria-hidden="true"></i>&nbsp;View old versions</span>,
+                action: this.goToHistory.bind(this),
+                disabled: false
+
+            }
+
+        ];
+
         return (
             <section className="container">
                 <div className="page-header">
-                    <ButtonGroup float='right' buttons={buttons}/>
-                    <h1 >
 
-                        <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
-                    </h1>
-                    {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
-                    {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
-                    {this.state.details.edition.comment}
+                    <ButtonGroup float='right' buttons={buttons}/>
+                    <span style={{ float: 'right' }}>&nbsp;</span>
+                    <ButtonGroup float='right' buttons={buttonRestore}/>
+                    <h2 >
+
+                        Editing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
+                    </h2>
+
                 </div>
 
                 <div className="row">
@@ -161,7 +177,9 @@ class EditPage extends React.Component {
 
 
                         <DetailsForm ref="details" {...this.state.details}/>
-
+                        {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
+                        {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
+                        {this.state.details.edition.comment}
 
                     </div>
                     <div className="col-sm-4">

@@ -52,7 +52,7 @@ class Mapping extends MongoModels {
                 },
                 stats: {
                 },
-                nextVersion
+                version:nextVersion
             };
 
             this.insertOne(document, (err, docs) => {
@@ -98,8 +98,9 @@ class Mapping extends MongoModels {
             }
 
 
+
                 //Last option is that version is not found on active mappings, so we query the MappingHistory
-            MappingHistory.find({ _id:{ template,lang } },{ sort: { '_id.version': -1 }, limit: 1 }, (err,res2) => {
+            MappingHistory.find({ '_id.template': template, '_id.lang': lang },{ sort: { '_id.version': -1 }, limit: 1 }, (err,res2) => {
 
 
                 if (err) {  //Error on query
@@ -113,7 +114,6 @@ class Mapping extends MongoModels {
                 if (res2 && res2.length === 1 && !res2[0]._id.version){ //Something strange happens
                     return callback('Error, found document in history and has no version attribute!');
                 }
-
 
                 //No document found here, so it does not exist... Return -1, so next version will be 0
                 callback(null,-1);
