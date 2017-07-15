@@ -265,7 +265,6 @@ internals.applyRoutes = function (server, next) {
             const query = { '_id.template':template,'_id.lang':lang };
             MappingHistory.deleteMany(query,(err,res) => {
 
-                console.log(res);
                 if (err){
                     return reply(err);
                 }

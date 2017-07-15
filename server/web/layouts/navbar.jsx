@@ -88,7 +88,7 @@ class Navbar extends React.Component {
 
                             { this.state.isAuthenticated &&
                             <li className={this.tabClass('editontology')}>
-                                <a href="http://ismaro3.ddns.net/webprotege/#projects/afdf9c97-ecba-4792-b066-2ac043e39859/edit/Classes">Edit Ontology</a>
+                                <a href="http://ismaro3.ddns.net:8080/webprotege/#projects/afdf9c97-ecba-4792-b066-2ac043e39859/edit/Classes">Edit Ontology</a>
                             </li>
                             }
                             <li className={this.tabClass('posts')}>
