@@ -53,6 +53,19 @@ const config = {
         },
         autoIndex: true
     },
+    github: {
+        username: process.env.GITHUB_USERNAME,
+        password: process.env.GITHUB_PASSWORD,
+        name: 'Ontology Pusher',
+        email: 'i.smaro.394@gmail.com'
+    },
+    githubMappings: {
+        repositoryURL: 'https://github.com/ontologypusher/mappings',
+        repositoryBranch: 'master',
+        repositoryFolder: '/tmp/mappings-repo/',
+        repositoryMappingsFolder: 'mappings/',
+        updateFrequencyMinutes: 1
+    },
     webProtegeIntegration: {
         mongodb:{
             uri:  {

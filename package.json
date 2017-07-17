@@ -86,6 +86,7 @@
     "react-router-dom": "4.x.x",
     "redux": "3.x.x",
     "require-dir": "0.3.x",
+    "rimraf": "^2.6.1",
     "slug": "0.9.x",
     "unzip": "^0.1.11",
     "uuid": "3.x.x",

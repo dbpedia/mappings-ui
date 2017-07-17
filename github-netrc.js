@@ -4,6 +4,9 @@
 'use strict';
 
 const Netrc = require('netrc');
+const Config = require('./config');
+const GITHUB_USERNAME = Config.get('/github/username');
+const GITHUB_PASSWORD = Config.get('/github/password');
 
 
 
@@ -11,8 +14,8 @@ const putLoginIntoNetrc = function (){
 
     const myNetrc = Netrc();
     const github = myNetrc['github.com'];
-    const username = process.env.GITHUB_USERNAME;
-    const password = process.env.GITHUB_PASSWORD;
+    const username = GITHUB_USERNAME;
+    const password = GITHUB_PASSWORD;
 
     if (github){
         console.log('Data already on .netrc file, skipping...');
