@@ -1,7 +1,12 @@
 'use strict';
 const Composer = require('./index');
-//const GithubNetrc = require('./github-netrc');
-//const Process = require('./server/ontologyExport/periodicOntologyUpdateWorker');
+const Config = require('./config');
+const PeriodicMappingService = require('./scripts/githubMappings/periodicMappingUpdateWorker');
+const GithubNetrc = require('./github-netrc');
+
+//Variables that decide what should be run in this instance
+const runServer = Config.get('/run/server');
+const runMappingsGithubUpdater = Config.get('/run/mappingsGithubUpdater');
 
 Composer((err, server) => {
 
@@ -9,11 +14,19 @@ Composer((err, server) => {
         throw err;
     }
 
-    server.start(() => {
+    if (runServer){
+        server.start(() => {
 
-        console.log('Started the plot device on port ' + server.info.port);
-        //GithubNetrc.putLoginIntoNetrc();
-        //Process.start();
+            console.log('Started the server on port ' + server.info.port);
 
-    });
+        });
+    }
+
+    if (runMappingsGithubUpdater ) {
+
+        GithubNetrc.putLoginIntoNetrc();
+        PeriodicMappingService.start();
+
+    }
+
 });

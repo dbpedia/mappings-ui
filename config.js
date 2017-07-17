@@ -21,6 +21,19 @@ const config = {
             $default: 8000
         }
     },
+    run: {
+        server: {
+            $filter: 'env',
+            production: true,
+            $default: true
+        },
+        mappingsGithubUpdater: {
+            $filter: 'env',
+            production: true,
+            test: false,
+            $default: false
+        }
+    },
     baseUrl: {
         $filter: 'env',
         $meta: 'values should not end in "/"',
