@@ -142,7 +142,7 @@ const push = function (repoObject,tries,maxTries){
 
                         console.log('\t[WARNING] External modification of mapping files. Overwriting...');
 
-                        reject({ code: 'EXTERNAL_MODIFICATION_OF_MAPPINGS', msg: err2 });
+                        reject({ code: 'ERROR_GIT_PUSH_FILES', msg: err2 });
 
                     }
                     else {

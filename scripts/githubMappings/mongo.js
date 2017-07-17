@@ -44,8 +44,68 @@ const getMappings = function (){
 
 };
 
+const startProcess = function () {
+
+    return connectToDB()
+        .then((db) => {
+
+            const updateStatusCol = db.collection('mappingUpdateStatus');
+            const document =
+                {
+                    startDate: new Date(),
+                    status: {
+                        error: false,
+                        message: 'RUNNING',
+                        long_message: ''
+                    }
+                };
+
+            return updateStatusCol.insertOne(document);
+        })
+        .then((res) => {
+
+            return res.insertedId; //Return the _id to later modify it
+        })
+        .catch((err) => {
+
+            throw { code: 'ERROR_INSERT_INITIAL_STATUS_MONGODB', msg: err };
+        });
+};
+
+
+const endProcess = function (id,error,message,longMessage) {
+
+    return connectToDB()
+        .then((db) => {
+
+
+            const updateStatusCol = db.collection('mappingUpdateStatus');
+            const update =
+                {
+                    $set: {
+                        endDate: new Date(),
+                        status: {
+                            error,
+                            message,
+                            longMessage
+                        }
+                    }
+
+                };
+
+            return updateStatusCol.findOneAndUpdate({ _id: id }, update);
+        })
+        .catch((err) => {
+
+            throw { code: 'ERROR_INSERT_FINAL_STATUS_MONGODB', msg: err };
+        });
+};
+
+
 module.exports = {
 
-    getMappings
+    getMappings,
+    startProcess,
+    endProcess
 };
 
