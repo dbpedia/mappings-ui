@@ -3,9 +3,12 @@
  */
 'use strict';
 const MongoClient = require('mongodb').MongoClient;
+const Config = require('../../config');
+
+
+const URI = Config.get('/hapiMongoModels/mongodb/uri');
 
 let database;
-const URI = 'mongodb://localhost:27017/aqua';
 /**
  * Returns a database db object and the webprotege dbpedia project _id.
  */
