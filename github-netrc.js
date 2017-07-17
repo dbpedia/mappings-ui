@@ -5,9 +5,11 @@
 
 const Netrc = require('netrc');
 const Config = require('./config');
+const Exec = require('child_process').exec;
 const GITHUB_USERNAME = Config.get('/github/username');
 const GITHUB_PASSWORD = Config.get('/github/password');
-
+const GITHUB_NAME = Config.get('/github/name');
+const GITHUB_EMAIL = Config.get('/github/email');
 
 
 const putLoginIntoNetrc = function (){
@@ -16,6 +18,14 @@ const putLoginIntoNetrc = function (){
     const github = myNetrc['github.com'];
     const username = GITHUB_USERNAME;
     const password = GITHUB_PASSWORD;
+
+    if (GITHUB_NAME && GITHUB_EMAIL){
+        Exec('git config --global user.email ' + GITHUB_EMAIL);
+        Exec('git config --global user.name ' + GITHUB_NAME);
+    }
+    else {
+        console.log('Please, make sure you set your github email and name in config file');
+    }
 
     if (github){
         console.log('Data already on .netrc file, skipping...');
@@ -32,6 +42,8 @@ const putLoginIntoNetrc = function (){
 
 
     }
+
+
 
     console.log('Please, make sure GITHUB_USERNAME and GITHUB_PASSWORD env vars are set');
     return false;
