@@ -75,7 +75,7 @@ const config = {
     githubMappings: {
         repositoryURL: 'https://github.com/ontologypusher/mappings',
         repositoryBranch: 'master',
-        repositoryFolder: '/tmp/mappings-repo/',
+        repositoryFolder: '/app/tmp/mappings-repo/',
         repositoryMappingsFolder: 'mappings/',
         updateFrequencyMinutes: 1
     },
