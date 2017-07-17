@@ -1,1 +1,2 @@
-web: node server.js && node githubMappingsUpdater.js
+web: node server.js
+worker: node githubMappingsUpdater.js
