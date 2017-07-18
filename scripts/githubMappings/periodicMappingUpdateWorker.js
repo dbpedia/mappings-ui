@@ -10,14 +10,11 @@ const Rimraf = require('rimraf');
 const Fs = require('fs');
 const Mkdirp = require('mkdirp');
 const Config = require('../../config');
-const Await = require('asyncawait/await');
-const Async = require('asyncawait/async');
 
-const REPO_URL = Config.get('/githubMappings/repositoryURL');
-const REPO_BRANCH = Config.get('/githubMappings/repositoryBranch');
-const REPO_FOLDER = Config.get('/githubMappings/repositoryFolder');
-const REPO_MAPPINGS_FOLDER = Config.get('/githubMappings/repositoryMappingsFolder');
-const UPDATE_FREQUENCY_MINUTES = Config.get('/githubMappings/updateFrequencyMinutes');
+const REPO_URL = Config.get('/github/repositoryURL');
+const REPO_BRANCH = Config.get('/github/repositoryBranch');
+const REPO_FOLDER = Config.get('/github/repositoryFolder');
+const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
 
 const clearMappings = function (){
 
@@ -66,7 +63,7 @@ const createMappingFile = function (dbItem){
 let repo;
 let updateDate;
 let recordId;
-const updateGithubMappings = function () {
+const doAction = function () {
 
     updateDate = Moment(new Date()).format('DD/MM hh:mm:ss');
     console.log('* Starting Github mappings update at ' + updateDate);
@@ -74,7 +71,7 @@ const updateGithubMappings = function () {
         .then((id) => {
 
 
-            console.log('\t[INFO] Inserted progress into MongoDB');
+            console.log('\t[INFO] Inserted progress into MongoDB,');
             recordId = id;
             return Git.startRepository(REPO_URL,REPO_BRANCH,REPO_FOLDER);
         })
@@ -118,7 +115,7 @@ const updateGithubMappings = function () {
         .then(() => {
 
             console.log('\t[INFO] Files added to stage.');
-            return Git.commit(repo,'Changes as ' + updateDate);
+            return Git.commit(repo,'Mappings changes as ' + updateDate);
 
         })
         .then(() => {
@@ -148,36 +145,9 @@ const updateGithubMappings = function () {
         });
 };
 
-const sleep = function (time) {
-
-    return new Promise((resolve) => setTimeout(resolve, time));
-};
-
-let lastStartTime;
-let currentTime;
-let timeLeft;
-const start = Async(() => {
-
-    //noinspection InfiniteLoopJS
-    for (;;){
-        lastStartTime = new Date().getTime();
-        Await(updateGithubMappings());
-        currentTime = new Date().getTime();
-        timeLeft = UPDATE_FREQUENCY_MINUTES * 60 * 1000 - (currentTime - lastStartTime);
-        if (timeLeft < 0) {
-            timeLeft = 0;
-        }
-        console.log('\t[INFO] Waiting ' + timeLeft / 1000 + ' s. for next update');
-        Await(sleep(timeLeft));
-    }
-
-
-
-});
-
 
 module.exports = {
-    start
+    doAction
 };
 
 

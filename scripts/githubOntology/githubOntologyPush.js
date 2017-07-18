@@ -5,19 +5,12 @@
 'use strict';
 const Gift = require('gift');
 const Config = require('../../config');
-const OntologyExport = require('./webprotegeOntologyExport');
-
-const ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
-const GITHUB_REPO_URL = Config.get('/webProtegeIntegration/githubRepositoryURL');
+const Moment = require('moment');
+//Get config from file
+const GITHUB_REPOSITORY_FOLDER = Config.get('/github/repositoryFolder');
+const GITHUB_REPO_URL = Config.get('/github/repositoryURL');
+const GITHUB_ONTOLOGY_DIRECTORY = GITHUB_REPOSITORY_FOLDER + '/' +  Config.get('/github/repositoryOntologyFolder');
 const ONTOLOGY_FILES_BASE_NAME = Config.get('/webProtegeIntegration/ontologyFileBaseName');
-
-const GIT_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
-const LOCAL_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/localOntologyFolder');
-const LOCAL_ONTOLOGY_BASE_PATH = LOCAL_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
-const GIT_ONTOLOGY_BASE_PATH = GIT_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
-
-const ONTOLOGY_FORMATS = Config.get('/webProtegeIntegration/ontologyFormats');
-const FORMATS = ONTOLOGY_FORMATS.split(',');
 
 
 /*
@@ -35,11 +28,13 @@ const updateGithub = function (revision){
     let repoObject;
 
 
-    return getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master')
+    return getRepository(GITHUB_REPO_URL, GITHUB_REPOSITORY_FOLDER,'master')
         .then((repo) => {
 
+
             repoObject = repo;
-            return commitFiles(repoObject,ONTOLOGY_FILES_BASE_NAME + '.*','Ontology revision ' + revision);
+            return commitFiles(repoObject,GITHUB_ONTOLOGY_DIRECTORY + '/' + ONTOLOGY_FILES_BASE_NAME + '.*',
+                'Ontology revision ' + revision + ' (Changes as ' + Moment(new Date()).format('DD/MM hh:mm:ss') + ')');
         })
         .then(() => {
 
@@ -47,7 +42,7 @@ const updateGithub = function (revision){
         })
         .catch((err) => {
 
-            throw err;
+            throw { code: 'ERROR_UPDATING_ONTOLOGY', msg: err };
         });
 };
 
@@ -66,7 +61,7 @@ const push = function (repoObject,tries,maxTries){
     return new Promise((resolve, reject)  => {
 
         if (tries > maxTries){
-            reject('Too many tries');
+            reject({ code: 'ERROR_GIT_PUSH_FILES', msg: 'Too many tries pushing the files.' });
             return;
         }
 
@@ -76,50 +71,25 @@ const push = function (repoObject,tries,maxTries){
             if (err){
                 //If there is an error, then pull latest version
 
-                console.log('pulling last version');
                 repoObject.pull( (err2) => {
 
                     if (err2){ //If there is an error, it is a conflict with our file (should not happen)
 
-                        console.log('[WARNING] External modification of ontologies. Overwriting...');
+                        console.log('\t[WARNING] External modification of ontology files. Overwriting in next iteration.');
 
-                        //Copy files back from local folder to git repository, to overwrite remote changes!
-                        const promises = [];
-                        FORMATS.forEach( (format) => {
-
-                            promises.push(OntologyExport.copyFile(LOCAL_ONTOLOGY_BASE_PATH + '.' + format,GIT_ONTOLOGY_BASE_PATH + '.' + format));
-                        });
-
-
-                        Promise.all(promises)
-                            .then( () => {
-
-                                //Commit files again
-                                return commitFiles(repoObject,ONTOLOGY_FILES_BASE_NAME + '.*','Ontology revision X');
-
-                            })
-                            .then( () => {
-
-                                return push(repoObject,tries + 1,maxTries);
-
-                            }).then( () => {
-
-                                resolve('Pushed');
-
-                            });
+                        reject({ code: 'ERROR_GIT_PUSH_FILES', msg: err2 });
 
                     }
                     else {
 
                         //When pull is done, we can proceed to push
                         push(repoObject,tries + 1,maxTries)
-                        .then( () => {
+                            .then( () => {
 
-                            console.log('pushed');
 
-                            resolve('Pushed');
+                                resolve('Pushed');
 
-                        });
+                            });
                     }
 
                 });
@@ -144,11 +114,14 @@ const commitFiles = function (repoObject,filePattern,message){
 
         repoObject.add(filePattern, (err) => {
 
+            console.log('\t[INFO] Files added to stage: ' + filePattern);
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_ADDING_FILES', msg: err });
             }
 
             repoObject.commit(message, { author: 'Ismael <ismaro.394@gmail.com>' }, (err2) => {
+
+                console.log('\t[INFO] Files commited.');
 
                 if (err2) {
 
@@ -168,10 +141,10 @@ const commitFiles = function (repoObject,filePattern,message){
  */
 const startRepository = function (){
 
-    return getRepository(GITHUB_REPO_URL, ONTOLOGY_DIRECTORY,'master')
+    return getRepository(GITHUB_REPO_URL, GITHUB_REPOSITORY_FOLDER,'master')
         .catch( (err) => {
 
-            throw err;
+            reject({ code: 'ERROR_GETTING_REPOSITORY', msg: err });
         });
 };
 /*
@@ -196,7 +169,7 @@ const getRepository = function (repoURL,destFolder,branch){
                     })
                     .catch((err) => {
 
-                        reject(err);
+                        reject({ code: 'ERROR_GETTING_REPOSITORY', msg: err });
                     });
 
             }
@@ -222,7 +195,7 @@ const cloneRepository = function (repoURL,destFolder,branch){
         Gift.clone( repoURL, destFolder, 1, branch, (err, repo) => {
 
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
 
             }
             else {

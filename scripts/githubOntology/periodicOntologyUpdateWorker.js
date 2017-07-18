@@ -3,14 +3,11 @@
  * Periodic process that launches the update of ontology in local and github repository.
  */
 'use strict';
+const Moment = require('moment');
+
 const GithubPush = require('./githubOntologyPush');
 const WebprotegeExport = require('./webprotegeOntologyExport');
 const WebprotegeDB = require('./webprotegeDatabase');
-const Config = require('../../config');
-
-const UPDATE_FREQUENCY_MINUTES = Config.get('/webProtegeIntegration/ontologyUpdateFrequencyMinutes');
-
-
 
 let pID; //ID of DBpedia project
 let lastRev; //Last revision of ontology in WebProtege
@@ -22,30 +19,35 @@ let lastRev; //Last revision of ontology in WebProtege
  */
 const doAction = function (){
 
-    console.log('Update cycle');
-    //GET PROJECT ID
-    WebprotegeDB.getProjectId() //Get projectID from db
+    const updateDate = Moment(new Date()).format('DD/MM hh:mm:ss');
+    console.log('* Starting Github ontology update at ' + updateDate);
+
+    WebprotegeDB.getProjectId() //Get database connection
         .then((projectID) => {
 
 
+            console.log('\t[INFO] Connected to WebProtege Database.');
             pID = projectID;
             //START REPOSITORY (EITHER CLONE OR USE EXISTING ONE)
             return GithubPush.startRepository();
         })
-        .then(() => {
+        .then(() => { //GET LAST ONTOLOGY REVISION NUMBER
 
-            //GET LAST ONTOLOGY REVISION NUMBER
+            console.log('\t[INFO] Got repository.');
             return WebprotegeExport.getCurrentVersion(pID);
         })
         .then( (lastRevision) => {
 
+            console.log('\t[INFO] Got last ontology version: ' + lastRevision);
             if (lastRevision === lastRev){ //No changes. Exit.
+                console.log('\t[INFO] No changes since last iteration, finishing.');
                 throw 'exit';
             }
             else {
                 lastRev = lastRevision;
 
                 //DOWNLOAD THE ONTOLOGY
+                console.log('\t[INFO] Changes detected. Downloading ontology files...');
                 return WebprotegeExport.downloadOntologyFiles(pID,lastRev);
             }
 
@@ -53,13 +55,14 @@ const doAction = function (){
         })
         .then( () => {
 
+
             //PUSH ONTOLOGY FILES TO GITHUB
             return GithubPush.updateGithub(lastRev);
         })
         .then( () => {
 
-            console.log('Pushed ontology v' + lastRev + ' to Github');
-
+            console.log('\t[INFO] Files pushed (v.' + (lastRev) + ').');
+            console.log('\t[INFO] Finished successfuly.');
         })
 
         .catch( (err) => {
@@ -68,24 +71,20 @@ const doAction = function (){
                 return 'ok';
             }
 
-            console.error(err);
+            if (err.code){
+                console.log('\t[ERROR] ' + err.code);
+                console.log(err.msg);
+            }
+            else {
+                console.log(err);
+            }
+
         });
 
 };
 
-
-const start = function (){
-
-    console.log('Github ontology update service started');
-
-    setInterval(doAction,UPDATE_FREQUENCY_MINUTES * 60 * 1000);
-
-};
-
-
-
 module.exports = {
-    start
+    doAction
 };
 
 

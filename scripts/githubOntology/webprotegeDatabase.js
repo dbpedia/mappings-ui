@@ -9,20 +9,18 @@ const Crypto = require('crypto');
 const Config = require('../../config');
 
 
-//TODO: Make tests of this file, once it is verified that we will use WebProtege
 
 let database;
-let projectID;
 const URI = Config.get('/webProtegeIntegration/mongodb/uri');
-const PROJECT_NAME = Config.get('/webProtegeIntegration/projectName');
+const ID = Config.get('/webProtegeIntegration/projectID');
 
 /**
  * Returns a database db object and the webprotege dbpedia project _id.
  */
 const connectToWebprotege = function (){
 
-    if (database && projectID){
-        return Promise.resolve({ db: database, _id:projectID });
+    if (database){
+        return Promise.resolve({ db: database, _id:ID });
     }
 
     //Returns a promise when everything is finished
@@ -31,56 +29,23 @@ const connectToWebprotege = function (){
 
             database = db; //Store database object
 
-            //Get project ID
-            const projectDetails = db.collection('ProjectDetails');
-            return projectDetails.findOne({ displayName: PROJECT_NAME });
-
-
-        })
-        .then((result) => {
-
-
-            if (!result){
-                console.log('[ERROR] Please, create a project in webprotege instance called ' + PROJECT_NAME + '. Then, restart the server.');
-                return { };
-            }
-
-            //Store project id
-            projectID = result._id;
-            console.log('Connected to WebProtege database, ' + PROJECT_NAME + ' project.');
-
             return {
                 db: database,
-                _id: projectID
+                _id: ID
             };
         })
-
         .catch( (err) =>  {
 
-            console.log(err);
+            throw { code: 'ERROR_CONNECTING_WEBPROTEGE_DB', msg: err };
         });
 
 };
 
 
-/**
- * Returns a promise with the ID of the project identified with PROJECT_NAME.
- */
 const getProjectId = function (){
 
-    return connectToWebprotege()
-        .then((res) => {
-
-            return res._id;
-        })
-        .catch((err) => {
-
-            console.log(err);
-            return undefined;
-        });
+    return Promise.resolve(ID);
 };
-
-
 
 
 /**

@@ -13,6 +13,11 @@ const criteria = {
 const config = {
     $meta: 'This file configures the plot device.',
     projectName: 'DBpedia Mappings UI',
+    tempDirectory: {
+        $filter: 'env',
+        production: '/app/tmp/',
+        $default: '/tmp/'
+    },
     port: {
         web: {
             $filter: 'env',
@@ -27,11 +32,17 @@ const config = {
             production: true,
             $default: true
         },
-        mappingsGithubUpdater: {
-            $filter: 'env',
-            production: true,
-            test: false,
-            $default: false
+        githubUpdater: {
+            mappings: {
+                $filter: 'env',
+                production: true,
+                $default: false
+            },
+            ontology: {
+                $filter: 'env',
+                production: true,
+                $default: false
+            }
         }
     },
     baseUrl: {
@@ -66,17 +77,21 @@ const config = {
         },
         autoIndex: true
     },
+    //Configuration related to github interaction, to update both mappings
     github: {
         username: process.env.GITHUB_USERNAME,
         password: process.env.GITHUB_PASSWORD,
-        name: 'Ontology Pusher',
-        email: 'i.smaro.394@gmail.com'
-    },
-    githubMappings: {
+        name: 'OntologyPusher',
+        email: 'i.smaro.394@gmail.com',
         repositoryURL: 'https://github.com/ontologypusher/mappings',
-        repositoryBranch: 'master',
-        repositoryFolder: '/app/tmp/mappings-repo/',
+        repositoryFolder: {
+            $filter: 'env',
+            production: '/app/tmp/mappings-repo/',
+            $default: '/tmp/mappings-repo'
+        },
         repositoryMappingsFolder: 'mappings/',
+        repositoryOntologyFolder: 'ontology/',
+        repositoryBranch: 'master',
         updateFrequencyMinutes: 1
     },
     webProtegeIntegration: {
@@ -87,28 +102,14 @@ const config = {
                 $default: 'mongodb://localhost:27017/webprotege'
             }
         },
-        projectName: 'DBpedia ontology',
+        projectID: 'afdf9c97-ecba-4792-b066-2ac043e39859',
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
-            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
+            $default:'http://192.168.1.5:8080/webprotege'
         },
-        localOntologyFolder: 'ontology-store',
-        githubRepositoryFolder: {
-            $filter: 'env',
-            production: 'dbpedia-ontology',
-            $default: 'ontologytest'
-        },
-        githubRepositoryURL: {
-            $filter: 'env',
-            production: 'https://github.com/ontologypusher/dbpedia-ontology',
-            $default: 'https://github.com/ismaro3/ontologytest'
-        },
-        tempDirectory: 'temp',
-        ontologyFileNameInputZip: 'root-ontology',
-        ontologyFileBaseName: 'dbpedia-ontology',
-        ontologyFormats: 'owx,owl,ttl,omx,ofn',
-        ontologyUpdateFrequencyMinutes: 1
+        ontologyFileBaseName: 'dbpedia-ontology',   //Name of file to be saved in repository
+        ontologyFormats: 'owx,owl,ttl,omx,ofn'      //Formats to extract
 
     },
     nodemailer: {

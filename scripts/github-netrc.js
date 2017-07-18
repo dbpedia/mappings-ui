@@ -4,7 +4,7 @@
 'use strict';
 
 const Netrc = require('netrc');
-const Config = require('./config');
+const Config = require('../config');
 const Exec = require('child_process').exec;
 const GITHUB_USERNAME = Config.get('/github/username');
 const GITHUB_PASSWORD = Config.get('/github/password');

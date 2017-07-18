@@ -11,14 +11,14 @@ const Mkdirp = require('mkdirp');
 const Config = require('../../config');
 
 
-const TEMP_DIRECTORY = Config.get('/webProtegeIntegration/tempDirectory');
-const GIT_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
-const LOCAL_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/localOntologyFolder');
-const LOCAL_ONTOLOGY_BASE_PATH = LOCAL_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
-const GIT_ONTOLOGY_BASE_PATH = GIT_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
+const TEMP_DIRECTORY = Config.get('/tempDirectory');
+const GIT_REPOSITORY_FOLDER = Config.get('/github/repositoryFolder');
+const GIT_ONTOLOGY_DIRECTORY = GIT_REPOSITORY_FOLDER + '/' +  Config.get('/github/repositoryOntologyFolder');
 
-const ONTOLOGY_FILE_TO_EXTRACT = Config.get('/webProtegeIntegration/ontologyFileNameInputZip');
 const ONTOLOGY_FORMATS = Config.get('/webProtegeIntegration/ontologyFormats');
+const ONTOLOGY_FILE_TO_EXTRACT = 'root-ontology'; //Ontology file is always named like that
+
+const GIT_ONTOLOGY_BASE_PATH = GIT_ONTOLOGY_DIRECTORY + '/' + Config.get('/webProtegeIntegration/ontologyFileBaseName');
 const formats = ONTOLOGY_FORMATS.split(',');
 
 
@@ -45,7 +45,7 @@ const downloadOntologyFiles = function (projectID,revision){
 
 /**
  * Downloads the ontology from WebProtege in certain format.
- * Also, stores the result in LOCAL_ONTOLOGY_BASE_PATH and GIT_ONTOLOGY_BASE_PATH.
+ * Also, stores the result in GIT_ONTOLOGY_BASE_PATH.
  * Returns, as promise, the path of the local ontology file when finished.
  * Async method, does not block.
  */
@@ -57,7 +57,6 @@ const downloadOntology = function (projectID,revision,format){
     const ZIP_FILE_PATH = TEMP_DIRECTORY + '/ontology-' + format + '.zip';
 
     //Path of output ontology file (local directory)
-    const LOCAL_OUTPUT_FILE = LOCAL_ONTOLOGY_BASE_PATH + '.' + format;
     const GIT_OUTPUT_FILE = GIT_ONTOLOGY_BASE_PATH + '.' + format;
 
 
@@ -71,6 +70,9 @@ const downloadOntology = function (projectID,revision,format){
 
 
     return new Promise((resolve, reject) => {
+
+
+
         //Get the ontology
         Wreck.get(ontologyURL, (err, res, payload) => {
 
@@ -79,7 +81,7 @@ const downloadOntology = function (projectID,revision,format){
 
             if (err) {
                 //Report error, stop processing
-                reject(err);
+                reject( { code: 'ERROR_DOWNLOADING_ONTOLOGY', msg: err });
                 return;
 
             }
@@ -87,10 +89,9 @@ const downloadOntology = function (projectID,revision,format){
 
             //Create temp directory
             createDirectory(TEMP_DIRECTORY)
-                //Create directory where ontology will be saved locally
                 .then(() => {
-
-                    return createDirectory(LOCAL_ONTOLOGY_DIRECTORY);
+                    //Create ontology directory
+                    return createDirectory(GIT_ONTOLOGY_DIRECTORY);
                 })
                 //Save zip file to ZIP_FILE_PATH (in temp folder)
                 .then(() => {
@@ -100,12 +101,7 @@ const downloadOntology = function (projectID,revision,format){
                 //Extract ontology file (with name ONTOLOGY_FILE_TO_EXTRACT)
                 .then(() => {
 
-                    return extractFileFromZip(ZIP_FILE_PATH, LOCAL_OUTPUT_FILE , ONTOLOGY_FILE_TO_EXTRACT);
-                })
-                //Copy file from local to git folder
-                .then(() => {
-
-                    return copyFile(LOCAL_OUTPUT_FILE,GIT_OUTPUT_FILE);
+                    return extractFileFromZip(ZIP_FILE_PATH, GIT_OUTPUT_FILE , ONTOLOGY_FILE_TO_EXTRACT);
                 })
                 //Remove ZIP file from Fs
                 .then(() => {
@@ -115,11 +111,12 @@ const downloadOntology = function (projectID,revision,format){
                 //Finish promise, returning the path where the ontology file is
                 .then(() => {
 
-                    myResolve(LOCAL_OUTPUT_FILE);
+                    console.log('\t\t* Format ' + format + ' done');
+                    myResolve(GIT_OUTPUT_FILE);
                 })
                 .catch((error) => {
 
-                    myReject(error);
+                    myReject({ code: 'ERROR_DOWNLOADING_ONTOLOGY', msg: error });
                 });
 
         });
@@ -143,7 +140,7 @@ const getCurrentVersion = function (projectID){
         Wreck.get(versionURL, (err, res, payload) => {
 
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_GETTING_WEBPROTEGE_CURRENT_VERSION', msg: err });
                 return;
             }
 
@@ -170,12 +167,12 @@ const copyFile = function (src,dst){
         const rd = Fs.createReadStream(src);
         rd.on('error', (err)  => {
 
-            reject(err);
+            reject({ code: 'ERROR_COPYING_FILE', msg: err });
         });
         const wr = Fs.createWriteStream(dst);
         wr.on('error', (err)  => {
 
-            reject(err);
+            reject({ code: 'ERROR_COPYING_FILE', msg: err });
 
         });
         wr.on('close', (ex)  => {
@@ -197,7 +194,7 @@ const createDirectory = function (path){
         Mkdirp(path, (err) => {
 
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_CREATING_DIRECTORY', msg: err });
             }
             else {
                 resolve('Directory created');
@@ -218,7 +215,7 @@ const saveBuffer = function (buffer,path){
         Fs.writeFile(path, buffer,  'binary', (err)  => {
 
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_SAVING_BUFFER', msg: err });
             }
             else {
                 resolve('File created');
@@ -266,7 +263,7 @@ const removeFile = function (path){
         Fs.unlink(path, (err) => {
 
             if (err) {
-                reject(err);
+                reject({ code: 'ERROR_REMOVING_FILE', msg: err });
             }
             else {
                 resolve('File removed');

@@ -3,7 +3,7 @@
 const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
-const WebProtege = require('../ontologyExport/webprotegeDatabase');
+const WebProtege = require('../../scripts/githubOntology/webprotegeDatabase');
 const internals = {};
 
 
