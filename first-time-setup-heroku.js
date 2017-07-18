@@ -4,7 +4,7 @@ const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
 Dotenv.config({ silent: true });
-const WPDatabase = require('./server/ontologyExport/webprotegeDatabase');
+const WPDatabase = require('./scripts/githubOntology/webprotegeDatabase');
 const GithubNetrc = require('./scripts/github-netrc');
 
 
