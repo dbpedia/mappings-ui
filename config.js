@@ -92,7 +92,7 @@ const config = {
         repositoryMappingsFolder: 'mappings/',
         repositoryOntologyFolder: 'ontology/',
         repositoryBranch: 'master',
-        updateFrequencyMinutes: 1
+        updateFrequencyMinutes: 5
     },
     webProtegeIntegration: {
         mongodb:{
