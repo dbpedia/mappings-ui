@@ -74,7 +74,9 @@ const manifest = {
                         Post: './server/models/post',
                         Mapping: './server/models/mapping',
                         MappingHistory: './server/models/mapping-history',
-                        CurrentMappingStats: './server/models/currentMappingStats'
+                        CurrentMappingStats: './server/models/currentMappingStats',
+                        MappingUpdateStatus: './server/models/mappingUpdateStatus',
+                        OntologyUpdateStatus: './server/models/ontologyUpdateStatus'
                     },
                     autoIndex: Config.get('/hapiMongoModels/autoIndex')
                 }
@@ -171,6 +173,12 @@ const manifest = {
                 routes: { prefix: '/api' }
             }
         },
+        {
+            plugin: './server/api/github-updates',
+            options: {
+                routes: { prefix: '/api' }
+            }
+        },
 
         {
             plugin: './server/web/about'
@@ -207,6 +215,9 @@ const manifest = {
         },
         {
             plugin: './server/web/mappings'
+        },
+        {
+            plugin: './server/web/github-updates'
         }
     ]
 };

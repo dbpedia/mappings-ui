@@ -8,21 +8,28 @@ const Moment = require('moment');
 const GithubPush = require('./githubOntologyPush');
 const WebprotegeExport = require('./webprotegeOntologyExport');
 const WebprotegeDB = require('./webprotegeDatabase');
-
+const Mongo = require('./mongo');
 let pID; //ID of DBpedia project
 let lastRev; //Last revision of ontology in WebProtege
-
+let recordId;
 
 
 /*
  * Main action. Gets last revision, downloads the ontology, pushes to github
  */
+
 const doAction = function (){
 
     const updateDate = Moment(new Date()).format('DD/MM hh:mm:ss');
     console.log('* Starting Github ontology update at ' + updateDate);
 
-    WebprotegeDB.getProjectId() //Get database connection
+    return Mongo.startProcess()
+        .then((id) => {
+
+            console.log('\t[INFO] Inserted progress into MongoDB,');
+            recordId = id;
+            return WebprotegeDB.getProjectId(); //Get database connection
+        })
         .then((projectID) => {
 
 
@@ -63,20 +70,25 @@ const doAction = function (){
 
             console.log('\t[INFO] Files pushed (v.' + (lastRev) + ').');
             console.log('\t[INFO] Finished successfuly.');
+
+            return Mongo.endProcess(recordId,false,'OK','');
         })
 
         .catch( (err) => {
 
             if (err === 'exit'){
+                Mongo.endProcess(recordId,false,'OK','No changes detected');
                 return 'ok';
             }
 
             if (err.code){
                 console.log('\t[ERROR] ' + err.code);
                 console.log(err.msg);
+                Mongo.endProcess(recordId,true,err.code,err.msg);
             }
             else {
                 console.log(err);
+                Mongo.endProcess(recordId,true,'UNKNOWN_ERROR',err);
             }
 
         });

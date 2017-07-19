@@ -63,6 +63,11 @@ Gulp.task('less', () => {
         entries: './client/pages/mappings/index.less',
         dest: './public/pages',
         outputName: 'mappings.min.css'
+    },
+    {
+        entries: './client/pages/githubupdates/index.less',
+        dest: './public/pages',
+        outputName: 'githubupdates.min.css'
     }
 
     ];

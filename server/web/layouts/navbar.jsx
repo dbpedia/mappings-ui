@@ -106,6 +106,7 @@ class Navbar extends React.Component {
                                     <ul className="dropdown-menu">
                                         <li className={this.tabClass('accounts')}><a href="/accounts">Accounts</a></li>
                                         <li className={this.tabClass('groups')}><a href="/groups">Groups</a></li>
+                                        <li className={this.tabClass('githubupdates')}><a href="/github-updates">Github Updates</a></li>
                                     </ul>
                                 </li>
                             }
