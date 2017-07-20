@@ -2,8 +2,10 @@
 const ClassNames = require('classnames');
 const PropTypes = require('prop-types');
 const React = require('react');
-
-
+const Config = require('../../../config');
+const projectID = Config.get('/webProtegeIntegration/projectID');
+const webprotegeURL = Config.get('/webProtegeIntegration/webProtegeURL');
+const URL = webprotegeURL + '/#projects/' + projectID;
 
 const propTypes = {
     activeTab: PropTypes.string,
@@ -88,7 +90,7 @@ class Navbar extends React.Component {
 
                             { this.state.isAuthenticated &&
                             <li className={this.tabClass('editontology')}>
-                                <a href="http://ismaro3.ddns.net:8080/webprotege/#projects/afdf9c97-ecba-4792-b066-2ac043e39859/edit/Classes">Edit Ontology</a>
+                                <a href={URL}>Edit Ontology</a>
                             </li>
                             }
                             <li className={this.tabClass('posts')}>
