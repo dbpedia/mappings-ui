@@ -5,7 +5,7 @@ const React = require('react');
 const Config = require('../../../config');
 const projectID = Config.get('/webProtegeIntegration/projectID');
 const webprotegeURL = Config.get('/webProtegeIntegration/webProtegeURL');
-const URL = webprotegeURL + '/#projects/' + projectID;
+const URL = webprotegeURL + '/#projects/' + projectID + '/edit/Classes';
 
 const propTypes = {
     activeTab: PropTypes.string,

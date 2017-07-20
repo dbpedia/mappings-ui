@@ -199,6 +199,7 @@ const setAdmin = function (username, admin){
 
             const roles = res.db.collection('RoleAssignments');
 
+
             const roleObject =
                 {
                     projectId: res._id,
@@ -206,6 +207,8 @@ const setAdmin = function (username, admin){
                     roleClosure: normalAccountPermissions.roleClosure,
                     actionClosure: normalAccountPermissions.actionClosure
                 };
+
+            console.log(roleObject);
 
             if (admin){
                 roleObject.assignedRoles = adminPermissions.assignedRoles;

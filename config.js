@@ -102,7 +102,7 @@ const config = {
                 $default: 'mongodb://localhost:27017/webprotege'
             }
         },
-        projectID: '40d5ae46-18ec-4968-8f12-a2dd16f5b156/edit/Classes',
+        projectID: '40d5ae46-18ec-4968-8f12-a2dd16f5b156',
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
