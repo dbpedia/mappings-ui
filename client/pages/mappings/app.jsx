@@ -5,6 +5,8 @@ const MappingView = require('./view/index.jsx');
 const HistoryIndividualList = require('./history-individual-list/index.jsx');
 const HistoryView = require('./history-view/index.jsx');
 const HistoryDeletedList = require('./history-deleted-list/index.jsx');
+const MappingTest = require('./test/index.jsx');
+
 const NotFound = require('./not-found.jsx');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -28,6 +30,7 @@ class App extends React.Component {
                     <Switch>
                         <Route exact path="/mappings" render={(props) => <MappingList user={credentials} {...props} />} />
                         <Route exact path="/mappings/edit/:template/:lang" render={(props) => <MappingEdit user={credentials} {...props} />} />
+                        <Route exact path="/mappings/test" render={(props) => <MappingTest user={credentials} {...props} />} />
                         <Route exact path="/mappings/view/:template/:lang" render={(props) => <MappingView user={credentials} {...props} />} />
                         <Route exact path="/mappings/history/:template/:lang" render={(props) => <HistoryIndividualList user={credentials} {...props} />} />
                         <Route exact path="/mappings/history/view/:template/:lang/:version" render={(props) => <HistoryView user={credentials} {...props} />} />
