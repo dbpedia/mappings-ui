@@ -1,3 +1,4 @@
 node_modules/*
 public/*
 local-libs/*
+client/pages/mappings/test*

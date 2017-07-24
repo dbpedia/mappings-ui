@@ -23,7 +23,7 @@ class ButtonGroup extends React.Component {
 
             (b) => {
 
-                const but =  <button ref={b.ref} key={currentIndex} type="button" className={'btn ' + b.type} onClick={b.action} disabled={b.disabled}>
+                const but =  <button ref={b.ref} key={currentIndex} type="button" className={'btn ' + b.type + ' ' + b.sizeClass} onClick={b.action} disabled={b.disabled}>
                     {b.text}
                     <Spinner space="left" show={b.loading} />
 

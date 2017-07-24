@@ -1,8 +1,6 @@
 'use strict';
-const Actions = require('./actions');
 const PropTypes = require('prop-types');
 const React = require('react');
-const ReactRouter = require('react-router-dom');
 const TemplateInserter = require('./template-inserter');
 const Store = require('./store');
 const propTypes = {
@@ -44,6 +42,7 @@ class InsertTemplatePage extends React.Component {
 
 
     render() {
+
         return <TemplateInserter/>;
     }
 
