@@ -220,7 +220,7 @@ class RowIntermediateTemplate extends React.Component {
             <div style={ {marginLeft: this.props.childLevel*5 + 'px'}}>
                 <div className={'templateEditRow panel panel-default ' + (this.state.hasChild ? 'disabled' : '')}>
                     <div className="panel-heading clearfix">
-                        <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Conditional Template</h5>
+                        <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Intermediate Template</h5>
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
                     <div className="panel-body">

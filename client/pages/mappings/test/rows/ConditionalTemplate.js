@@ -5,6 +5,7 @@
 'use strict';
 const React = require('react');
 const PropTypes = require('prop-types');
+var Collapse = require('react-bootstrap').Collapse;
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const TemplateList = require('../TemplateList');
 const propTypes = {
@@ -50,7 +51,8 @@ class RowConditionalTemplate extends React.Component {
             hasChild: false,
             childType: '',
             hasFallback: false,
-            editingChild: undefined
+            editingChild: undefined,
+            isCollapsed: false
 
         };
 
@@ -99,28 +101,28 @@ class RowConditionalTemplate extends React.Component {
      */
     showChild(type){
 
-       this.setState({hasChild:true,childType:type});
+       this.setState({hasChild:true,childType:type,isCollapsed: true});
        //When hasChild = true, the div is disabled
 
     }
 
     showEditChild(type,index){
 
-        this.setState({hasChild:true,childType:type,editingChild:index});
+        this.setState({hasChild:true,childType:type,editingChild:index,isCollapsed: true});
         //When hasChild = true, the div is disabled
 
     }
 
     showFallbackChild(){
 
-        this.setState({hasChild:true,hasFallback: true,childType:'ConditionalTemplate'});
+        this.setState({hasChild:true,hasFallback: true,childType:'ConditionalTemplate',isCollapsed: true});
         //When hasChild = true, the div is disabled
 
     }
 
     editFallbackChild(){
 
-        this.setState({hasChild:true,hasFallback: true, editingFallback: true,childType:'ConditionalTemplate'});
+        this.setState({hasChild:true,hasFallback: true, editingFallback: true,childType:'ConditionalTemplate',isCollapsed: true});
         //When hasChild = true, the div is disabled
 
     }
@@ -179,6 +181,7 @@ class RowConditionalTemplate extends React.Component {
         c.hasFallback = false;
         c.editingChild = undefined;
         c.childType = undefined;            //Erase child type
+        c.isCollapsed = false;
         this.setState(c);                   //Set state
 
     }
@@ -193,6 +196,7 @@ class RowConditionalTemplate extends React.Component {
         c.hasChild = false;                 //Kill child
         c.hasFallback = false;
         c.editingChild = undefined;
+        c.isCollapsed = false;
         c.childType = undefined;            //Erase child type
         this.setState(c);                   //Set state
 
@@ -208,6 +212,7 @@ class RowConditionalTemplate extends React.Component {
         }
         c.hasChild = false;                 //Kill child
         c.hasFallback = false;
+        c.isCollapsed = false;
         c.childType = undefined;            //Erase child type
         this.setState(c);                   //Set state
 
@@ -310,6 +315,7 @@ class RowConditionalTemplate extends React.Component {
                         <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Conditional Template</h5>
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
+                    <Collapse in={!this.state.isCollapsed}>
                     <div className="panel-body">
                         {Object.keys(this.state.errors).length > 0 &&
                         <div><span style={{color:"red"}}>Please, fill all the required fields (*)</span><br/><br/></div>}
@@ -416,11 +422,9 @@ class RowConditionalTemplate extends React.Component {
                                     onRemove={this.removeTemplate.bind(this)}
                                 />
                             </div>
-
                         </div>
-
-
                     </div>
+                </Collapse>
                 </div>
                 {this.currentChild()}
             </div>
