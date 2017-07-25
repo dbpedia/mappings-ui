@@ -10,6 +10,7 @@ const ReactRouter = require('react-router-dom');
 const Store = require('./store');
 const MappingTesterPanel = require('../../../components/mappingTesterPanel.jsx');
 const OntologySearchPanel = require('../../../components/ontologySearchPanel.jsx');
+const AddTemplatePanel = require('./addTemplatePanel.jsx');
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
@@ -71,6 +72,15 @@ class EditPage extends React.Component {
     onOntologySearchSubmit(value){
 
         this.refs.details.insertTextAtCursor(value);
+    }
+
+    //Called when new template has been added
+    onTemplateAdded(childType,content){
+
+        const dump = this.refs.details.getCurrentText();
+        const templatePanel = this.refs.templatePanel;
+        Actions.getRMLfromTemplate(this.props.match.params.template,this.props.match.params.lang,dump,childType,content,this.refs.details,templatePanel);
+
     }
 
     changeShownURL(newPath){
@@ -160,6 +170,7 @@ class EditPage extends React.Component {
 
         return (
             <section className="container">
+
                 <div className="page-header">
 
                     <ButtonGroup float='right' buttons={buttons}/>
@@ -183,6 +194,7 @@ class EditPage extends React.Component {
 
                     </div>
                     <div className="col-sm-4">
+                        <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
                         <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
                         <MappingTesterPanel/>
                     </div>

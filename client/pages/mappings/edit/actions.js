@@ -35,9 +35,6 @@ class Actions {
         });
     }
 
-
-
-
     static delete(template,lang, history) {
 
         ApiActions.delete(
@@ -53,6 +50,38 @@ class Actions {
 
                     window.scrollTo(0, 0);
                 }
+            }
+        );
+    }
+
+    static getRMLfromTemplate(template,lang,dump,type,content,editorBox,templatePanel) {
+
+        //TODO: Maybe some pre-processing is needed
+
+        const data = {
+            mappingName: template,
+            mappingLang: lang,
+            mappingDump: dump,
+            templateType: type,
+            templateContent: content
+        };
+
+        ApiActions.post(
+            '/api/mappings/rml',
+            data,
+            Store,
+            Constants.GET_RML_TEMPLATE,
+            Constants.GET_RML_TEMPLATE_RESPONSE,
+            (err, response) => {
+
+
+                if (!err) {
+
+                    //Write result to box, it was OK
+                    editorBox.setText(response.dump);
+                }
+
+                templatePanel.setAlert(err);
             }
         );
     }

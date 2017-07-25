@@ -1,12 +1,14 @@
 'use strict';
 const Delete = require('./reducers/delete');
 const Details = require('./reducers/details');
+const Template = require('./reducers/template');
 const Redux = require('redux');
 
 
 module.exports = Redux.createStore(
     Redux.combineReducers({
         delete: Delete,
-        details: Details
+        details: Details,
+        template: Template
     })
 );

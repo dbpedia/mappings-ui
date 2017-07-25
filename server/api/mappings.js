@@ -321,6 +321,39 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    server.route({
+        method: 'POST',
+        path: '/mappings/rml',
+        config: {
+            //Only authenticated users can create mappings
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            validate: {
+                payload: {
+                    mappingName: Joi.string().required(),
+                    mappingLang: Joi.string().required(),
+                    mappingDump: Joi.string().required().allow(''),
+                    templateType: Joi.string().required(),
+                    templateContent: Joi.object().required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            //TODO: Connect to Extraction Framework
+            const res = {
+                name: request.payload.mappingName,
+                language: request.payload.mappingLang,
+                dump: 'new dump'
+            };
+
+            reply(null,res);
+
+        }
+    });
 
     next();
 };

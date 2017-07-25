@@ -198,7 +198,7 @@ lab.experiment('MappingHistory Class Methods', () => {
 
             Mapping.findOne = realMappingFindOne;
             callback(null,{
-                archive: function (del,cb){
+                archive: function (del,username,cb){
 
                     cb(null,{});
                 },

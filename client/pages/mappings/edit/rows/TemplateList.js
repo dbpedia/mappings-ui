@@ -34,6 +34,7 @@ class TemplateList extends React.Component {
 
         const mappingListItems = [];
         this.props.templates.forEach((map,i) => {
+
             mappingListItems.push(
                 <li className="list-group-item" key={i}>
                     {map._alias}
@@ -57,6 +58,7 @@ class TemplateList extends React.Component {
 
         const options = [];
         this.props.possibleOptions.forEach((opt) => {
+
             options.push(<option key={opt} >{opt}</option>);
         });
         mappingListItems.push(

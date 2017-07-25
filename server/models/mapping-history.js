@@ -78,7 +78,7 @@ class MappingHistory extends MongoModels {
 
                 if (activeMapping){ //If there is an already active mapping, just update it.
 
-                    activeMapping.archive(false, (err,res) => { //Archive current mapping
+                    activeMapping.archive(false, username, (err,res) => { //Archive current mapping
 
                         if (err){
                             return callback(err);

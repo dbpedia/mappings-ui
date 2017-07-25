@@ -8,7 +8,8 @@ const PropTypes = require('prop-types');
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const propTypes = {
     onClose: PropTypes.func,
-    childLevel: PropTypes.number
+    childLevel: PropTypes.number,
+    content: PropTypes.object
 };
 
 const name = 'SimplePropertyTemplate';
@@ -24,7 +25,19 @@ class RowSimplePropertyTemplate extends React.Component {
     constructor(props){
 
         super(props);
-        this.state = {
+        this.state = this.getNewState();
+
+        //In edit mode
+        if (this.props.content) {
+            this.state.content = this.props.content;
+        }
+
+    }
+
+
+    getNewState(){
+
+        return  {
             content: {
                 name,
                 parameters: {
@@ -44,30 +57,32 @@ class RowSimplePropertyTemplate extends React.Component {
             }
 
         };
-
-        //In edit mode
-        if (this.props.content) {
-            this.state.content = this.props.content;
-        }
-
     }
 
+    parametersSelectHandler(attribute,event){
+
+        const content = { ...this.state.content };
+        content.parameters[attribute] = event.target.value;
+        this.setState({ content });
+
+    }
 
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
 
-        let value = event.target.value;
-        let content = {...this.state.content};
+        const value = event.target.value;
+        const content = { ...this.state.content };
         content.parameters[attribute] = value;
-        this.setState({content});
+        this.setState({ content });
 
     }
 
 
 
     createAlias(){
+
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
@@ -79,7 +94,7 @@ class RowSimplePropertyTemplate extends React.Component {
 
         const errors = {};
         let hasError = false;
-        for(let i = 0; i < required.length ; i++){
+        for (let i = 0; i < required.length; ++i){
             const field = this.state.content.parameters[required[i]];
             const fieldName = required[i];
             if (!field){
@@ -97,19 +112,20 @@ class RowSimplePropertyTemplate extends React.Component {
         }
 
         if (save && hasError){
-            this.setState({errors});
+            this.setState({ errors });
             return;
         }
 
 
         if (!save) {
-            return window.confirm("Are you sure? Data can't be recovered.") && this.props.onClose(save,name,this.state.content);
+            return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
 
-        let c = {...this.state.content};
+        const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState({ content:c }, () => {
-            return this.props.onClose(save,name,this.state.content);
+        this.setState(this.getNewState(), () => {
+
+            return this.props.onClose(save,name,c);
         });
 
 
@@ -120,29 +136,31 @@ class RowSimplePropertyTemplate extends React.Component {
 
         const buttons = [
             { type: 'btn-success',
-                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;Save</span>,
+                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
                 action: this.onMeClose.bind(this,true),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             },
             { type: 'btn-danger',
                 text: <span><i className="fa fa-times" aria-hidden="true"></i>&nbsp;Cancel</span>,
                 action: this.onMeClose.bind(this,false),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             }
         ];
 
 
         return (
 
-            <div style={ {marginLeft: this.props.childLevel*5 + 'px'}}>
-                <div className={'templateEditRow panel panel-default ' + (this.state.hasChild ? 'disabled' : '')}>
+            <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
+                <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
-                        <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Simple Property Template</h5>
+                        <h5 className="panel-title pull-left" style={{ paddingTop: '7.5px' }}>Simple Property Template</h5>
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
-                    <div className="panel-body">
+                    <div className={'panel-body ' + (this.state.hasChild ? 'disabled' : '')}>
                         {Object.keys(this.state.errors).length > 0 &&
-                        <div><span style={{color:"red"}}>Please, fill all the required fields (*)</span><br/><br/></div>}
+                        <div><span style={{ color:'red' }}>Please, fill all the required fields (*)</span><br/><br/></div>}
                         <div className="row">
 
                             <div className="col-sm-6"> {/* Column of properties */}
@@ -154,7 +172,7 @@ class RowSimplePropertyTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder=''
+                                                   placeholder='e.g: dbo:name'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>
@@ -165,7 +183,7 @@ class RowSimplePropertyTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.property ? 'error' : '')}
                                                    id="property"
-                                                   placeholder=''
+                                                   placeholder='e.g. name'
                                                    value={this.state.content.parameters.property}
                                                    onChange={this.handleChange.bind(this,'property')}/>
                                         </div>
@@ -173,12 +191,11 @@ class RowSimplePropertyTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="select">Select{required.indexOf('select') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.select ? 'error' : '')}
-                                                   id="select"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.select}
-                                                   onChange={this.handleChange.bind(this,'select')}/>
+                                            <select className="form-control" value={this.state.content.parameters.select} onChange={this.parametersSelectHandler.bind(this,'select')}>
+                                                <option value="">-</option>
+                                                <option value="first">first</option>
+                                                <option value="last">last</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -212,12 +229,11 @@ class RowSimplePropertyTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="transform">Transform{required.indexOf('transform') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.transform ? 'error' : '')}
-                                                   id="transform"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.transform}
-                                                   onChange={this.handleChange.bind(this,'transform')}/>
+                                            <select className="form-control" value={this.state.content.parameters.transform} onChange={this.parametersSelectHandler.bind(this,'transform')}>
+                                                <option value="">-</option>
+                                                <option value="external">external</option>
+                                                <option value="internal">internal</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="form-group">
@@ -234,7 +250,7 @@ class RowSimplePropertyTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="prefix">Factor{required.indexOf('factor') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
+                                            <input type="number"
                                                    className={'form-control ' + (this.state.errors.factor ? 'error' : '')}
                                                    id="factor"
                                                    placeholder=''

@@ -77,6 +77,18 @@ class DetailsForm extends React.Component {
         editorRef.session.insert(editorRef.getCursorPosition(), value);
     };
 
+    setText(text) {
+
+        //Changes can be undone
+        editorRef.session.doc.setValue(text,0);
+        this.setState({ rml: text });
+    }
+
+    getCurrentText(){
+
+        return this.state.rml;
+    }
+
     onEditorLoad(editor){
 
         editorRef = editor;

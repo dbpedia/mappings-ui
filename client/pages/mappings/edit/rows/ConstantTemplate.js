@@ -1,6 +1,6 @@
 /**
  * Created by ismaro3 on 24/07/17.
- * StartDateTemplate
+ * ConstantTemplate
  */
 'use strict';
 const React = require('react');
@@ -8,36 +8,24 @@ const PropTypes = require('prop-types');
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const propTypes = {
     onClose: PropTypes.func,
-    childLevel: PropTypes.number
+    childLevel: PropTypes.number,
+    content: PropTypes.object
 };
 
-const name = 'StartDateTemplate';
-const required = ['ontologyProperty','property'];
+const name = 'ConstantTemplate';
+const required = ['ontologyProperty'];
 
 /**
  * Possible children: None
  */
-class RowStartDateTemplate extends React.Component {
+class RowConstantTemplate extends React.Component {
 
 
     //this.state.content has TemplateMapping content
     constructor(props){
 
         super(props);
-        this.state = {
-            content: {
-                name,
-                parameters: {
-                    ontologyProperty: '',
-                    property: ''
-                },
-                _alias: 'Empty' //This attribute should be removed before POST
-            },
-            errors: {
-
-            }
-
-        };
+        this.state = this.getNewState();
 
         //In edit mode
         if (this.props.content) {
@@ -47,22 +35,42 @@ class RowStartDateTemplate extends React.Component {
     }
 
 
+    getNewState(){
+
+        return  {
+            content: {
+                name,
+                parameters: {
+                    ontologyProperty: '',
+                    value: '',
+                    unit: ''
+                },
+                _alias: 'Empty' //This attribute should be removed before POST
+            },
+            errors: {
+
+            }
+
+        };
+    }
+
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
 
-        let value = event.target.value;
-        let content = {...this.state.content};
+        const value = event.target.value;
+        const content = { ...this.state.content };
         content.parameters[attribute] = value;
-        this.setState({content});
+        this.setState({ content });
 
     }
 
 
 
     createAlias(){
-        return name + ' (' + this.state.content.parameters.property + ')';
+
+        return name + ' (' + this.state.content.parameters.ontologyProperty + ')';
     }
 
     /**
@@ -73,7 +81,7 @@ class RowStartDateTemplate extends React.Component {
 
         const errors = {};
         let hasError = false;
-        for(let i = 0; i < required.length ; i++){
+        for (let i = 0; i < required.length; ++i){
             const field = this.state.content.parameters[required[i]];
             const fieldName = required[i];
             if (!field){
@@ -91,19 +99,20 @@ class RowStartDateTemplate extends React.Component {
         }
 
         if (save && hasError){
-            this.setState({errors});
+            this.setState({ errors });
             return;
         }
 
 
         if (!save) {
-            return window.confirm("Are you sure? Data can't be recovered.") && this.props.onClose(save,name,this.state.content);
+            return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
 
-        let c = {...this.state.content};
+        const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState({ content:c }, () => {
-            return this.props.onClose(save,name,this.state.content);
+        this.setState(this.getNewState(), () => {
+
+            return this.props.onClose(save,name,c);
         });
 
 
@@ -114,29 +123,30 @@ class RowStartDateTemplate extends React.Component {
 
         const buttons = [
             { type: 'btn-success',
-                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;Save</span>,
+                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
                 action: this.onMeClose.bind(this,true),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             },
             { type: 'btn-danger',
                 text: <span><i className="fa fa-times" aria-hidden="true"></i>&nbsp;Cancel</span>,
                 action: this.onMeClose.bind(this,false),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             }
         ];
 
-
         return (
 
-            <div style={ {marginLeft: this.props.childLevel*5 + 'px'}}>
-                <div className={'templateEditRow panel panel-default ' + (this.state.hasChild ? 'disabled' : '')}>
+            <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
+                <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
-                        <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Start Date Template</h5>
+                        <h5 className="panel-title pull-left" style={{ paddingTop: '7.5px' }}>Constant Template</h5>
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
-                    <div className="panel-body">
+                    <div className={'panel-body ' + (this.state.hasChild ? 'disabled' : '')}>
                         {Object.keys(this.state.errors).length > 0 &&
-                        <div><span style={{color:"red"}}>Please, fill all the required fields (*)</span><br/><br/></div>}
+                        <div><span style={{ color:'red' }}>Please, fill all the required fields (*)</span><br/><br/></div>}
                         <div className="row">
 
                             <div className="col-sm-6"> {/* Column of properties */}
@@ -148,9 +158,20 @@ class RowStartDateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder=''
+                                                   placeholder='e.g. dbo:country'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="control-label col-sm-2" htmlFor="value">Value{required.indexOf('value') > -1 ? '*' : ''}</label>
+                                        <div className="col-sm-10">
+                                            <input type="text"
+                                                   className={'form-control ' + (this.state.errors.value ? 'error' : '')}
+                                                   id="value"
+                                                   placeholder='e.g. dbr-en:Australia'
+                                                   value={this.state.content.parameters.value}
+                                                   onChange={this.handleChange.bind(this,'value')}/>
                                         </div>
                                     </div>
                                 </form>
@@ -159,14 +180,14 @@ class RowStartDateTemplate extends React.Component {
                             <div className="col-sm-6"> {/* Column of mappings */}
                                 <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
                                     <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="property">Property{required.indexOf('property') > -1 ? '*' : ''}</label>
+                                        <label className="control-label col-sm-2" htmlFor="unit">Unit{required.indexOf('unit') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
                                             <input type="text"
-                                                   className={'form-control ' + (this.state.errors.property ? 'error' : '')}
-                                                   id="property"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.property}
-                                                   onChange={this.handleChange.bind(this,'property')}/>
+                                                   className={'form-control ' + (this.state.errors.unit ? 'error' : '')}
+                                                   id="unit"
+                                                   placeholder='e.g. hectare'
+                                                   value={this.state.content.parameters.unit}
+                                                   onChange={this.handleChange.bind(this,'unit')}/>
                                         </div>
                                     </div>
 
@@ -187,7 +208,7 @@ class RowStartDateTemplate extends React.Component {
 
 }
 
-RowStartDateTemplate.propTypes = propTypes;
+RowConstantTemplate.propTypes = propTypes;
 
 
-module.exports = RowStartDateTemplate;
+module.exports = RowConstantTemplate;

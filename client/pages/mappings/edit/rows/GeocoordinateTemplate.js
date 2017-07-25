@@ -8,11 +8,12 @@ const PropTypes = require('prop-types');
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const propTypes = {
     onClose: PropTypes.func,
-    childLevel: PropTypes.number
+    childLevel: PropTypes.number,
+    content: PropTypes.object
 };
 
 const name = 'GeocoordinateTemplate';
-const required = ['ontologyProperty','coordinate'];
+const required = ['ontologyProperty'];
 
 /**
  * Possible children: None.
@@ -24,7 +25,18 @@ class RowGeocoordinateTemplate extends React.Component {
     constructor(props){
 
         super(props);
-        this.state = {
+        this.state = this.getNewState();
+
+        //In edit mode
+        if (this.props.content) {
+            this.state.content = this.props.content;
+        }
+
+    }
+
+    getNewState(){
+
+        return  {
             content: {
                 name,
                 parameters: {
@@ -48,30 +60,24 @@ class RowGeocoordinateTemplate extends React.Component {
             }
 
         };
-
-        //In edit mode
-        if (this.props.content) {
-            this.state.content = this.props.content;
-        }
-
     }
-
 
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
 
-        let value = event.target.value;
-        let content = {...this.state.content};
+        const value = event.target.value;
+        const content = { ...this.state.content };
         content.parameters[attribute] = value;
-        this.setState({content});
+        this.setState({ content });
 
     }
 
 
 
     createAlias(){
+
         return name + ' (' + this.state.content.parameters.ontologyProperty + ')';
     }
 
@@ -83,7 +89,7 @@ class RowGeocoordinateTemplate extends React.Component {
 
         const errors = {};
         let hasError = false;
-        for(let i = 0; i < required.length ; i++){
+        for (let i = 0; i < required.length; ++i){
             const field = this.state.content.parameters[required[i]];
             const fieldName = required[i];
             if (!field){
@@ -101,19 +107,20 @@ class RowGeocoordinateTemplate extends React.Component {
         }
 
         if (save && hasError){
-            this.setState({errors});
+            this.setState({ errors });
             return;
         }
 
 
         if (!save) {
-            return window.confirm("Are you sure? Data can't be recovered.") && this.props.onClose(save,name,this.state.content);
+            return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
 
-        let c = {...this.state.content};
+        const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState({ content:c }, () => {
-            return this.props.onClose(save,name,this.state.content);
+        this.setState(this.getNewState(), () => {
+
+            return this.props.onClose(save,name,c);
         });
 
 
@@ -124,29 +131,31 @@ class RowGeocoordinateTemplate extends React.Component {
 
         const buttons = [
             { type: 'btn-success',
-                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;Save</span>,
+                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
                 action: this.onMeClose.bind(this,true),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             },
             { type: 'btn-danger',
                 text: <span><i className="fa fa-times" aria-hidden="true"></i>&nbsp;Cancel</span>,
                 action: this.onMeClose.bind(this,false),
-                sizeClass: 'btn-sm'
+                sizeClass: 'btn-sm',
+                disabled: this.state.hasChild
             }
         ];
 
 
         return (
 
-            <div style={ {marginLeft: this.props.childLevel*5 + 'px'}}>
-                <div className={'templateEditRow panel panel-default ' + (this.state.hasChild ? 'disabled' : '')}>
+            <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
+                <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
-                        <h5 className="panel-title pull-left" style={{paddingTop: '7.5px'}}>Geocoordinate Template</h5>
+                        <h5 className="panel-title pull-left" style={{ paddingTop: '7.5px' }}>Geocoordinate Template</h5>
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
-                    <div className="panel-body">
+                    <div className={'panel-body ' + (this.state.hasChild ? 'disabled' : '')}>
                         {Object.keys(this.state.errors).length > 0 &&
-                        <div><span style={{color:"red"}}>Please, fill all the required fields (*)</span><br/><br/></div>}
+                        <div><span style={{ color:'red' }}>Please, fill all the required fields (*)</span><br/><br/></div>}
 
                         <div className="row">
 
@@ -159,7 +168,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder=''
+                                                   placeholder='e.g. dbo:residence'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>
@@ -170,7 +179,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.coordinate ? 'error' : '')}
                                                    id="coordinate"
-                                                   placeholder=''
+                                                   placeholder='e.g. coordinate'
                                                    value={this.state.content.parameters.coordinate}
                                                    onChange={this.handleChange.bind(this,'coordinate')}/>
                                         </div>
@@ -188,7 +197,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.latitude ? 'error' : '')}
                                                    id="latitude"
-                                                   placeholder=''
+                                                   placeholder='e.g. latitude'
                                                    value={this.state.content.parameters.latitude}
                                                    onChange={this.handleChange.bind(this,'latitude')}/>
                                         </div>
@@ -199,7 +208,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.longitude ? 'error' : '')}
                                                    id="longitude"
-                                                   placeholder=''
+                                                   placeholder='e.g. longitude'
                                                    value={this.state.content.parameters.longitude}
                                                    onChange={this.handleChange.bind(this,'longitude')}/>
                                         </div>
@@ -219,7 +228,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.latitudeDegrees ? 'error' : '')}
                                                    id="latitudeDegrees"
-                                                   placeholder=''
+                                                   placeholder='e.g. lat_d'
                                                    value={this.state.content.parameters.latitudeDegrees}
                                                    onChange={this.handleChange.bind(this,'latitudeDegrees')}/>
                                         </div>
@@ -230,7 +239,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.latitudeMinutes ? 'error' : '')}
                                                    id="latitudeMinutes"
-                                                   placeholder=''
+                                                   placeholder='e.g. lat_m'
                                                    value={this.state.content.parameters.latitudeMinutes}
                                                    onChange={this.handleChange.bind(this,'latitudeMinutes')}/>
                                         </div>
@@ -241,7 +250,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.latitudeSeconds ? 'error' : '')}
                                                    id="latitudeSeconds"
-                                                   placeholder=''
+                                                   placeholder='e.g. lat_s'
                                                    value={this.state.content.parameters.latitudeSeconds}
                                                    onChange={this.handleChange.bind(this,'latitudeSeconds')}/>
                                         </div>
@@ -252,7 +261,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.latitudeDirection ? 'error' : '')}
                                                    id="latitudeDirection"
-                                                   placeholder=''
+                                                   placeholder='e.g. lat_dir'
                                                    value={this.state.content.parameters.latitudeDirection}
                                                    onChange={this.handleChange.bind(this,'latitudeDirection')}/>
                                         </div>
@@ -268,7 +277,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.longitudeDegrees ? 'error' : '')}
                                                    id="longitudeDegrees"
-                                                   placeholder=''
+                                                   placeholder='e.g. lon_d'
                                                    value={this.state.content.parameters.longitudeDegrees}
                                                    onChange={this.handleChange.bind(this,'longitudeDegrees')}/>
                                         </div>
@@ -279,7 +288,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.longitudeMinutes ? 'error' : '')}
                                                    id="longitudeMinutes"
-                                                   placeholder=''
+                                                   placeholder='e.g. lon_m'
                                                    value={this.state.content.parameters.longitudeMinutes}
                                                    onChange={this.handleChange.bind(this,'longitudeMinutes')}/>
                                         </div>
@@ -290,7 +299,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.longitudeSeconds ? 'error' : '')}
                                                    id="longitudeSeconds"
-                                                   placeholder=''
+                                                   placeholder='e.g. lon_s'
                                                    value={this.state.content.parameters.longitudeSeconds}
                                                    onChange={this.handleChange.bind(this,'longitudeSeconds')}/>
                                         </div>
@@ -301,7 +310,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.longitudeDirection ? 'error' : '')}
                                                    id="longitudeDirection"
-                                                   placeholder=''
+                                                   placeholder='e.g. lon_dir'
                                                    value={this.state.content.parameters.longitudeDirection}
                                                    onChange={this.handleChange.bind(this,'longitudeDirection')}/>
                                         </div>
