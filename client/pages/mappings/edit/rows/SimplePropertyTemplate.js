@@ -55,7 +55,8 @@ class RowSimplePropertyTemplate extends React.Component {
             },
             errors: {
 
-            }
+            },
+            showOptional: false
 
         };
     }
@@ -162,11 +163,10 @@ class RowSimplePropertyTemplate extends React.Component {
                     <div className={'panel-body ' + (this.state.hasChild ? 'disabled' : '')}>
                         {Object.keys(this.state.errors).length > 0 &&
                         <div><span style={{ color:'red' }}>Please, fill all the required fields (*)</span><br/><br/></div>}
+
                         <div className="row">
-
-                            <div className="col-sm-6"> {/* Column of properties */}
-
-                                <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+                            <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+                                <div className="col-sm-6">
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="ontologyProperty">Ontology Property{required.indexOf('ontologyProperty') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
@@ -178,6 +178,8 @@ class RowSimplePropertyTemplate extends React.Component {
                                                 onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>
                                     </div>
+                                </div>
+                                <div className="col-sm-6">
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="property">Property{required.indexOf('property') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
@@ -189,81 +191,102 @@ class RowSimplePropertyTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'property')}/>
                                         </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="select">Select{required.indexOf('select') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <select className="form-control" value={this.state.content.parameters.select} onChange={this.parametersSelectHandler.bind(this,'select')}>
-                                                <option value="">-</option>
-                                                <option value="first">first</option>
-                                                <option value="last">last</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="prefix">Prefix{required.indexOf('prefix') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.prefix ? 'error' : '')}
-                                                   id="prefix"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.prefix}
-                                                   onChange={this.handleChange.bind(this,'prefix')}/>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-
-                            <div className="col-sm-6"> {/* Column of mappings */}
-                                <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="suffix">Suffix{required.indexOf('suffix') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.suffix ? 'error' : '')}
-                                                   id="suffix"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.suffix}
-                                                   onChange={this.handleChange.bind(this,'suffix')}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="transform">Transform{required.indexOf('transform') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <select className="form-control" value={this.state.content.parameters.transform} onChange={this.parametersSelectHandler.bind(this,'transform')}>
-                                                <option value="">-</option>
-                                                <option value="external">external</option>
-                                                <option value="internal">internal</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="unit">Unit{required.indexOf('unit') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.unit ? 'error' : '')}
-                                                   id="unit"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.unit}
-                                                   onChange={this.handleChange.bind(this,'unit')}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="prefix">Factor{required.indexOf('factor') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="number"
-                                                   className={'form-control ' + (this.state.errors.factor ? 'error' : '')}
-                                                   id="factor"
-                                                   placeholder=''
-                                                   value={this.state.content.parameters.factor}
-                                                   onChange={this.handleChange.bind(this,'factor')}/>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-
+                                </div>
+                            </form>
                         </div>
+                        {   !this.state.showOptional &&
+                            <a href="#" onClick={() => {this.setState({ showOptional: true })}}>Show optional fields</a>
+                        }
+                        {   this.state.showOptional &&
+                            <div>
+                                <a href="#" onClick={() => {this.setState({ showOptional: false })}}>Hide optional fields</a>
+                                <hr/>
+                                <div className="row">
+                                    <div className="col-sm-6"> {/* Column of properties */}
+
+                                        <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+
+
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="select">Select{required.indexOf('select') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <select className="form-control" value={this.state.content.parameters.select} onChange={this.parametersSelectHandler.bind(this,'select')}>
+                                                        <option value="">-</option>
+                                                        <option value="first">first</option>
+                                                        <option value="last">last</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="prefix">Prefix{required.indexOf('prefix') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <input type="text"
+                                                           className={'form-control ' + (this.state.errors.prefix ? 'error' : '')}
+                                                           id="prefix"
+                                                           placeholder=''
+                                                           value={this.state.content.parameters.prefix}
+                                                           onChange={this.handleChange.bind(this,'prefix')}/>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="suffix">Suffix{required.indexOf('suffix') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <input type="text"
+                                                           className={'form-control ' + (this.state.errors.suffix ? 'error' : '')}
+                                                           id="suffix"
+                                                           placeholder=''
+                                                           value={this.state.content.parameters.suffix}
+                                                           onChange={this.handleChange.bind(this,'suffix')}/>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+
+                                    <div className="col-sm-6"> {/* Column of mappings */}
+                                        <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="transform">Transform{required.indexOf('transform') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <select className="form-control" value={this.state.content.parameters.transform} onChange={this.parametersSelectHandler.bind(this,'transform')}>
+                                                        <option value="">-</option>
+                                                        <option value="external">external</option>
+                                                        <option value="internal">internal</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="unit">Unit{required.indexOf('unit') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <input type="text"
+                                                           className={'form-control ' + (this.state.errors.unit ? 'error' : '')}
+                                                           id="unit"
+                                                           placeholder=''
+                                                           value={this.state.content.parameters.unit}
+                                                           onChange={this.handleChange.bind(this,'unit')}/>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="control-label col-sm-2" htmlFor="prefix">Factor{required.indexOf('factor') > -1 ? '*' : ''}</label>
+                                                <div className="col-sm-10">
+                                                    <input type="number"
+                                                           className={'form-control ' + (this.state.errors.factor ? 'error' : '')}
+                                                           id="factor"
+                                                           placeholder=''
+                                                           value={this.state.content.parameters.factor}
+                                                           onChange={this.handleChange.bind(this,'factor')}/>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+
+
 
 
                     </div>
