@@ -158,7 +158,7 @@ class EditPage extends React.Component {
                     <ButtonGroup float='right' buttons={buttons}/>
                     <h2 >
 
-                        Viewing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
+                        Viewing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title + ' / ' + lang}</Link>
                     </h2>
 
                 </div>
@@ -199,7 +199,7 @@ class EditPage extends React.Component {
 
                             </div>
                         </div>
-                        <MappingTester/>
+                        <MappingTester lang={this.state.details._id.lang}/>
                     </div>
 
                 </div>

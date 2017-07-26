@@ -178,7 +178,7 @@ class EditPage extends React.Component {
                     <ButtonGroup float='right' buttons={buttonRestore}/>
                     <h2 >
 
-                        Editing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title}</Link>
+                        Editing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title + ' / ' + lang}</Link>
                     </h2>
 
                 </div>
@@ -196,7 +196,7 @@ class EditPage extends React.Component {
                     <div className="col-sm-4">
                         <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
                         <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
-                        <MappingTesterPanel/>
+                        <MappingTesterPanel lang={this.state.details._id.lang}/>
                     </div>
                 </div>
             </section>

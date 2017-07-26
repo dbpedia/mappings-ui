@@ -1,6 +1,5 @@
 'use strict';
 const Joi = require('joi');
-
 const internals = {};
 
 //TODO: Implement it to retrieve real wikipedia pages. Maybe, wire the frontend directly to Wikipedia API.
@@ -78,6 +77,7 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
+
 
             const input = request.query.title;
 

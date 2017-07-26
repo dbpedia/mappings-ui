@@ -7,6 +7,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const Collapse = require('react-bootstrap').Collapse;
 const ButtonGroup = require('../../../../components/button-group.jsx');
+const ClassSearchInput = require('../../../../components/ontologySearcher/classSearcherInput.jsx');
 const TemplateList = require('./TemplateList');
 const propTypes = {
     onClose: PropTypes.func,
@@ -366,7 +367,7 @@ class RowConditionalTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="class">Class{required.indexOf('class') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
+                                            <ClassSearchInput
                                                    className={'form-control ' + (this.state.errors.class ? 'error' : '')}
                                                    id="class"
                                                    placeholder="e.g. dbo:Person"

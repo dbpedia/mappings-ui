@@ -4,7 +4,7 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const ClassSearcher = require('./ontologySearcher/classSearcher.jsx');
-const PropertySearch = require('./ontologySearcher/propertySearch.jsx');
+const PropertySearch = require('./ontologySearcher/propertySearcher.jsx');
 
 const propTypes = {
     onSubmit: PropTypes.func //To call when either class or property is submitted

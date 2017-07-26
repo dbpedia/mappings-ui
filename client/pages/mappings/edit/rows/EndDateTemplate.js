@@ -6,6 +6,8 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const ButtonGroup = require('../../../../components/button-group.jsx');
+const PropertySearchInput = require('../../../../components/ontologySearcher/propertySearcherInput.jsx');
+
 const propTypes = {
     onClose: PropTypes.func,
     childLevel: PropTypes.number,
@@ -153,7 +155,7 @@ class RowEndDateTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="ontologyProperty">Ontology Property{required.indexOf('ontologyProperty') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
+                                            <PropertySearchInput
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
                                                    placeholder='e.g. dbo:endYear'

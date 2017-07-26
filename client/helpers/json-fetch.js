@@ -13,7 +13,8 @@ const jsonFetch = function (options, callback) {
         method: options.method,
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Api-User-Agent': 'MappingsUI/1.0'
         }
     };
 

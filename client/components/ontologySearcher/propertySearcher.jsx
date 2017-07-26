@@ -3,8 +3,7 @@
 
 const PropTypes = require('prop-types');
 const React = require('react');
-const ClassSearcherInput = require('./classSearcherInput.jsx');
-
+const PropertySearcherInput = require('./propertySearcherInput.jsx');
 
 
 const propTypes = {
@@ -21,15 +20,14 @@ class ClassSearcher extends React.Component {
         };
     }
 
+
     onChange(event){
         this.setState({ value: event.target.value });
-
     };
 
     onSubmit(){
         this.props.onSubmit(this.state.value);
     }
-
 
     render() {
 
@@ -39,13 +37,12 @@ class ClassSearcher extends React.Component {
             <div>
                     <div className="row">
                         <div className="col-sm-12">
-                            <ClassSearcherInput
+                            <PropertySearcherInput
                                 onChange={this.onChange.bind(this)}
                                 value={this.state.value}
-                                placeholder="e.g: dbo:Artist"
+                                placeholder="e.g: dbo:musicBand"
                                 className="form-control"
                             />
-
                         </div>
                     </div>
                     <div className="row">

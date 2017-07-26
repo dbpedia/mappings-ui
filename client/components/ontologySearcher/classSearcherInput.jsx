@@ -1,11 +1,16 @@
 /* eslint-disable hapi/hapi-scope-start */
 'use strict';
 
+/**
+ * Mimics the behaviour of a normal input box, with "value" and "onChange" properties.
+ * onChange calls with event.target.value.
+ * @type {ReactPropTypes}
+ */
 const PropTypes = require('prop-types');
 const React = require('react');
 const Autosuggest = require('react-autosuggest');
 const JsonFetch = require('../../helpers/json-fetch');
-
+const Debounce = require('lodash').debounce;
 
 
 const theme = {
@@ -13,19 +18,7 @@ const theme = {
         position: 'relative',
         marginBottom: '10px'
     },
-    input: {
-        width: '100%',
-        height: 30,
-        padding: '10px 20px',
-        fontFamily: 'Helvetica, sans-serif',
-        fontWeight: 300,
-        fontSize: 16,
-        border: '1px solid #aaa',
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4
-    },
+    //input is assigned className property on render method
     inputFocused: {
         outline: 'none'
     },
@@ -39,7 +32,7 @@ const theme = {
     suggestionsContainerOpen: {
         display: 'block',
         position: 'absolute',
-        top: 30,
+        top: 34,
         width: '100%',
         border: '1px solid #aaa',
         backgroundColor: '#fff',
@@ -70,16 +63,18 @@ const getSuggestionValue = (suggestion) => suggestion.name;
 const renderSuggestion = (suggestion) => (
 
     <div>
-        <span className="propertySearchMain"><b>{suggestion.name}</b></span> ({suggestion.count})<br/>
-        <span className="propertySearchDetail">domain: {suggestion.domain}</span> <br/>
-        <span className="propertySearchDetail" >range: {suggestion.range}</span>
+        <b>{suggestion.name}</b> ({suggestion.count})
     </div>
 );
 
 const propTypes = {
-    onSubmit: PropTypes.func //To call when button is clicked
+    onChange: PropTypes.func,
+    value: PropTypes.string,
+    placeholder: PropTypes.string,
+    className: PropTypes.string,
+    id: PropTypes.string
 };
-class ClassSearcher extends React.Component {
+class ClassSearcherInput extends React.Component {
 
 
     constructor(){
@@ -90,6 +85,10 @@ class ClassSearcher extends React.Component {
             suggestions: [],
             loading: false
         };
+
+        this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),300);
+
+
     }
 
     loadSuggestions(value) {
@@ -99,7 +98,7 @@ class ClassSearcher extends React.Component {
         });
 
         let result = [];
-        const request = { method: 'GET', url: '/api/search/properties', query: { name: value } };
+        const request = { method: 'GET', url: '/api/search/classes', query: { name: value } };
         JsonFetch(request, (err, response) => {
 
             if (err || !response){
@@ -119,15 +118,21 @@ class ClassSearcher extends React.Component {
     }
 
 
+    //Calls parent onChange with a simulated input event,
+    //to mimic a normal input box
     onChange(event, { newValue }){
-        this.setState({
-            value: newValue
-        });
+
+
+        const e = {
+            target: {
+                value: newValue
+            }
+        };
+
+        this.props.onChange(e);
+
     };
 
-    onSubmit(){
-        this.props.onSubmit(this.state.value);
-    }
 
     onSuggestionsFetchRequested({ value }){
         this.loadSuggestions(value);
@@ -144,43 +149,31 @@ class ClassSearcher extends React.Component {
 
     render() {
 
+        theme.input = this.props.className;
+
         const  { suggestions } = this.state;
         const inputProps = {
-            placeholder: 'Property name...',
-            value: this.state.value,
+            placeholder: this.props.placeholder,
+            value: this.props.value,
             onChange: this.onChange.bind(this)
         };
 
 
         return (
-
-            <div>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <Autosuggest
-                                suggestions={suggestions}
-                                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
-                                onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
-                                getSuggestionValue={getSuggestionValue}
-                                renderSuggestion={renderSuggestion}
-                                inputProps={inputProps}
-                                theme={theme}
-                            />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <button
-                                className="btn btn-primary btn-block"
-                                type="button"
-                                onClick={this.onSubmit.bind(this)}>Insert property</button>
-                        </div>
-                    </div>
-            </div>
-
+                <Autosuggest
+                    id={this.props.id}
+                    suggestions={suggestions}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested.bind(this)}
+                    getSuggestionValue={getSuggestionValue}
+                    renderSuggestion={renderSuggestion}
+                    inputProps={inputProps}
+                    theme={theme}
+                    highlightFirstSuggestion={true}
+                />
         );
     }
 }
 
-ClassSearcher.propTypes = propTypes;
-module.exports = ClassSearcher;
+ClassSearcherInput.propTypes = propTypes;
+module.exports = ClassSearcherInput;
