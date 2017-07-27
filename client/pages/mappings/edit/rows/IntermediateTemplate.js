@@ -108,11 +108,12 @@ class RowIntermediateTemplate extends React.Component {
             return React.createFactory(require('./' + this.state.childType))({
                 onClose: this.onEditedChildClose.bind(this,this.state.editingChild),
                 childLevel: this.props.childLevel + 1,
+                ref: "child",
                 content: this.state.content.parameters.templates[this.state.editingChild]
             });
         }
 
-        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this), childLevel: this.props.childLevel + 1 });
+        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this), ref: "child", childLevel: this.props.childLevel + 1 });
 
 
     }
@@ -136,6 +137,7 @@ class RowIntermediateTemplate extends React.Component {
         c.editingChild = undefined;
         c.isCollapsed = false;
         this.setState(c);                   //Set state
+        this.refs.child.eraseState();
 
     }
 
@@ -152,6 +154,7 @@ class RowIntermediateTemplate extends React.Component {
         c.isCollapsed = false;
         c.childType = undefined;            //Erase child type
         this.setState(c);                   //Set state
+        this.refs.child.eraseState();
 
     }
 
@@ -185,11 +188,10 @@ class RowIntermediateTemplate extends React.Component {
             }
         }
 
+        this.setState({ errors });
         if (save && hasError){
-            this.setState({ errors });
             return;
         }
-
 
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
@@ -197,12 +199,14 @@ class RowIntermediateTemplate extends React.Component {
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState(this.getNewState(), () => {
-
-            return this.props.onClose(save,name,c);
-        });
+        this.props.onClose(save,name,c);
 
 
+
+    }
+
+    eraseState(){
+        this.setState(this.getNewState());
     }
 
     /**

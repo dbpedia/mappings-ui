@@ -30,6 +30,10 @@ class TemplateList extends React.Component {
 
     }
 
+    eraseState(){
+        this.setState(this.getNewState());
+    }
+
     render(){
 
         const mappingListItems = [];

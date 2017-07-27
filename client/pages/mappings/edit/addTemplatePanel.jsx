@@ -19,20 +19,33 @@ class AddTemplatePanel extends React.Component {
             showModal: false,
             templateType: 'SimplePropertyTemplate',
             errorAlert: false,
-            successAlert: false
+            successAlert: false,
+            loading: false
         };
 
 
     }
 
-    setAlert(error){
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errorAlert !== this.props.errorAlert) {
+            this.setState({ errorAlert: nextProps.errorAlert });
+        }
+        if (nextProps.successAlert !== this.props.successAlert) {
+            this.setState({ successAlert: nextProps.successAlert });
+        }
+        if (nextProps.messageAlert !== this.props.messageAlert) {
+            this.setState({ messageAlert: nextProps.messageAlert });
+        }
+        if (nextProps.loading !== this.props.loading) {
+            this.setState({ loading: nextProps.loading });
+        }
 
-        if (error){
-            this.setState({ errorAlert: true, successAlert: false } );
-        }
-        else {
-            this.setState({ errorAlert: false, successAlert: true } );
-        }
+    }
+
+    setAutoremoveAlert(){
+
+
+
 
         const self = this;
         setTimeout(() => {
@@ -50,17 +63,25 @@ class AddTemplatePanel extends React.Component {
         this.setState({ showModal:true });
     }
 
-    onModalClose(){
-
+    //Closes the modal externally, called by root component when state has been saved without any error
+    closeModal(){
+        this.setState({showModal:false});
+        this.refs.child.eraseState();
     }
 
     onTemplateFinish(save,childType,content){
 
+        //Here, I have to hide the error
+        this.setState({errorAlert:false,successAlert:false});
 
-        this.setState({ showModal: false });
         //Have to call root callback, tell root that we have to go to server. Only if saved.
         if (save){
+            //If save, then root component is responsible for calling closeModal
             this.props.onTemplateFinish(childType,content);
+        }
+        else {
+            this.refs.child.eraseState();
+            this.setState({showModal: false});
         }
 
 
@@ -78,14 +99,22 @@ class AddTemplatePanel extends React.Component {
             <div className="panel panel-default">
                 <div className="templateModalWrapper">
                     <Modal
-                        show={this.state.showModal}
-                        onClose={this.onModalClose.bind()}>
+                        show={this.state.showModal}>
                         <div className="container">
+                            {/*Alert should be showed here, so user can correct the errors*/}
+
+                            {   this.state.loading &&
+                            <div className="alert alert-info"><i className="fa fa-refresh fa-spin"></i> Loading...</div>
+                            }
+                            {   this.state.errorAlert &&
+                                <div className="alert alert-danger">{this.state.messageAlert}</div>
+                            }
 
                             {
                                 React.createFactory(require('./rows/' + this.state.templateType))(
                                     {
                                         onClose: this.onTemplateFinish.bind(this),
+                                        ref: 'child',
                                         childLevel: 0 })
                             };
 
@@ -98,11 +127,7 @@ class AddTemplatePanel extends React.Component {
                 </div>
                 <div className="panel-body">
                     {   this.state.successAlert &&
-                        <div className="alert alert-success">Template successfully added.</div>
-
-                    }
-                    {   this.state.errorAlert &&
-                        <div className="alert alert-danger">Server error adding template.</div>
+                        <div className="alert alert-success">{this.state.messageAlert}</div>
 
                     }
                     <div className="row">

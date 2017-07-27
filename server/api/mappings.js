@@ -2,6 +2,7 @@
 const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
+const Wreck = require('wreck');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const internals = {};
@@ -10,6 +11,7 @@ internals.applyRoutes = function (server, next) {
 
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
     const charLimit = Config.get('/mappings/charLimit');
+    const efURL = Config.get('/extractionFrameworkURL');
 
     server.route({
         method: 'GET',
@@ -343,14 +345,65 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            //TODO: Connect to Extraction Framework
-            const res = {
-                name: request.payload.mappingName,
-                language: request.payload.mappingLang,
-                dump: 'new dump'
+            const content = request.payload.templateContent;
+
+            //Delete _alias
+            delete content._alias;
+
+            //Each parameter that is an empty string is converted to null
+            for (const property in content.parameters) {
+                if (content.parameters.hasOwnProperty(property)) {
+                    if (content.parameters[property] === ''){
+                        content.parameters[property] = null;
+                    }
+                }
+            }
+
+            const apiRequest = {
+                template: content,
+                mapping: {
+                    name: request.payload.mappingName,
+                    language: request.payload.mappingLang,
+                    dump: request.payload.mappingDump
+                }
             };
 
-            reply(null,res);
+
+            let path = '';
+            switch (request.payload.templateType) {
+                case 'SimplePropertyTemplate':
+                    path = 'simpleproperty';
+                    break;
+                case 'StartDateTemplate':
+                    path = 'startdate';
+                    break;
+                case 'EndDateTemplate':
+                    path = 'enddate';
+                    break;
+                case 'ConstantTemplate':
+                    path = 'constant';
+                    break;
+                case 'GeocoordinateTemplate':
+                    path = 'geocoordinate';
+                    break;
+                default:
+                    break;
+            }
+
+
+            Wreck.post(efURL + '/server/rml/templates/' + path, { payload: apiRequest }, (err, res, payload) => {
+                /* do stuff */
+
+                if (err){
+                    return reply(err);
+                }
+
+                reply(null,payload);
+            });
+
+
+
+
 
         }
     });

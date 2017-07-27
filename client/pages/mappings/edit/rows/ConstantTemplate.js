@@ -100,8 +100,8 @@ class RowConstantTemplate extends React.Component {
             }
         }
 
+        this.setState({ errors });
         if (save && hasError){
-            this.setState({ errors });
             return;
         }
 
@@ -112,14 +112,14 @@ class RowConstantTemplate extends React.Component {
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState(this.getNewState(), () => {
-
-            return this.props.onClose(save,name,c);
-        });
+        this.props.onClose(save,name,c);
 
 
     }
 
+    eraseState(){
+        this.setState(this.getNewState());
+    }
 
     render(){
 

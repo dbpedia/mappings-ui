@@ -78,10 +78,11 @@ class Actions {
                 if (!err) {
 
                     //Write result to box, it was OK
-                    editorBox.setText(response.dump);
+                    editorBox.setText(response.mapping.dump);
+                    templatePanel.closeModal();
+                    templatePanel.setAutoremoveAlert();
                 }
 
-                templatePanel.setAlert(err);
             }
         );
     }

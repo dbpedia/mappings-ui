@@ -83,6 +83,10 @@ class RowGeocoordinateTemplate extends React.Component {
         return name + ' (' + this.state.content.parameters.ontologyProperty + ')';
     }
 
+    eraseState(){
+        this.setState(this.getNewState());
+    }
+
     /**
      * Called when this mapping is closed.
      * Called by: this component.
@@ -108,8 +112,8 @@ class RowGeocoordinateTemplate extends React.Component {
             }
         }
 
+        this.setState({ errors });
         if (save && hasError){
-            this.setState({ errors });
             return;
         }
 
@@ -120,10 +124,7 @@ class RowGeocoordinateTemplate extends React.Component {
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState(this.getNewState(), () => {
-
-            return this.props.onClose(save,name,c);
-        });
+        this.props.onClose(save,name,c);
 
 
     }
@@ -175,6 +176,19 @@ class RowGeocoordinateTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>
                                     </div>
+
+
+                                </form>
+                            </div>
+
+                        </div>
+                        <hr/>
+                        <div className="row">
+
+                            <div className="col-sm-6"> {/* Column of properties */}
+
+                                <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="property">Coordinate{required.indexOf('coordinate') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
@@ -191,8 +205,16 @@ class RowGeocoordinateTemplate extends React.Component {
                                 </form>
                             </div>
 
-                            <div className="col-sm-6"> {/* Column of mappings */}
+
+
+                        </div>
+                        <hr/>
+                        <div className="row">
+
+                            <div className="col-sm-6"> {/* Column of properties */}
+
                                 <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="latitude">Latitude{required.indexOf('latitude') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
@@ -204,6 +226,14 @@ class RowGeocoordinateTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'latitude')}/>
                                         </div>
                                     </div>
+
+
+                                </form>
+                            </div>
+                            <div className="col-sm-6"> {/* Column of properties */}
+
+                                <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
+
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="longitude">Longitude{required.indexOf('longitude') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
@@ -215,11 +245,15 @@ class RowGeocoordinateTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'longitude')}/>
                                         </div>
                                     </div>
+
+
                                 </form>
                             </div>
 
-                        </div>
-                        <hr/>
+
+
+                      </div>
+                    <hr/>
                         <div className="row">
                             <div className="col-sm-6">
                                 <h4>Latitude</h4>

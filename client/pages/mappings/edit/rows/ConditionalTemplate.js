@@ -158,12 +158,13 @@ class RowConditionalTemplate extends React.Component {
         if (this.state.editingChild >= 0){
             return React.createFactory(require('./' + this.state.childType))({
                 onClose: this.onEditedChildClose.bind(this,this.state.editingChild),
+                ref: 'child',
                 childLevel: this.props.childLevel + 1,
                 content: this.state.content.parameters.templates[this.state.editingChild]
             });
         }
 
-        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this), childLevel: this.props.childLevel + 1 });
+        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this),  ref: 'child',childLevel: this.props.childLevel + 1 });
 
 
     }
@@ -188,6 +189,7 @@ class RowConditionalTemplate extends React.Component {
         c.childType = undefined;            //Erase child type
         c.isCollapsed = false;
         this.setState(c);                   //Set state
+        this.refs.child.eraseState();
 
     }
 
@@ -202,6 +204,7 @@ class RowConditionalTemplate extends React.Component {
         c.editingChild = undefined;
         c.isCollapsed = false;
         c.childType = undefined;            //Erase child type
+        this.refs.child.eraseState();
         this.setState(c);                   //Set state
 
     }
@@ -219,6 +222,7 @@ class RowConditionalTemplate extends React.Component {
         c.isCollapsed = false;
         c.childType = undefined;            //Erase child type
         this.setState(c);                   //Set state
+        this.refs.child.eraseState();
 
     }
 
@@ -253,8 +257,8 @@ class RowConditionalTemplate extends React.Component {
             }
         }
 
+        this.setState({ errors });
         if (save && hasError){
-            this.setState({ errors });
             return;
         }
 
@@ -267,10 +271,7 @@ class RowConditionalTemplate extends React.Component {
         //then other things have to be set...
         const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState(this.getNewState(), () => {
-
-            return this.props.onClose(save,name,c);
-        });
+        this.props.onClose(save,name,c);
 
 
     }
@@ -308,6 +309,10 @@ class RowConditionalTemplate extends React.Component {
         content.parameters.condition.operator = event.target.value;
         this.setState({ content });
 
+    }
+
+    eraseState(){
+        this.setState(this.getNewState());
     }
 
     render(){

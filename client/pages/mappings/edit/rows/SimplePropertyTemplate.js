@@ -88,6 +88,10 @@ class RowSimplePropertyTemplate extends React.Component {
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
+    eraseState(){
+        this.setState(this.getNewState());
+    }
+
     /**
      * Called when this mapping is closed.
      * Called by: this component.
@@ -113,8 +117,8 @@ class RowSimplePropertyTemplate extends React.Component {
             }
         }
 
+        this.setState({ errors });
         if (save && hasError){
-            this.setState({ errors });
             return;
         }
 
@@ -125,10 +129,13 @@ class RowSimplePropertyTemplate extends React.Component {
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();
-        this.setState(this.getNewState(), () => {
+        this.props.onClose(save,name,c);
+
+
+       /* this.setState(this.getNewState(), () => {
 
             return this.props.onClose(save,name,c);
-        });
+        });*/
 
 
     }

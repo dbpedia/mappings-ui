@@ -77,6 +77,7 @@ class EditPage extends React.Component {
     //Called when new template has been added
     onTemplateAdded(childType,content){
 
+
         const dump = this.refs.details.getCurrentText();
         const templatePanel = this.refs.templatePanel;
         Actions.getRMLfromTemplate(this.props.match.params.template,this.props.match.params.lang,dump,childType,content,this.refs.details,templatePanel);
