@@ -39,7 +39,7 @@ const getRepository = function (repoURL,destFolder,branch){
                     .then(() => {
 
                         repo = Gift(destFolder);
-                        resolve(repo);
+                        resolve({ repository: repo,cloned:true });
                     })
                     .catch( (err) => {
 
@@ -49,7 +49,7 @@ const getRepository = function (repoURL,destFolder,branch){
             }
             else {
 
-                resolve(repo);
+                resolve({ repository: repo,cloned:false });
             }
 
 
@@ -120,6 +120,96 @@ const commit = function (repo,message){
 
 };
 
+const getCurrentCommit = function (repoObject){
+
+    return new Promise((resolve,reject) => {
+
+        repoObject.commits('master',1,(err,commits) => {
+
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(commits[0]);
+            }
+        });
+
+    });
+};
+
+
+const pullKeepTheirs = function (repoObject) {
+
+    return new Promise((resolve,reject) => {
+
+        repoObject.remote_fetch('origin', (err) => {
+
+            if (err) {
+                reject(err);
+            }
+            else {
+
+                repoObject.merge('origin',{ 'strategy-option':'theirs' }, (err2) => {
+
+                    if (err2) {
+                        reject(err2);
+                    }
+                    else {
+                        resolve('merged with keep theirs');
+                    }
+                });
+
+            }
+        });
+
+    });
+
+};
+
+const diff = function (repoObject,commitA,commitB) {
+
+    return new Promise((resolve,reject) => {
+
+        repoObject.diff(commitA, commitB, (err,diffs) => {
+
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(diffs);
+            }
+        });
+
+    });
+
+};
+
+const updateFromRemoteAndGetDiffs = function (repoObject){
+
+    let startCommit;
+    let endCommit;
+    return getCurrentCommit(repoObject) //1.- Get commit before anything
+    .then((commit) => {
+
+        startCommit = commit;
+        return pullKeepTheirs(repoObject); //2.- Sync with remote, keeping their changes in case of merge. We do not lost anything as it is saved on history.
+    })
+    .then(() => {
+
+        return getCurrentCommit(repoObject); //3.- Get commit after update
+    })
+    .then((commit) => {
+
+        endCommit = commit;
+        return diff(repoObject, startCommit, endCommit); //4.- Get differences
+    })
+    .catch((err) => {
+
+        throw { code: 'ERROR_UPDATING_FROM_GITHUB', msg: err };
+    });
+};
+
+
 const push = function (repoObject,tries,maxTries){
 
     return new Promise((resolve, reject)  => {
@@ -173,5 +263,6 @@ module.exports = {
     startRepository,
     add,
     commit,
-    push
+    push,
+    updateFromRemoteAndGetDiffs
 };
