@@ -4,7 +4,7 @@
 'use strict';
 const Gift = require('gift');
 const Config = require('../../config');
-
+const FirstTimeImport = require('../firstTimeGithubImport');
 const NAME = Config.get('/githubMappings/name');
 const EMAIL = Config.get('/githubMappings/email');
 
@@ -32,12 +32,10 @@ const getRepository = function (repoURL,destFolder,branch){
 
         repo.current_commit((err, commit) => {
 
-            if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
+            if (err) {
 
-                reject({ code: 'REPOSITORY_IS_NOT_CLONED',msg: 'Please, run scripts/firstTimeGithubImport.js before ' });
-
-/*
-                cloneRepository(repoURL, destFolder, branch)
+                //If repo does not exist, then clone it and import mappings.
+                FirstTimeImport.start()
                     .then(() => {
 
                         repo = Gift(destFolder);
@@ -46,7 +44,7 @@ const getRepository = function (repoURL,destFolder,branch){
                     .catch( (err) => {
 
                         reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
-                    });*/
+                    });
 
             }
             else {

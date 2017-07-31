@@ -217,43 +217,50 @@ const process = function (lang,dir,mappingsCollection,statsCollection){
 };
 
 
-let mappingsCollection;
-let statsCollection;
-console.log('* Running first github import');
-MongoClient.connect(MONGODB_URI)
-    .then((db) => {
+const start = function (){
+    let mappingsCollection;
+    let statsCollection;
+    console.log('* Running first github import');
+    return MongoClient.connect(MONGODB_URI)
+        .then((db) => {
 
-        mappingsCollection = db.collection('mappings');
-        statsCollection = db.collection('currentMappingStats');
+            mappingsCollection = db.collection('mappings');
+            statsCollection = db.collection('currentMappingStats');
 
-        return getRepository(REPO_URL,REPO_FOLDER,REPO_BRANCH);
+            return getRepository(REPO_URL,REPO_FOLDER,REPO_BRANCH);
 
-    })
-    .then(() => {
+        })
+        .then(() => {
 
-        const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER;
-        const languageDirs = getDirectories(basePath);
-        console.log('[INFO] Importing into DB');
-        console.log('');
-        const promises = [];
-        languageDirs.forEach((langDir) => {
+            const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER;
+            const languageDirs = getDirectories(basePath);
+            console.log('[INFO] Importing into DB');
+            console.log('');
+            const promises = [];
+            languageDirs.forEach((langDir) => {
 
-            const lang = langDir;
-            const completeDir = basePath + langDir;
-            promises.push(process(lang,completeDir,mappingsCollection,statsCollection));
+                const lang = langDir;
+                const completeDir = basePath + langDir;
+                promises.push(process(lang,completeDir,mappingsCollection,statsCollection));
 
+            });
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+
+            console.log('');
+            console.log('[INFO] Imported successfully.');
+            return 'OK';
+        })
+        .catch((error) => {
+
+            console.log(error);
         });
 
-        return Promise.all(promises);
-    })
-    .then(() => {
 
-        console.log('');
-        console.log('[INFO] Imported successfully.');
-        Process.exit();
-    })
-    .catch((error) => {
+};
 
-        console.log(error);
-    });
-
+module.exports = {
+    start
+};
