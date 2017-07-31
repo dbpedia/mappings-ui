@@ -32,9 +32,7 @@ const getRepository = function (repoURL,destFolder,branch){
 
         repo.current_commit((err, commit) => {
 
-            if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
-
-
+            if (err) { //If repository does not exist, clone and import data
 
                 FirstUpdate.start()
                     .then(() => {

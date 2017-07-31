@@ -203,18 +203,6 @@ Async.auto({
                     });
                 });
             }],
-            removeRepo: ['clean',(dbResults,done) => {
-
-                /*Exec('rm -rf ' + REPO_FOLDER,  (err, stdout, stderr) => {
-                    if (err){
-                        console.log(err);
-                    }
-                    else {
-                        console.log('removed repo folder');
-                    }
-                    done();
-                });*/
-            }],
            /* addRootToWP: ['rootUser', function (dbResults, done) {
 
 
