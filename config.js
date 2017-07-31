@@ -73,7 +73,7 @@ const config = {
                 $filter: 'env',
                 production: process.env.MONGODB_URI,
                 test: 'mongodb://localhost:27017/aqua-test',
-                $default: 'mongodb://localhost:27017/aqua'
+                $default: 'mongodb://heroku_07m9xl4r:cc620dn44mi81rvc3ae92hcpga@ds147052.mlab.com:47052/heroku_07m9xl4r'
             }
         },
         autoIndex: true

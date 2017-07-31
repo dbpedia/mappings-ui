@@ -19,7 +19,7 @@ const Process = require('process');
 const MongoClient = require('mongodb').MongoClient;
 const MongoModels = require('./githubMappings/mongomodels');
 
-const MONGODB_URI = 'mongodb://heroku_07m9xl4r:cc620dn44mi81rvc3ae92hcpga@ds147052.mlab.com:47052/heroku_07m9xl4r';
+const MONGODB_URI = Config.get('/hapiMongoModels/mongodb/uri');
 const REPO_URL = Config.get('/github/repositoryURL');
 const REPO_BRANCH = Config.get('/github/repositoryBranch');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
@@ -262,7 +262,3 @@ MongoClient.connect(MONGODB_URI)
 
         console.log(error);
     });
-
-module.exports = {
-    start
-};
