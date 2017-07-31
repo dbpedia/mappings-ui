@@ -41,9 +41,7 @@ Async.auto({
         const Session = require('./server/models/session');
         const Status = require('./server/models/status');
         const Post = require('./server/models/post');
-        const Mapping = require('./server/models/mapping');
-        const MappingHistory = require('./server/models/mapping-history');
-        const MappingUpdateStatus = require('./server/models/mappingUpdateStatus');
+        
 
         Async.auto({
             connect: function (done) {
