@@ -6,8 +6,6 @@
 const Gift = require('gift');
 const Config = require('../../config');
 const Moment = require('moment');
-const FirstTimeImport = require('../firstTimeGithubImport');
-
 //Get config from file
 const GITHUB_REPOSITORY_FOLDER = Config.get('/github/repositoryFolder');
 const GITHUB_REPO_URL = Config.get('/github/repositoryURL');
@@ -162,16 +160,16 @@ const getRepository = function (repoURL,destFolder,branch){
 
             if (err) { //Clone repository, as it does not exist
 
-                //If repo does not exist, then clone it and import mappings.
-                FirstTimeImport.start()
+
+                cloneRepository(repoURL, destFolder, branch)
                     .then(() => {
 
                         repo = Gift(destFolder);
-                        resolve({ repository: repo,cloned:true });
+                        resolve(repo);
                     })
-                    .catch( (err) => {
+                    .catch((err) => {
 
-                        reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
+                        reject({ code: 'ERROR_GETTING_REPOSITORY', msg: err });
                     });
 
             }

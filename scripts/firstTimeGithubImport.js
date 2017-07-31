@@ -98,7 +98,6 @@ const getDirectories = function (srcpath) {
 const insertMapping = function (lang,file,mappingsCollection, statsCollection){
 
 
-    console.log('inserting mapping ' + file);
     const colonIndex = file.indexOf(':');
     const extensionIndex = file.lastIndexOf('.');
     const templateName = file.substring(colonIndex + 1,extensionIndex);
@@ -218,63 +217,51 @@ const process = function (lang,dir,mappingsCollection,statsCollection){
 };
 
 
-const start = function (){
-    let mappingsCollection;
-    let statsCollection;
-    console.log('* Running first github import');
-    return MongoClient.connect(MONGODB_URI)
-        .then((db) => {
 
-            mappingsCollection = db.collection('mappings');
-            statsCollection = db.collection('currentMappingStats');
+let mappingsCollection;
+let statsCollection;
+console.log('* Running first github import');
+MongoClient.connect(MONGODB_URI)
+    .then((db) => {
 
-            return getRepository(REPO_URL,REPO_FOLDER,REPO_BRANCH);
+        mappingsCollection = db.collection('mappings');
+        statsCollection = db.collection('currentMappingStats');
 
-        })
-        .then(() => {
+        return getRepository(REPO_URL,REPO_FOLDER,REPO_BRANCH);
 
-            const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER;
-            const languageDirs = getDirectories(basePath);
-            console.log('[INFO] Importing into DB');
-            console.log('');
-            let sequence = Promise.resolve();
+    })
+    .then(() => {
 
-            languageDirs.forEach((langDir) => {
+        const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER;
+        const languageDirs = getDirectories(basePath);
+        console.log('[INFO] Importing into DB');
+        console.log('');
+        let sequence = Promise.resolve();
 
-                const lang = langDir;
-                const completeDir = basePath + langDir;
-                sequence = sequence.then(() => {
+        languageDirs.forEach((langDir) => {
 
-                    return process(lang,completeDir,mappingsCollection,statsCollection);
-                });
+            const lang = langDir;
+            const completeDir = basePath + langDir;
+            sequence = sequence.then(() => {
 
+                return process(lang,completeDir,mappingsCollection,statsCollection);
             });
 
-
-            return sequence
-                .then(() => {
-
-                    
-                    resolve();
-                })
-                .catch((err) => {
-
-                    reject(err);
-                });
-        })
-        .then(() => {
-
-            console.log('');
-            console.log('[INFO] Imported successfully.');
-            return 'OK';
-        })
-        .catch((error) => {
-
-            console.log(error);
         });
 
 
-};
+        return sequence;
+    })
+    .then(() => {
+
+        console.log('');
+        console.log('[INFO] Imported successfully.');
+        return 'OK';
+    })
+    .catch((error) => {
+
+        console.log(error);
+    });
 
 module.exports = {
     start
