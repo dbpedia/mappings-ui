@@ -7,11 +7,9 @@ const Git = require('./git.js');
 const Mongo = require('./mongo.js');
 const Moment = require('moment');
 const Rimraf = require('rimraf');
-const Path = require('path');
 const Fs = require('fs');
 const Mkdirp = require('mkdirp');
-const FileHound = require('filehound');
-const Await = require('asyncawait/await');
+
 
 const Config = require('../../config');
 const REPO_URL = Config.get('/github/repositoryURL');
@@ -19,6 +17,7 @@ const REPO_BRANCH = Config.get('/github/repositoryBranch');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
 const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
 const Mongomodels = require('./mongomodels');
+
 const clearMappings = function (){
 
     return new Promise((resolve,reject) => {
@@ -43,83 +42,7 @@ const clearMappings = function (){
 
 };
 
-const getDirectories = function (srcpath) {
 
-    console.log(srcpath);
-
-    return Fs.readdirSync(srcpath)
-        .filter( (file) => Fs.lstatSync(Path.join(srcpath, file)).isDirectory());
-};
-
-//Used when cloning, inserts mapping file of language lang into database, or updates it.
-//Returns a promise
-const insertMapping = function (lang,file){
-
-
-    const colonIndex = file.indexOf(':');
-    const extensionIndex = file.lastIndexOf('.');
-    const templateName = file.substring(colonIndex + 1,extensionIndex);
-    const data = Fs.readFileSync(file ,'UTF8');
-
-    return Mongomodels.updateOrCreate(templateName,lang,data);
-
-
-
-};
-
-/**
- * Inserts a language dir into database. Used when cloning.
- * Returns a promise, resolved when all templates have been introduced.
- */
-const processLanguageDir = function (lang,dir){
-
-
-    FileHound.create()
-        .ext('ttl')
-        .paths(dir)
-        .find((err, rmlFiles) => {
-
-            if (err) {
-                return Promise.reject(err);
-            }
-
-            // Create a new empty promise (don't do that with real people ;)
-            let sequence = Promise.resolve();
-
-            // Loop over each file, and add on a promise to the
-            // end of the 'sequence' promise.
-            rmlFiles.forEach((file) =>  {
-
-
-                // Chain one computation onto the sequence
-                sequence = sequence.then(()  => {
-                    console.log('inserting ' + file);
-                    return insertMapping(lang,file);
-                });
-
-            });
-
-            return sequence;
-
-        });
-
-};
-
-const mergeClonedRepository = function (repo){
-
-    const languageDirs = getDirectories(REPO_FOLDER + '/' + REPO_MAPPINGS_FOLDER);
-
-    const promises = [];
-    languageDirs.forEach((langDir) => {
-
-        const lang = langDir;
-        const completeDir = REPO_FOLDER + '/' + REPO_MAPPINGS_FOLDER + langDir;
-        promises.push(processLanguageDir(lang,completeDir));
-
-    });
-    return Promise.all(promises);
-
-};
 /**
  * SYNC FUNCTION
  */
@@ -193,6 +116,7 @@ const getChangesFromGithub = function () {
 
     return Git.startRepository(REPO_URL,REPO_BRANCH,REPO_FOLDER)
         .then((res) => {
+
             repo = res.repository;
             return Git.updateFromRemoteAndGetDiffs(repo);
         })
@@ -240,14 +164,6 @@ const doAction = function () {
             console.log('\t[INFO] Inserted progress into MongoDB,');
             recordId = id;
             return Git.startRepository(REPO_URL,REPO_BRANCH,REPO_FOLDER);
-        })
-        .then((res) => {
-
-            repo = res.repository;
-            if (res.cloned){
-                return mergeClonedRepository(repo);
-            }
-            return Promise.resolve();
         })
         .then((re) => {
 
@@ -323,7 +239,6 @@ const doAction = function () {
         });
 };
 
-doAction();
 
 module.exports = {
     doAction

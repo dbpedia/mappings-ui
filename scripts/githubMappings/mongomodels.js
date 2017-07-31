@@ -18,6 +18,7 @@ const connectToDB = function (){
     return new Promise((resolve,reject) => {
 
         MongoModels.connect(URI,{}, (err,db) => {
+
             if (err){
                 reject(err);
             }
@@ -69,7 +70,7 @@ const deleteMapping = function (template,lang) {
 };
 
 //Create a mapping on the DB
-const createMapping = function (template,lang,rml) {
+const createMapping = function (template,lang,rml,statsToInsert) {
 
     const comment = 'Imported from Github';
     const username = 'GithubScript';
@@ -87,17 +88,30 @@ const createMapping = function (template,lang,rml) {
                         return reject(err);
                     }
 
-                    resolve('OK');
+                    if (statsToInsert) {
+                        Mapping.findOneAndUpdate({ _id:{ template,lang } },{ $set: { stats:statsToInsert } },(err2,res) => {
+
+                            if (err) {
+                                return reject(err2);
+                            }
+                            resolve('OK');
+                        });
+                    }
+                    else {
+                        resolve('OK');
+                    }
+
                 });
             });
         });
 
 };
 
-const updateOrCreate = function (template,lang,rml) {
+const updateOrCreate = function (template,lang,rml,statsToInsert) {
 
     return connectToDB()
         .then(() => {
+
             const _id = {
                 template,
                 lang
@@ -112,7 +126,7 @@ const updateOrCreate = function (template,lang,rml) {
                     }
 
                     if (!mapping) {
-                        return createMapping(template,lang,rml)
+                        return createMapping(template,lang,rml,statsToInsert)
                             .then(() => {
 
                                 resolve();

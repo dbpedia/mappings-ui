@@ -154,23 +154,13 @@ const getRepository = function (repoURL,destFolder,branch){
 
     return new Promise((resolve, reject)  => {
         //Check if repository already exists.
-        let repo = Gift(destFolder);
+        const repo = Gift(destFolder);
 
         repo.current_commit((err, commit) => {
 
-            if (err) { //Clone repository, as it does not exist
+            if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
 
-
-                cloneRepository(repoURL, destFolder, branch)
-                    .then(() => {
-
-                        repo = Gift(destFolder);
-                        resolve(repo);
-                    })
-                    .catch((err) => {
-
-                        reject({ code: 'ERROR_GETTING_REPOSITORY', msg: err });
-                    });
+                reject({ code: 'REPOSITORY_IS_NOT_CLONED',msg: 'Please, run scripts/firstTimeGithubImport.js to set-up connection to Github repository. ' });
 
             }
             else {
@@ -184,30 +174,7 @@ const getRepository = function (repoURL,destFolder,branch){
 
 
 };
-/*
- Clones the github repository
- */
-const cloneRepository = function (repoURL,destFolder,branch){
 
-
-    return new Promise((resolve, reject)  => {
-
-        Gift.clone( repoURL, destFolder, 1, branch, (err, repo) => {
-
-            if (err) {
-                reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
-
-            }
-            else {
-                resolve('Cloned');
-            }
-
-        });
-    });
-
-
-
-};
 
 module.exports = {
     updateGithub,
