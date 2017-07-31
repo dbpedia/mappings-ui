@@ -34,7 +34,10 @@ const getRepository = function (repoURL,destFolder,branch){
 
             if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
 
-                cloneRepository(repoURL, destFolder, branch)
+                reject({ code: 'REPOSITORY_DOES_NOT_EXIST',msg: 'Please, run scripts/firstTimeGithubImport.js before '})
+
+
+                /*cloneRepository(repoURL, destFolder, branch)
                     .then(() => {
 
                         repo = Gift(destFolder);
@@ -43,7 +46,7 @@ const getRepository = function (repoURL,destFolder,branch){
                     .catch( (err) => {
 
                         reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
-                    });
+                    });*/
 
             }
             else {
