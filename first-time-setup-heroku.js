@@ -55,10 +55,7 @@ Async.auto({
                     AuthAttempt.deleteMany.bind(AuthAttempt, {}),
                     Session.deleteMany.bind(Session, {}),
                     Status.deleteMany.bind(Status, {}),
-                    Post.deleteMany.bind(Post,{}),
-                    Mapping.deleteMany.bind(Mapping,{}),
-                    MappingHistory.deleteMany.bind(MappingHistory,{}),
-                    MappingUpdateStatus.deleteMany.bind(MappingUpdateStatus,{})
+                    Post.deleteMany.bind(Post,{})
                 ], done);
             }],
 
