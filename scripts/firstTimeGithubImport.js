@@ -217,7 +217,7 @@ const process = function (lang,dir,mappingsCollection,statsCollection){
 };
 
 
-const start = function() {
+const start = function () {
 
     let mappingsCollection;
     let statsCollection;
@@ -260,11 +260,12 @@ const start = function() {
             return 'OK';
         })
         .catch((error) => {
+
             Process.exit(1); //Exiting with error code, DO NOT DEPLOY
             console.log(error);
         });
 
-}
+};
 
 module.exports = {
     start

@@ -57,32 +57,7 @@ const getRepository = function (repoURL,destFolder,branch){
 
 
 };
-/*
- Clones the github repository
- */
-const cloneRepository = function (repoURL,destFolder,branch){
 
-
-    return new Promise((resolve, reject)  => {
-
-        console.log('\t[INFO] Cloning repository...');
-        Gift.clone( repoURL, destFolder, 1, branch, (err, repo) => {
-
-            if (err) {
-                reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
-
-            }
-            else {
-                console.log('\t[INFO] Repository cloned.');
-                resolve('Cloned');
-            }
-
-        });
-    });
-
-
-
-};
 
 
 const add = function (repo,folder){
@@ -188,18 +163,18 @@ const updateFromRemoteAndGetDiffs = function (repoObject){
     let startCommit;
     let endCommit;
     return getCurrentCommit(repoObject) //1.- Get commit before anything
-    .then((commit) => {
+    .then((commit1) => {
 
-        startCommit = commit;
+        startCommit = commit1;
         return pullKeepTheirs(repoObject); //2.- Sync with remote, keeping their changes in case of merge. We do not lost anything as it is saved on history.
     })
     .then(() => {
 
         return getCurrentCommit(repoObject); //3.- Get commit after update
     })
-    .then((commit) => {
+    .then((commit2) => {
 
-        endCommit = commit;
+        endCommit = commit2;
         return diff(repoObject, startCommit, endCommit); //4.- Get differences
     })
     .catch((err) => {

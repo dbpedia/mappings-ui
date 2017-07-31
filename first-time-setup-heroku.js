@@ -3,14 +3,8 @@ const Async = require('async');
 const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
-const Config = require('./config');
 Dotenv.config({ silent: true });
-const WPDatabase = require('./scripts/githubOntology/webprotegeDatabase');
 const GithubNetrc = require('./scripts/github-netrc');
-const Exec = require('child_process').exec;
-const REPO_FOLDER = Config.get('/github/repositoryFolder');
-
-
 
 const rootmail = 'root@mail.com';
 const rootpass = 'dbpedia';
