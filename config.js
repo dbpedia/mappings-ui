@@ -84,7 +84,11 @@ const config = {
         password: process.env.GITHUB_PASSWORD,
         name: 'OntologyPusher',
         email: 'i.smaro.394@gmail.com',
-        repositoryURL: 'https://github.com/ontologypusher/mappings',
+        repositoryURL: {
+            $filter: 'env',
+            production: 'https://github.com/dbpedia/mappings-tracker',
+            $default: 'https://github.com/ontologypusher/mappings'
+        },
         repositoryFolder: {
             $filter: 'env',
             production: '/app/tmp/mappings-repo/',
