@@ -39,6 +39,7 @@
     "escape-string-regexp": "1.x.x",
     "eslint-config-hapi": "10.x.x",
     "eslint-plugin-react": "6.x.x",
+    "filehound": "^1.16.2",
     "flag-icon-css": "^2.8.0",
     "flux": "3.x.x",
     "flux-constant": "1.x.x",
