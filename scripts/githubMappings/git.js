@@ -34,7 +34,9 @@ const getRepository = function (repoURL,destFolder,branch){
 
             if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
 
+                reject({ code: 'REPOSITORY_IS_NOT_CLONED',msg: 'Please, run scripts/firstTimeGithubImport.js before ' });
 
+/*
                 cloneRepository(repoURL, destFolder, branch)
                     .then(() => {
 
@@ -44,7 +46,7 @@ const getRepository = function (repoURL,destFolder,branch){
                     .catch( (err) => {
 
                         reject({ code: 'ERROR_CLONING_REPOSITORY', msg: err });
-                    });
+                    });*/
 
             }
             else {

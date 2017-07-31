@@ -10,7 +10,7 @@
     "test-client": "lab --leaks -v -t 99 -S -T ./test/lab/transform ./test/lab/client-before.js $TEST_TARGET ./test/lab/client-after.js || true",
     "test-server": "lab --leaks -v -t 99 -S -T ./test/lab/transform $TEST_TARGET ./test/lab/server-after.js || true",
     "postinstall": "gulp build",
-    "heroku-postbuild": "node first-time-setup-heroku"
+    "heroku-postbuild": "node first-time-setup-heroku && node scripts/firstTimeGithubImport"
   },
   "author": "DBPedia",
   "license": "MIT",
