@@ -20,7 +20,7 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoModels = require('./githubMappings/mongomodels');
 
 const MONGODB_URI = Config.get('/hapiMongoModels/mongodb/uri');
-const REPO_URL = Config.get('/github/repositoryURL');
+const REPO_URL = 'https://github.com/dbpedia/mappings-tracker.git';
 const REPO_BRANCH = Config.get('/github/repositoryBranch');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
 const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
