@@ -205,7 +205,7 @@ Async.auto({
             }],
             removeRepo: ['clean',(dbResults,done) => {
 
-                exec('rm -rf ' + 'REPO_FOLDER',  (err, stdout, stderr) => {
+                Exec('rm -rf ' + 'REPO_FOLDER',  (err, stdout, stderr) => {
                     if (err){
                         console.log(err);
                     }
