@@ -237,16 +237,30 @@ const start = function (){
             const languageDirs = getDirectories(basePath);
             console.log('[INFO] Importing into DB');
             console.log('');
-            const promises = [];
+            let sequence = Promise.resolve();
+
             languageDirs.forEach((langDir) => {
 
                 const lang = langDir;
                 const completeDir = basePath + langDir;
-                promises.push(process(lang,completeDir,mappingsCollection,statsCollection));
+                sequence = sequence.then(() => {
+
+                    return process(lang,completeDir,mappingsCollection,statsCollection);
+                });
 
             });
 
-            return Promise.all(promises);
+
+            return sequence
+                .then(() => {
+
+                    
+                    resolve();
+                })
+                .catch((err) => {
+
+                    reject(err);
+                });
         })
         .then(() => {
 
