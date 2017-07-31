@@ -218,6 +218,7 @@ const process = function (lang,dir,mappingsCollection,statsCollection){
 
 
 const start = function() {
+
     let mappingsCollection;
     let statsCollection;
     console.log('* Running first github import');

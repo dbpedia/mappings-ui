@@ -3,9 +3,12 @@ const Async = require('async');
 const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
+const Config = require('./config');
 Dotenv.config({ silent: true });
 const WPDatabase = require('./scripts/githubOntology/webprotegeDatabase');
 const GithubNetrc = require('./scripts/github-netrc');
+const Exec = require('child_process').exec;
+const REPO_FOLDER = Config.get('/github/repositoryFolder');
 
 
 
@@ -198,6 +201,18 @@ Async.auto({
 
                         done(err, docs && docs[0]);
                     });
+                });
+            }],
+            removeRepo: ['clean',(dbResults,done) => {
+
+                exec('rm -rf ' + 'REPO_FOLDER',  (err, stdout, stderr) => {
+                    if (err){
+                        console.log(err);
+                    }
+                    else {
+                        console.log('removed repo folder');
+                    }
+                    done();
                 });
             }],
            /* addRootToWP: ['rootUser', function (dbResults, done) {
