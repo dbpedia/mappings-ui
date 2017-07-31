@@ -200,7 +200,7 @@ Async.auto({
                     });
                 });
             }],
-            addRootToWP: ['rootUser', function (dbResults, done) {
+           /* addRootToWP: ['rootUser', function (dbResults, done) {
 
 
 
@@ -221,8 +221,8 @@ Async.auto({
 
 
 
-            }],
-            regularUser: ['addRootToWP', function (dbResults, done) {
+            }],*/
+            regularUser: ['rootUser', function (dbResults, done) {
 
 
                 Async.auto({
@@ -264,7 +264,7 @@ Async.auto({
                     });
                 });
             }],
-            addRegularUserToWP: ['regularUser', function (dbResults, done) {
+           /* addRegularUserToWP: ['regularUser', function (dbResults, done) {
 
                 WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
                     .then((res) => {
@@ -283,7 +283,7 @@ Async.auto({
 
 
 
-            }],
+            }],*/
             putDetailsInNetRC: ['clean', function (dbResults, done) {
 
                 const correct = GithubNetrc.putLoginIntoNetrc();
