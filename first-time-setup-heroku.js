@@ -205,7 +205,7 @@ Async.auto({
             }],
             removeRepo: ['clean',(dbResults,done) => {
 
-                Exec('rm -rf ' + REPO_FOLDER,  (err, stdout, stderr) => {
+                /*Exec('rm -rf ' + REPO_FOLDER,  (err, stdout, stderr) => {
                     if (err){
                         console.log(err);
                     }
@@ -213,7 +213,7 @@ Async.auto({
                         console.log('removed repo folder');
                     }
                     done();
-                });
+                });*/
             }],
            /* addRootToWP: ['rootUser', function (dbResults, done) {
 
