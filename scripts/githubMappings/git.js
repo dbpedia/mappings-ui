@@ -34,7 +34,7 @@ const getRepository = function (repoURL,destFolder,branch){
 
             if (err) { //If repository does not exist, do not clone. Send error to run 'firstTimeGithubImport.js'
 
-                
+
 
                 FirstUpdate.start()
                     .then(() => {

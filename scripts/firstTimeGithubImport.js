@@ -256,7 +256,6 @@ const start = function() {
 
             console.log('');
             console.log('[INFO] Imported successfully.');
-            Process.exit();
             return 'OK';
         })
         .catch((error) => {
