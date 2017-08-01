@@ -99,6 +99,7 @@ class AddTemplatePanel extends React.Component {
             <div className="panel panel-default">
                 <div className="templateModalWrapper">
                     <Modal
+                        onClose={() => {}}
                         show={this.state.showModal}>
                         <div className="container">
                             {/*Alert should be showed here, so user can correct the errors*/}

@@ -148,10 +148,11 @@ class RowConditionalTemplate extends React.Component {
             if (this.state.editingFallback){
                 return React.createFactory(require('./' + this.state.childType))({
                     onClose: this.onFallbackChildClose.bind(this),
+                    ref: 'child',
                     childLevel: this.props.childLevel + 1,
                     content: this.state.content.parameters.fallback });
             }
-            return React.createFactory(require('./' + this.state.childType))({ onClose: this.onFallbackChildClose.bind(this), childLevel: this.props.childLevel + 1 });
+            return React.createFactory(require('./' + this.state.childType))({ onClose: this.onFallbackChildClose.bind(this), ref: 'child',childLevel: this.props.childLevel + 1 });
         }
 
 
@@ -254,7 +255,10 @@ class RowConditionalTemplate extends React.Component {
                 errors[fieldName] = true;
                 hasError = true;
             }
-            else if ((typeof field === 'string' || field instanceof Array) && field.trim().length === 0 ){
+            else if (
+                        (typeof field === 'string' && field.trim().length === 0)
+                        ||
+                        (field instanceof Array && field.length == 0)  ){
                 errors[fieldName] = true;
                 hasError = true;
             }
@@ -483,6 +487,7 @@ class RowConditionalTemplate extends React.Component {
                                 />
                             </div>
                         </div>
+                        <i>Note: You can input class, some templates, or both, but at least one of those has to be filled.</i>
                     </div>
                 </Collapse>
                 </div>
