@@ -119,6 +119,7 @@ class SearchPage extends React.Component {
 
         return (
             <section className="container">
+
                 <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}  />
                     <span style={{ float: 'right' }}>&nbsp;</span>

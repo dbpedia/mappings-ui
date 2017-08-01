@@ -433,6 +433,74 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    //Used to get templates from rml
+    server.route({
+        method: 'POST',
+        path: '/mappings/templates',
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            validate: {
+                payload: {
+                    mappingName: Joi.string().required(),
+                    mappingLang: Joi.string().required(),
+                    mappingDump: Joi.string().required().allow('')
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+            const response = {
+                'name':'IntermediateTemplate',
+                'parameters':{
+                    'class':'dbo:Writer',
+                    'property':'dbo:project',
+                    'templates':[
+                        {
+                            'name':'SimplePropertyTemplate',
+                            'parameters':{
+                                'ontologyProperty':'dbo:population',
+                                'property':'population',
+                                'select':'first',
+                                'prefix':'',
+                                'suffix':'',
+                                'transform':'',
+                                'unit':'',
+                                'factor':''
+                            },
+                            '_alias':'SimplePropertyTemplate (population)'
+                        },
+                        {
+                            'name':'SimplePropertyTemplate',
+                            'parameters':{
+                                'ontologyProperty':'dbo:musicBand',
+                                'property':'music_band',
+                                'select':'',
+                                'prefix':'',
+                                'suffix':'',
+                                'transform':'',
+                                'unit':'',
+                                'factor':''
+                            },
+                            '_alias':'SimplePropertyTemplate (music_band)'
+                        }
+                    ]
+                },
+                '_alias':'IntermediateTemplate (dbo:project)'
+            };
+
+            reply(null,response);
+
+
+
+        }
+    });
+
+
+
     next();
 };
 

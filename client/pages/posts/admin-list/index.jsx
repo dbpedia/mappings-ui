@@ -87,13 +87,16 @@ class SearchPage extends React.Component {
 
         return (
             <section className="container">
+
                 <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}  />
 
                     <h1>Help Posts <i>(Admin)</i></h1>
                 </div>
                 <div className="row">
+
                     <div className="col-sm-8"> {/*Left column: results */}
+
                         <Results data={this.state.results.data} />
                         <Paging
                             ref={(c) => (this.els.paging = c)}

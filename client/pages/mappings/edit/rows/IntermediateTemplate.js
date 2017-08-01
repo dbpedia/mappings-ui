@@ -19,7 +19,7 @@ const propTypes = {
 
 const name = 'IntermediateTemplate';
 const required = ['class','property'];
-const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','StartDateTemplate', 'EndDateTemplate','ConstantTemplate','IntermediateTemplate','ConditionalTemplate'];
+const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','StartDateTemplate', 'EndDateTemplate','ConstantTemplate'];
 
 /**
  * Possible children: PropertyMapping, IntermediateNodeMapping, CustomMapping

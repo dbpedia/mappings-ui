@@ -6,6 +6,7 @@ const Store = require('./store');
 
 
 class Actions {
+
     static getDetails(template,lang) {
 
         ApiActions.get(
@@ -56,8 +57,6 @@ class Actions {
 
     static getRMLfromTemplate(template,lang,dump,type,content,editorBox,templatePanel) {
 
-        //TODO: Maybe some pre-processing is needed
-
         const data = {
             mappingName: template,
             mappingLang: lang,
@@ -81,10 +80,30 @@ class Actions {
                     editorBox.setText(response.mapping.dump);
                     templatePanel.closeModal();
                     templatePanel.setAutoremoveAlert();
+                    this.getTemplatesFromRML(template,lang,response.mapping.dump);
                 }
 
             }
         );
+    }
+
+    //Used to update the template object used to show the template overview
+    static getTemplatesFromRML(template,lang,dump){
+
+        const data = {
+            mappingName: template,
+            mappingLang: lang,
+            mappingDump: dump
+        };
+
+        ApiActions.post(
+            '/api/mappings/templates',
+            data,
+            Store,
+            Constants.GET_TEMPLATE_LIST,
+            Constants.GET_TEMPLATE_LIST_RESPONSE
+        );
+
     }
 }
 

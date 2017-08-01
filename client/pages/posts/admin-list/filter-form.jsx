@@ -32,11 +32,13 @@ class FilterForm extends React.Component {
 
         return (
             <div className="panel panel-default">
+
                 <div className="panel-heading">
                     <h3 className="panel-title text-center"><b>Filters</b></h3>
                 </div>
                 <div className="panel-body">
                     <div>
+
                         <div className="row">
                             <div className="col-sm-6">
                                 <SelectControl

@@ -91,6 +91,20 @@ const reducer = function (state = initialState, action) {
         });
     }
 
+    if (action.type === Constants.GET_TEMPLATE_LIST) {
+        return ObjectAssign({}, state, {
+            templateObject: {},
+            templatesLoading: true
+        });
+    }
+
+    if (action.type === Constants.GET_TEMPLATE_LIST_RESPONSE) {
+        return ObjectAssign({}, state, {
+            templateObject: action.response,
+            templatesLoading: false
+        });
+    }
+
     return state;
 };
 

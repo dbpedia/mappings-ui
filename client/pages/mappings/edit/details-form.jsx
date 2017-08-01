@@ -3,6 +3,8 @@ const Actions = require('./actions');
 const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const LinkState = require('../../../helpers/link-state');
+const TemplateList = require('./templateList.jsx');
+const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
@@ -20,7 +22,8 @@ const propTypes = {
     hasError: PropTypes.object,
     help: PropTypes.object,
     loading: PropTypes.bool,
-    showSaveSuccess: PropTypes.bool
+    showSaveSuccess: PropTypes.bool,
+    templateObject: PropTypes.object
 };
 
 
@@ -38,7 +41,9 @@ class DetailsForm extends React.Component {
             editedRml: props.rml,
             edition: props.edition,
             status: props.status,
-            stats: props.stats
+            stats: props.stats,
+            showRML: true,
+            templateObject: {}
         };
     }
 
@@ -92,6 +97,18 @@ class DetailsForm extends React.Component {
     onEditorLoad(editor){
 
         editorRef = editor;
+        editorRef.$blockScrolling = Infinity;
+    }
+
+    changeView(showRML){
+        if(!showRML){
+            Actions.getTemplatesFromRML(this.props._id.template,this.props._id.lang,this.state.rml);
+        }
+        if(showRML){
+            editorRef.focus();
+            this.insertTextAtCursor(' '); //Workaround to fix problem with focusing again in ace editor
+        }
+        this.setState({showRML});
     }
 
     render() {
@@ -114,6 +131,12 @@ class DetailsForm extends React.Component {
                 message={this.props.error}
             />);
         }
+
+        const tabs =
+            <ul className="nav nav-tabs edition-tabs">
+                <li onClick={this.changeView.bind(this,true)} className={this.state.showRML  ? 'active' : ''}><a href="#">Edit RML</a></li>
+                <li onClick={this.changeView.bind(this,false)} className={!this.state.showRML ? 'active' : ''}><a href="#">List templates</a></li>
+            </ul>;
 
 
         const editElements = <div>
@@ -141,16 +164,33 @@ class DetailsForm extends React.Component {
 
             </div>
 
-            <Editor content={this.state.editedRml}
-                    ref="editor"
-                    onLoad={this.onEditorLoad.bind(this)}
-                    onChange={this.onChange.bind(this)}/>
+            {tabs}
+
+                <div style={{display: (this.state.showRML ? '' :  'none')}}>
+                <Editor content={this.state.editedRml}
+                        ref="editor"
+                        onLoad={this.onEditorLoad.bind(this)}
+                        onChange={this.onChange.bind(this)}/>
+            {this.props && <span>Last edited on { Moment(this.props.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.props.edition.username}</span>}
+            {this.props.hydrated && <span><br/>Edition comment: {this.props.oldComment}</span>}
+            {this.props.edition.comment}
+                </div>
+
+
+            {!this.state.showRML &&
+
+                <TemplateList template={this.props.templateObject} loading={this.props.templatesLoading}/>
+
+            }
+
+
 
         </div>;
 
         const formElements = <fieldset>
 
             {alerts}
+
 
             {editElements}
 

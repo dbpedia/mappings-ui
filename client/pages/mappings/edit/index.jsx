@@ -3,7 +3,6 @@ const Actions = require('./actions');
 const DetailsForm = require('./details-form.jsx');
 const ButtonGroup = require('../../../components/button-group.jsx');
 const UserUtilities = require('../../../helpers/user-utilities');
-const Moment = require('moment');
 const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
@@ -188,13 +187,14 @@ class EditPage extends React.Component {
                     <div className="col-sm-8">
 
 
+
                         <DetailsForm ref="details" {...this.state.details}/>
-                        {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.edition.username}</span>}
-                        {this.state.details.hydrated && <span><br/>Edition comment: {this.state.details.oldComment}</span>}
-                        {this.state.details.edition.comment}
+
 
                     </div>
                     <div className="col-sm-4">
+
+
                         <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
                         <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
                         <MappingTesterPanel lang={this.state.details._id.lang}/>
