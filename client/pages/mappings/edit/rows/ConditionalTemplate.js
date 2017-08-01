@@ -16,7 +16,7 @@ const propTypes = {
 };
 
 const name = 'ConditionalTemplate';
-const required = ['class'];
+const required = ['property','value','operator'];
 const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','StartDateTemplate', 'EndDateTemplate','ConstantTemplate','IntermediateTemplate','ConditionalTemplate'];
 
 /**
@@ -241,8 +241,15 @@ class RowConditionalTemplate extends React.Component {
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
-            const field = this.state.content.parameters[required[i]];
+
             const fieldName = required[i];
+            let field = this.state.content.parameters[fieldName];
+            if (fieldName === 'property' || fieldName === 'value'){
+                field = this.state.content.parameters.condition.parameters[fieldName];
+            }
+            if (fieldName === 'operator'){
+                field = this.state.content.parameters.condition.operator;
+            }
             if (!field){
                 errors[fieldName] = true;
                 hasError = true;
@@ -257,8 +264,12 @@ class RowConditionalTemplate extends React.Component {
             }
         }
 
+
+
+
         this.setState({ errors });
         if (save && hasError){
+            console.log('returning');
             return;
         }
 
@@ -422,12 +433,15 @@ class RowConditionalTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="operator">Operator{required.indexOf('operator') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <select className="form-control" value={this.state.content.parameters.condition.operator} onChange={this.operatorSelectHandler.bind(this)}>
-                                                <option value="">-</option>
-                                                <option value="isSet">isSet</option>
-                                                <option value="equals">equals</option>
-                                                <option value="contains">contains</option>
-                                                <option value="otherwise">otherwise</option>
+                                            <select
+                                                className={'form-control ' + (this.state.errors.operator ? 'error' : '')}
+                                                value={this.state.content.parameters.condition.operator}
+                                                onChange={this.operatorSelectHandler.bind(this)}>
+                                                    <option value="">-</option>
+                                                    <option value="IsSet">IsSet</option>
+                                                    <option value="Equals">Equals</option>
+                                                    <option value="Contains">Contains</option>
+                                                    <option value="Otherwise">Otherwise</option>
                                             </select>
                                         </div>
                                     </div>

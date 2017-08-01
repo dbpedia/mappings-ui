@@ -16,6 +16,7 @@ const propTypes = {
 const name = 'SimplePropertyTemplate';
 const required = ['ontologyProperty','property'];
 
+
 /**
  * Possible children: None.
  */
@@ -126,6 +127,8 @@ class RowSimplePropertyTemplate extends React.Component {
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
+
+
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();

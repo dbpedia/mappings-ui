@@ -90,6 +90,7 @@
     "react-portal-tooltip": "^1.1.5",
     "react-router-dom": "4.x.x",
     "redux": "3.x.x",
+    "request": "^2.81.0",
     "require-dir": "0.3.x",
     "rimraf": "^2.6.1",
     "slug": "0.9.x",

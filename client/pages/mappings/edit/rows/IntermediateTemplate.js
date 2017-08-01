@@ -7,6 +7,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const Collapse = require('react-bootstrap').Collapse;
 const ClassSearchInput = require('../../../../components/ontologySearcher/classSearcherInput.jsx');
+const PropertySearchInput = require('../../../../components/ontologySearcher/propertySearcherInput.jsx');
 
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const TemplateList = require('./TemplateList');
@@ -275,7 +276,7 @@ class RowIntermediateTemplate extends React.Component {
 
                                     <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
                                         <div className="form-group">
-                                            <label className="control-label col-sm-2" htmlFor="class">Class{required.indexOf('class') > -1 ? '*' : ''}:</label>
+                                            <label className="control-label col-sm-2" htmlFor="class">Ontology class{required.indexOf('class') > -1 ? '*' : ''}:</label>
                                             <div className="col-sm-10">
                                                 <ClassSearchInput
                                                        className={'form-control ' + (this.state.errors.class ? 'error' : '')}
@@ -286,9 +287,9 @@ class RowIntermediateTemplate extends React.Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="control-label col-sm-2" htmlFor="property">Property{required.indexOf('property') > -1 ? '*' : ''}:</label>
+                                            <label className="control-label col-sm-2" htmlFor="property">Ontology property{required.indexOf('property') > -1 ? '*' : ''}:</label>
                                             <div className="col-sm-10">
-                                                <input type="text"
+                                                <PropertySearchInput
                                                        className={'form-control ' + (this.state.errors.property ? 'error' : '')}
                                                        id="property"
                                                        placeholder="e.g. resting_place"

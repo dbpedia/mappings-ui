@@ -2,11 +2,30 @@
 const Joi = require('joi');
 const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
-const Wreck = require('wreck');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
-const internals = {};
+const Request = require('request');
 
+const internals = {};
+const cleanObject = function (obj){
+
+    if (obj._alias){
+        delete obj._alias;
+    }
+
+
+    //Each parameter that is an empty string is converted to null
+    for (const property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (obj[property] === ''){
+                obj[property] = null;
+            }
+            else if (typeof (obj[property]) === 'object' && obj[property]) {
+                cleanObject(obj[property]);
+            }
+        }
+    }
+};
 internals.applyRoutes = function (server, next) {
 
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
@@ -347,17 +366,7 @@ internals.applyRoutes = function (server, next) {
 
             const content = request.payload.templateContent;
 
-            //Delete _alias
-            delete content._alias;
-
-            //Each parameter that is an empty string is converted to null
-            for (const property in content.parameters) {
-                if (content.parameters.hasOwnProperty(property)) {
-                    if (content.parameters[property] === ''){
-                        content.parameters[property] = null;
-                    }
-                }
-            }
+            cleanObject(content); //Deletes _alias and changes empty strings to null
 
             const apiRequest = {
                 template: content,
@@ -386,17 +395,33 @@ internals.applyRoutes = function (server, next) {
                 case 'GeocoordinateTemplate':
                     path = 'geocoordinate';
                     break;
+                case 'IntermediateTemplate':
+                    path = 'intermediate';
+                    break;
+                case 'ConditionalTemplate':
+                    path = 'conditional';
+                    break;
                 default:
                     break;
             }
 
 
-            Wreck.post(efURL + '/server/rml/templates/' + path, { payload: apiRequest }, (err, res, payload) => {
+            Request.post({
+                url: efURL + '/server/rml/templates/' + path,
+                body: apiRequest,
+                json: true
+            }, (err, res, payload) => {
                 /* do stuff */
 
+
                 if (err){
-                    return reply(err);
+                    return reply(Boom.internal(err));
                 }
+
+                if (res.statusCode !== 200){
+                    return reply(Boom.badRequest(payload.msg));
+                }
+
 
                 reply(null,payload);
             });

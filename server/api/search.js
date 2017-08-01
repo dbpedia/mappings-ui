@@ -20,12 +20,12 @@ internals.applyRoutes = function (server, next) {
 
     const classes = [
         {
-            name: 'dbo:Soccer_Player',
+            name: 'dbo:SoccerPlayer',
             uri: 'http://wikipedia.org/wiki/David_Beckham',
             count: 2352
         },
         {
-            name: 'dbp:BirthPlace',
+            name: 'dbo:Writer',
             uri: 'http://wikipedia.org/wiki/David_Beckham',
             count: 1234
         },

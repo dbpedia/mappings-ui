@@ -15,7 +15,7 @@ const propTypes = {
 };
 
 const name = 'ConstantTemplate';
-const required = ['ontologyProperty'];
+const required = ['ontologyProperty','value'];
 
 /**
  * Possible children: None
