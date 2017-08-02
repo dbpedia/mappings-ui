@@ -5,8 +5,19 @@ const React = require('react');
 const Autosuggest = require('react-autosuggest');
 const PropTypes = require('prop-types');
 const Debounce = require('lodash').debounce;
+const Modal = require('./modal.jsx');
+const Alert = require('./alert.jsx');
+
 const propTypes = {
-    lang: PropTypes.string
+    lang: PropTypes.string,
+    template: PropTypes.string,
+    rml: PropTypes.string,
+    action: PropTypes.func,
+    loading: PropTypes.bool,
+    dump: PropTypes.string,
+    msg: PropTypes.string,
+    showModal: PropTypes.bool,
+    error: PropTypes.string
 };
 
 
@@ -130,6 +141,15 @@ class MappingTesterPanel extends React.Component {
     }
 
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.showModal !== this.props.showModal) {
+            this.setState({ showModal: nextProps.showModal });
+        }
+        if (nextProps.error !== this.props.error) {
+            this.setState({ error: nextProps.error });
+        }
+    }
+
     onChange(event, { newValue }){
         this.setState({
             value: newValue
@@ -157,9 +177,8 @@ class MappingTesterPanel extends React.Component {
 
     extract(){
 
-        //const urlTitle = this.state.value.replace(new RegExp(' ', 'g'), '_');
-        //const wikiURL = 'https://' + this.props.lang + '.wikipedia.org/wiki/' + urlTitle;
-        alert('NOT IMPLEMENTED');
+        this.props.action(this.props.template,this.props.lang,this.props.rml,this.state.value);
+
     }
 
     render() {
@@ -173,13 +192,55 @@ class MappingTesterPanel extends React.Component {
         };
 
 
+        const tableBody = [];
+        if (this.props.dump) {
+            this.props.dump.forEach((triple) => {
+                tableBody.push(
+                    <tr><td>{triple[0]}</td><td>{triple[1]}</td><td>{triple[2]}</td></tr>
+                );
+            });
+        }
+
         return (
 
             <div className="panel panel-default">
+
                 <div className="panel-heading">
                     <h3 className="panel-title text-center"><b>Mapping test</b></h3>
                 </div>
                 <div className="panel-body">
+                    {   this.state.error &&
+                            <Alert
+                                key="danger"
+                                type="danger"
+                                onClose={() => {
+                                    this.setState({ error:undefined });
+                                }}
+                                message={this.state.error}
+                            />
+                    }
+                    <div className="testModalWrapper">
+                        <Modal
+                            onClose={() => {
+                                this.setState({ showModal:false });
+                            }}
+                            header="Extraction result"
+                            show={this.state.showModal}>
+                            <table className="table">
+                                <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Predicate</th>
+                                    <th>Object</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {tableBody}
+                                </tbody>
+                            </table>
+
+                        </Modal>
+                    </div>
                     <div className="row">
                         <div className="col-sm-12">
                             <Autosuggest
@@ -197,7 +258,14 @@ class MappingTesterPanel extends React.Component {
                     </div>
                     <div className="row">
                         <div className="col-sm-12">
-                            <button className="btn btn-primary btn-block" type="button" onClick={this.extract.bind(this)}>Extract</button>
+                            <button
+                                className="btn btn-primary btn-block"
+                                type="button"
+                                onClick={this.extract.bind(this)}
+                                disabled={this.props.loading}>
+                                { !this.props.loading && <span>Extract</span> }
+                                { this.props.loading && <span><i className="fa fa-refresh fa-spin"></i> Extracting...</span>}
+                            </button>
                         </div>
                     </div>
                     <br/>

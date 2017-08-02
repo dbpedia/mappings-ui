@@ -23,7 +23,8 @@ const propTypes = {
     help: PropTypes.object,
     loading: PropTypes.bool,
     showSaveSuccess: PropTypes.bool,
-    templateObject: PropTypes.object
+    templateObject: PropTypes.object,
+    onChange: PropTypes.func
 };
 
 
@@ -50,6 +51,7 @@ class DetailsForm extends React.Component {
     onChange(newValue) {
 
         this.setState({ rml:newValue });
+        this.props.onChange(newValue);
     }
 
     onVisibleChange(event){

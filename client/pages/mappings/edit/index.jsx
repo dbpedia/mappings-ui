@@ -109,6 +109,11 @@ class EditPage extends React.Component {
         window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(template,lang,this.props.history);
     }
 
+    onEditorChange(text){
+        const details = { ...this.state.details };
+        details.rml = text;
+        this.setState({ details });
+    }
 
     render() {
 
@@ -188,7 +193,7 @@ class EditPage extends React.Component {
 
 
 
-                        <DetailsForm ref="details" {...this.state.details}/>
+                        <DetailsForm ref="details" {...this.state.details} onChange={this.onEditorChange.bind(this)}/>
 
 
                     </div>
@@ -197,7 +202,13 @@ class EditPage extends React.Component {
 
                         <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
                         <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
-                        <MappingTesterPanel lang={this.state.details._id.lang}/>
+                        <MappingTesterPanel
+                            {...this.state.test}
+                            lang={this.state.details._id.lang}
+                            template={this.state.details._id.template}
+                            rml={this.state.details.rml}
+                            action={Actions.extractTriples.bind(this)}
+                        />
                     </div>
                 </div>
             </section>

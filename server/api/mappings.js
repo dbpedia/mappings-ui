@@ -5,7 +5,7 @@ const Boom = require('boom');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const Request = require('request');
-
+//const ParseString = require('xml2js').parseString;
 const internals = {};
 const cleanObject = function (obj){
 
@@ -415,7 +415,7 @@ internals.applyRoutes = function (server, next) {
 
 
                 if (err){
-                    return reply(Boom.internal(err));
+                    return reply(Boom.badRequest(err));
                 }
 
                 if (res.statusCode !== 200){
@@ -453,8 +453,34 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+            /*const apiRequest = {
+                name: request.payload.mappingName,
+                language: request.payload.mappingLang,
+                dump: request.payload.mappingDump
+            };
+
+            Request.post({
+                url: efURL + '/server/rml/templates/',
+                body: apiRequest,
+                json: true
+            }, (err, res, payload) => {
+                /!* do stuff *!/
+
+
+                if (err){
+                    return reply(Boom.internal(err));
+                }
+
+                if (res.statusCode !== 200){
+                    return reply(Boom.badRequest(payload));
+                }
+
+
+                reply(null,payload);
+            });*/
+
             const response = {
-                'name':'IntermediateTemplate',
+                'name':'IntermediateTemplate (Fake Data)',
                 'parameters':{
                     'class':'dbo:Writer',
                     'property':'dbo:project',
@@ -499,6 +525,92 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    server.route({
+        method: 'POST',
+        path: '/mappings/extract',
+        config: {
+            auth: {
+                mode:'try',
+                strategy: 'session'
+            },
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            validate: {
+                payload: {
+                    mappingName: Joi.string().required(),
+                    mappingLang: Joi.string().required(),
+                    mappingDump: Joi.string().required().allow(''),
+                    wikititle: Joi.string().required()
+                }
+            }
+        },
+        handler: function (request, reply) {
+
+/*
+
+            const apiRequest = {
+                mapping: {
+                    name: request.payload.mappingName,
+                    language: request.payload.mappingLang,
+                    dump: request.payload.mappingDump
+                },
+                parameters: {
+                    wikititle: request.payload.wikititle,
+                    format: 'TURTLE'
+                }
+            };
+*/
+
+
+            const res = {
+                'dump': [['fakeData','fakeData','fakeData']],
+                'msg': 'Extraction successfull'
+            };
+
+            reply(null,res);
+          /*  Request.post({
+                url: efURL + '/server/rml/extract',
+                body: apiRequest,
+                json: true
+            }, (err, res, payload) => {
+
+
+            if (err){
+                 return reply(Boom.internal(err));
+            }
+
+            if (res.statusCode >= 400){
+                 return reply(Boom.badRequest(payload));
+            }
+
+            //We parse the XML
+            const xml = payload.dump;
+            const result = [];
+
+            ParseString(xml, (err,res) => {
+
+                if( res && res.TriX && res.TriX.graph && res.TriX.graph.length > 0) {
+
+                    for(let i = 0; i < res.TriX.graph.length; ++i){
+                        const elem = res.TriX.graph[i];
+                        for(let j = 0; j < elem.triple.length; ++j){
+                            result.push(elem.triple[j].uri);
+                        }
+
+                    }
+                    return reply(null,{dump: result, msg: payload.msg});
+                }
+
+                reply(null,[]);
+            });
+
+
+            });
+*/
+
+
+
+        }
+    });
 
 
     next();
