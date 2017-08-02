@@ -82,6 +82,8 @@ class DetailsForm extends React.Component {
     insertTextAtCursor(value){
 
         editorRef.session.insert(editorRef.getCursorPosition(), value);
+
+
     };
 
     setText(text) {
@@ -108,7 +110,7 @@ class DetailsForm extends React.Component {
         }
         if(showRML){
             editorRef.focus();
-            this.insertTextAtCursor(' '); //Workaround to fix problem with focusing again in ace editor
+            editorRef.navigateRight(0); //Workaround to fix problem with focusing again in ace editor
         }
         this.setState({showRML});
     }
