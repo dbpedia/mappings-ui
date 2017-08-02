@@ -14,7 +14,7 @@ const propTypes = {
     rml: PropTypes.string,
     action: PropTypes.func,
     loading: PropTypes.bool,
-    dump: PropTypes.string,
+    dump: PropTypes.array,
     msg: PropTypes.string,
     showModal: PropTypes.bool,
     error: PropTypes.string
@@ -194,9 +194,9 @@ class MappingTesterPanel extends React.Component {
 
         const tableBody = [];
         if (this.props.dump) {
-            this.props.dump.forEach((triple) => {
+            this.props.dump.forEach((triple,i) => {
                 tableBody.push(
-                    <tr><td>{triple[0]}</td><td>{triple[1]}</td><td>{triple[2]}</td></tr>
+                    <tr key={i}><td>{triple[0]}</td><td>{triple[1]}</td><td>{triple[2]}</td></tr>
                 );
             });
         }

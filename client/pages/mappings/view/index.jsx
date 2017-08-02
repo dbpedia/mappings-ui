@@ -199,7 +199,14 @@ class EditPage extends React.Component {
 
                             </div>
                         </div>
-                        <MappingTester lang={this.state.details._id.lang}/>
+                        <MappingTester
+                            {...this.state.test}
+                            lang={this.state.details._id.lang}
+                            template={this.state.details._id.template}
+                            rml={this.state.details.rml}
+                            action={Actions.extractTriples.bind(this)}
+                        />
+
                     </div>
 
                 </div>
