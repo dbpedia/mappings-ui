@@ -572,35 +572,38 @@ internals.applyRoutes = function (server, next) {
             }, (err, res, payload) => {
 
 
-            if (err){
-                 return reply(Boom.internal(err));
-            }
-
-            if (res.statusCode >= 400){
-                 return reply(Boom.badRequest(payload));
-            }
-
-            //We parse the XML
-            const xml = payload.dump;
-            const result = [];
-
-            console.log(xml);
-            ParseString(xml, (err,res) => {
-
-                if( res && res.TriX && res.TriX.graph && res.TriX.graph.length > 0) {
-
-                    for(let i = 0; i < res.TriX.graph.length; ++i){
-                        const elem = res.TriX.graph[i];
-                        for(let j = 0; j < elem.triple.length; ++j){
-                            result.push(elem.triple[j].uri);
-                        }
-
-                    }
-                    return reply(null,{dump: result, msg: payload.msg});
+                if (err){
+                    return reply(Boom.internal(err));
                 }
 
-                reply(null,[]);
-            });
+                if (res.statusCode >= 400){
+                    return reply(Boom.badRequest(payload));
+                }
+
+                //We parse the XML
+                const xml = payload.dump;
+                const result = [];
+
+                console.log(xml);
+                ParseString(xml, (err,res2) => {
+
+                    if (err){
+                        return reply(err);
+                    }
+                    if ( res2 && res2.TriX && res2.TriX.graph && res2.TriX.graph.length > 0) {
+
+                        for (let i = 0; i < res2.TriX.graph.length; ++i){
+                            const elem = res2.TriX.graph[i];
+                            for (let j = 0; j < elem.triple.length; ++j){
+                                result.push(elem.triple[j].uri);
+                            }
+
+                        }
+                        return reply(null,{ dump: result, msg: payload.msg });
+                    }
+
+                    reply(null,[]);
+                });
 
 
             });

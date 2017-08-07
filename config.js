@@ -94,9 +94,8 @@ const config = {
             production: '/app/tmp/mappings-repo/',
             $default: '/tmp/mappings-repo'
         },
-        repositoryMappingsFolder: 'mappings/',
-        repositoryOntologyFolder: 'ontology/',
-        repositoryBranch: 'master',
+        repositoryMappingsFolder: 'mappings', //No slash at end
+        repositoryOntologyFolder: 'ontology', //No slash at end
         updateFrequencyMinutes: 1
     },
     webProtegeIntegration: {
@@ -107,11 +106,11 @@ const config = {
                 $default: 'mongodb://localhost:27017/webprotege'
             }
         },
-        projectID: '40d5ae46-18ec-4968-8f12-a2dd16f5b156',
+        projectID: '95513977-dbb6-4a90-a29c-4d73c760e4b3',
         webProtegeURL:{
             $filter: 'env',
             production: process.env.WEBPROTEGE_URL,
-            $default:'http://192.168.1.5:8080/webprotege'
+            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
         },
         ontologyFileBaseName: 'dbpedia-ontology',   //Name of file to be saved in repository
         ontologyFormats: 'owx,owl,ttl,omx,ofn'      //Formats to extract

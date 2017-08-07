@@ -165,6 +165,7 @@ const getChangeInfo = function (template,lang,deleted){
 
     return connectToDB()
         .then(() => {
+
             if (!deleted){
                 return new Promise((resolve, reject) => {
 
@@ -196,6 +197,7 @@ const getChangeInfo = function (template,lang,deleted){
                     }
 
                     MappingHistory.findOne({ _id: { template,lang,version } }, (err,mapping) => {
+
                         if (err) {
                             return reject({ code: 'ERROR_GETTING_CHANGE_MESSAGE', msg: err });
                         }

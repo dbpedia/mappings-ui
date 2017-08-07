@@ -9,6 +9,10 @@ const GithubPush = require('./githubOntologyPush');
 const WebprotegeExport = require('./webprotegeOntologyExport');
 const WebprotegeDB = require('./webprotegeDatabase');
 const Mongo = require('./mongo');
+const Config = require('../../config');
+const REPO_URL = Config.get('/github/repositoryURL');
+const REPO_FOLDER = Config.get('/github/repositoryFolder');
+const ONTOLOGY_FOLDER = Config.get('/github/repositoryOntologyFolder');
 let pID; //ID of DBpedia project
 let lastRev; //Last revision of ontology in WebProtege
 let recordId;
@@ -36,14 +40,22 @@ const doAction = function (){
             console.log('\t[INFO] Connected to WebProtege Database.');
             pID = projectID;
             //START REPOSITORY (EITHER CLONE OR USE EXISTING ONE)
-            return GithubPush.startRepository();
+            return GithubPush.startRepository(REPO_URL,REPO_FOLDER);
+        })
+        .then( () => {
+
+            //DOWNLOAD THE ONTOLOGY. Always, even when no change, to avoid possible overwrites,
+            //Warning: useless, as the mappings updater removes every unstagged change.
+            console.log('\t[INFO] Changes detected. Downloading ontology files...');
+            return WebprotegeExport.downloadOntologyFiles(pID,lastRev);
+
         })
         .then(() => { //GET LAST ONTOLOGY REVISION NUMBER
 
             console.log('\t[INFO] Got repository.');
             return WebprotegeExport.getCurrentVersion(pID);
         })
-        .then( (lastRevision) => {
+        .then((lastRevision) => { //GET LAST ONTOLOGY REVISION NUMBER
 
             console.log('\t[INFO] Got last ontology version: ' + lastRevision);
             if (lastRevision === lastRev){ //No changes. Exit.
@@ -52,19 +64,13 @@ const doAction = function (){
             }
             else {
                 lastRev = lastRevision;
-
-                //DOWNLOAD THE ONTOLOGY
-                console.log('\t[INFO] Changes detected. Downloading ontology files...');
-                return WebprotegeExport.downloadOntologyFiles(pID,lastRev);
             }
-
-
         })
         .then( () => {
 
 
             //PUSH ONTOLOGY FILES TO GITHUB
-            return GithubPush.updateGithub(lastRev);
+            return GithubPush.updateGithub(lastRev,REPO_FOLDER,ONTOLOGY_FOLDER);
         })
         .then( () => {
 
@@ -95,6 +101,7 @@ const doAction = function (){
 
 };
 
+//doAction();
 module.exports = {
     doAction
 };

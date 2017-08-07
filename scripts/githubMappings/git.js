@@ -100,6 +100,7 @@ const customGitCommand = (parameters,directory) => (
  * Returns a list of local changes in repository.
  */
 const localChanges = function (repo) {
+
     return Gitkit.status(repo);
 };
 
@@ -262,7 +263,7 @@ const addAndCommit = function (repo,index,path,deleted,message){
         })
         .catch((err) => {
 
-            throw { code: 'ERROR_COMMITTING FILE', msg: err };
+            throw { code: 'ERROR_COMMITTING_FILE', msg: err };
         });
 
 };

@@ -159,7 +159,7 @@ const preCommitCheck = function (path){
 };
 
 
-const doChecksAndCommit = function (repoObject,index,path,deleted,message){
+const doChecksAndCommit = function (repoObject,index,path,deleted){
 
     return preCommitCheck(path)
         .then((checksPassed) => {
@@ -173,7 +173,12 @@ const doChecksAndCommit = function (repoObject,index,path,deleted,message){
 
                 return Mongomodels.getChangeInfo(template,lang,deleted)
                     .then((changesInfo) => {
-                        const message = changesInfo.username +  ': ' + changesInfo.message;
+
+                        let info = changesInfo.message;
+                        if (!info || info.length === 0){
+                            info = 'No change info';
+                        }
+                        const message = changesInfo.username +  ': ' + info;
                         return Git.addAndCommit(repoObject,index,path,deleted,message);
                     });
             }
@@ -192,10 +197,12 @@ const doChecksAndCommit = function (repoObject,index,path,deleted,message){
  * Two-way synchronization with Github repository.
  * Flow:
  *  1. Repository is checked. Cloned if does not exist.
- *  2. Update changes from github and reflect them in the database. In case of merge, external changes have priority.
- *  3. Clear the mappings folder
- *  4. Dump the mappings database in the mappings folder.
- *  5. Push (*)
+ *  2. Remove non staged changes
+ *  3. Update changes from github and reflect them in the database. In case of merge, external changes have priority.
+ *  4. Clear the mappings folder
+ *  5. Dump the mappings database in the mappings folder.
+ *  6. For any file that has changed, do a commit with change message obtained from DB
+ *  7. Push (*)
  *  (*) If push fails, will be retried in next iteration.
  */
 const doAction = function () {
@@ -271,7 +278,7 @@ const doAction = function () {
                         sequence = sequence.then(() => {
 
                             //TODO: Change message with username: lastEditionMessage
-                            return doChecksAndCommit(repo,index,path,deleted,'message');
+                            return doChecksAndCommit(repo,index,path,deleted);
                         });
 
                     });

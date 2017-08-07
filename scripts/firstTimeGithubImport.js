@@ -12,13 +12,12 @@ const MongoModels = require('./githubMappings/mongomodels');
 
 const MONGODB_URI = Config.get('/hapiMongoModels/mongodb/uri');
 const REPO_URL = Config.get('/github/repositoryURL');
-const REPO_BRANCH = Config.get('/github/repositoryBranch');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
 const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
 /*
  Returns  a promise with a repository object. If it does not exist, the repository is cloned.
  */
-const getRepository = function (repoURL,destFolder,branch){
+const getRepository = function (repoURL,destFolder){
 
 
     return Git.Repository.open(destFolder)
@@ -30,7 +29,7 @@ const getRepository = function (repoURL,destFolder,branch){
 
             //Repo does not exist, clone it
             if (err && err.message.indexOf('failed to resolve path') > -1){
-                return cloneRepository(repoURL,destFolder,branch);
+                return cloneRepository(repoURL,destFolder);
             }
 
             throw err; //Unknown error, throw the error
@@ -44,7 +43,7 @@ const getRepository = function (repoURL,destFolder,branch){
 /*
  Clones the github repository
  */
-const cloneRepository = function (repoURL,destFolder,branch){
+const cloneRepository = function (repoURL,destFolder){
 
     console.log('[INFO] Cloning repository...');
 
@@ -193,7 +192,7 @@ const start = function () {
             mappingsCollection = db.collection('mappings');
             statsCollection = db.collection('currentMappingStats');
 
-            return getRepository(REPO_URL,REPO_FOLDER,REPO_BRANCH);
+            return getRepository(REPO_URL,REPO_FOLDER);
 
         })
         .then(() => {
@@ -225,6 +224,7 @@ const start = function () {
             return 'OK';
         })
         .catch((error) => {
+
             console.log(error);
             Process.exit(1); //Exiting with error code, DO NOT DEPLOY
 
