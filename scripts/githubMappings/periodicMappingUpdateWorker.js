@@ -13,7 +13,6 @@ const Mkdirp = require('mkdirp');
 
 const Config = require('../../config');
 const REPO_URL = Config.get('/github/repositoryURL');
-const REPO_BRANCH = Config.get('/github/repositoryBranch');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
 const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
 const Mongomodels = require('./mongomodels');
@@ -72,8 +71,9 @@ let recordId;
  */
 const processDiff = function (diff){
 
-    const fileName = diff.a_path;
-    const mappingPattern = /mappings\/(\w+)\/Mapping_.*:(.*)\.ttl/;
+
+    const fileName = diff.path;
+    const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
 
 
     if ( mappingPattern.test(fileName) ){ //Change refers to mapping
@@ -84,20 +84,20 @@ const processDiff = function (diff){
 
         //Name change triggers deletion and creation
 
-        if (diff.deleted_file) {
-            console.log('\t\t* Deleted ' + template + '/' + lang);
+        if (diff.status === 'deleted') {
+            //console.log('\t\t* Deleted ' + template + '/' + lang);
             return Mongomodels.deleteMapping(template,lang);
         }
 
-        if (diff.new_file) {
+        if (diff.status === 'added') {
             //Read
-            console.log('\t\t* Created ' + template + '/' + lang);
+            //console.log('\t\t* Created ' + template + '/' + lang);
             const rml = Fs.readFileSync(REPO_FOLDER + '/' + fileName,'UTF8');
             return Mongomodels.updateOrCreate(template,lang,rml);
         }
 
-        //Default: updated
-        console.log('\t\t* Updated ' + template + '/' + lang);
+        //Default: modified
+        //console.log('\t\t* Updated ' + template + '/' + lang);
         const rml = Fs.readFileSync(REPO_FOLDER + '/' + fileName,'UTF8');
         return Mongomodels.updateMapping(template,lang,rml);
 
@@ -114,22 +114,31 @@ const processDiff = function (diff){
  */
 const getChangesFromGithub = function () {
 
-    return Git.startRepository(REPO_URL,REPO_BRANCH,REPO_FOLDER)
+    return Git.startRepository(REPO_URL,REPO_FOLDER)
         .then((res) => {
 
             repo = res.repository;
+            return Git.discardUnstashedChanges(repo); //Discard unstaged changes
+
+        })
+        .then((res) => {
+
+            console.log('\t[INFO] Discarded unstaged changes');
             return Git.updateFromRemoteAndGetDiffs(repo);
         })
         .then((diffs) => {
 
             console.log('\t[INFO] Pulled changes from remote');
-            const promises = [];
+            let sequence = Promise.resolve();
             diffs.forEach((diff) => {
 
-                promises.push(processDiff(diff));
+                sequence = sequence.then(() => {
+
+                    return processDiff(diff);
+                });
             });
 
-            return Promise.all(promises);
+            return sequence;
         })
         .then(() => { //Database has been updated with last changes
 
@@ -143,6 +152,42 @@ const getChangesFromGithub = function () {
 
 };
 
+
+const preCommitCheck = function (path){
+    //PUT HERE ANY PRE-COMMIT CHECKS
+    return Promise.resolve(true);
+};
+
+
+const doChecksAndCommit = function (repoObject,index,path,deleted,message){
+
+    return preCommitCheck(path)
+        .then((checksPassed) => {
+
+            if (checksPassed){ //If checks pass, then I retrieve the changes info and commit
+
+                const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
+                const ext = path.match(mappingPattern);
+                const lang = ext[1];
+                const template = ext[2];
+
+                return Mongomodels.getChangeInfo(template,lang,deleted)
+                    .then((changesInfo) => {
+                        const message = changesInfo.username +  ': ' + changesInfo.message;
+                        return Git.addAndCommit(repoObject,index,path,deleted,message);
+                    });
+            }
+
+            //TODO: If there is any error, report to backend.
+            //If not passed checks, do not add and commit that file. At beginning of next iteration,
+            //unstaged changes will be staged and droped, so no problem.
+        })
+        .catch((err) => {
+
+            throw err;
+        });
+
+};
 /**
  * Two-way synchronization with Github repository.
  * Flow:
@@ -163,7 +208,7 @@ const doAction = function () {
 
             console.log('\t[INFO] Inserted progress into MongoDB,');
             recordId = id;
-            return Git.startRepository(REPO_URL,REPO_BRANCH,REPO_FOLDER);
+            return Git.startRepository(REPO_URL,REPO_FOLDER);
         })
         .then((re) => {
 
@@ -203,19 +248,42 @@ const doAction = function () {
         .then(() => { //As createMappingfile is sync, for sure all files will be created at this point
 
             console.log('\t[INFO] Files created.');
-            return Git.add(repo,REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER);
+            return Git.localChanges(repo); //todo: should also get messages from DB
 
+        })
+        .then((changes) => { //Add and commit files that have changed.
+
+            console.log('\t[INFO] Local changes retrieved.');
+
+            if (!changes || changes.length === 0) {
+                console.log('\t[INFO] No changes detected.');
+            }
+
+
+            return repo.refreshIndex() //Only get it once
+                .then((index) => {
+
+                    let sequence = Promise.resolve();
+                    changes.forEach((change) => {
+
+                        const path = change.path;
+                        const deleted = change.status === 'deleted';
+                        sequence = sequence.then(() => {
+
+                            //TODO: Change message with username: lastEditionMessage
+                            return doChecksAndCommit(repo,index,path,deleted,'message');
+                        });
+
+                    });
+
+                    //All changed files have been added and committed, each in one different commit
+                    return sequence;
+                });
         })
         .then(() => {
 
-            console.log('\t[INFO] Files added to stage.');
-            return Git.commit(repo,'Mappings changes as ' + updateDate);
-
-        })
-        .then(() => {
-
-            console.log('\t[INFO] Files commited.');
-            return Git.push(repo,0,10);
+            console.log('\t[INFO] Files committed.');
+            return Git.push(repo);
 
         })
         .then(() => {
@@ -239,6 +307,7 @@ const doAction = function () {
         });
 };
 
+//doAction();
 
 module.exports = {
     doAction

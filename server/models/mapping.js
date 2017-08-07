@@ -93,7 +93,7 @@ class Mapping extends MongoModels {
                 return callback(null,res.version);
             }
 
-            if (res && !res.version){ //Something strange happens
+            if (res && !Number.isInteger(res.version)){ //Something strange happens
                 return callback('Error, found document has no version attribute!');
             }
 
@@ -107,11 +107,12 @@ class Mapping extends MongoModels {
                     return callback(err);
                 }
 
-                if (res2 && res2.length === 1 && res2[0]._id.version){ //Found in archived mappings
+                if (res2 && res2.length === 1 && Number.isInteger(res2[0]._id.version)){ //Found in archived mappings
                     return callback(null,res2[0]._id.version);
                 }
 
-                if (res2 && res2.length === 1 && !res2[0]._id.version){ //Something strange happens
+                if (res2 && res2.length === 1 && !Number.isInteger(res2[0]._id.version)){ //Something strange happens
+
                     return callback('Error, found document in history and has no version attribute!');
                 }
 
@@ -119,6 +120,7 @@ class Mapping extends MongoModels {
                 callback(null,-1);
 
             });
+
 
 
 

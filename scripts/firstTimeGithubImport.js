@@ -1,16 +1,7 @@
-/**
- * First-time repository import tool.
- * This script SHOULD ONLY BE RUN the first time a new github repository is connected,
- * and should be run BEFORE running the main server.
- * It merges the contents of the repository and the UI, with priority on the repository.
- * All the mappings of the repository will be included in the UI either as new or as an update
- * to existing ones, preserving the already existing ones.
- * WARNING: If not run before connection to Github repository first time, Github repository contents
- * will be overwritten with those contents of the mappings UI. If UI is empty, github mappings will be cleared!
- */
+
 
 'use strict';
-const Gift = require('gift');
+const Git = require('nodegit');
 const Fs = require('fs');
 const Config = require('../config');
 const Path = require('path');
@@ -29,35 +20,23 @@ const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
  */
 const getRepository = function (repoURL,destFolder,branch){
 
-    return new Promise((resolve, reject)  => {
-        //Check if repository already exists.
-        let repo = Gift(destFolder);
 
-        repo.current_commit((err, commit) => {
+    return Git.Repository.open(destFolder)
+        .then((repo) => {
+            //Repository exists, return it immediately
+            return repo;
+        })
+        .catch((err) => {
 
-            if (err) { //Clone repository, as it does not exist
-
-
-                cloneRepository(repoURL, destFolder, branch)
-                    .then(() => {
-
-                        repo = Gift(destFolder);
-                        resolve(repo);
-                    })
-                    .catch((err) => {
-
-                        reject(err);
-                    });
-
+            //Repo does not exist, clone it
+            if (err && err.message.indexOf('failed to resolve path') > -1){
+                return cloneRepository(repoURL,destFolder,branch);
             }
-            else {
 
-                resolve(repo);
-            }
+            throw err; //Unknown error, throw the error
 
 
         });
-    });
 
 
 };
@@ -69,21 +48,7 @@ const cloneRepository = function (repoURL,destFolder,branch){
 
     console.log('[INFO] Cloning repository...');
 
-    return new Promise((resolve, reject)  => {
-
-        Gift.clone( repoURL, destFolder, 1, branch, (err, repo) => {
-
-            if (err) {
-                reject(err);
-
-            }
-            else {
-                resolve('Cloned');
-            }
-
-        });
-    });
-
+    return Git.Clone(repoURL,destFolder);
 
 
 };
@@ -260,9 +225,9 @@ const start = function () {
             return 'OK';
         })
         .catch((error) => {
-
-            Process.exit(1); //Exiting with error code, DO NOT DEPLOY
             console.log(error);
+            Process.exit(1); //Exiting with error code, DO NOT DEPLOY
+
         });
 
 };

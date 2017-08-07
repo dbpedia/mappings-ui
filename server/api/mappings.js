@@ -5,7 +5,7 @@ const Boom = require('boom');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const Request = require('request');
-//const ParseString = require('xml2js').parseString;
+const ParseString = require('xml2js').parseString;
 const internals = {};
 const cleanObject = function (obj){
 
@@ -545,7 +545,6 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-/*
 
             const apiRequest = {
                 mapping: {
@@ -558,16 +557,15 @@ internals.applyRoutes = function (server, next) {
                     format: 'TURTLE'
                 }
             };
-*/
 
 
-            const res = {
+          /*  const res = {
                 'dump': [['fakeData','fakeData','fakeData']],
                 'msg': 'Extraction successfull'
             };
 
-            reply(null,res);
-          /*  Request.post({
+            reply(null,res);*/
+            Request.post({
                 url: efURL + '/server/rml/extract',
                 body: apiRequest,
                 json: true
@@ -586,6 +584,7 @@ internals.applyRoutes = function (server, next) {
             const xml = payload.dump;
             const result = [];
 
+            console.log(xml);
             ParseString(xml, (err,res) => {
 
                 if( res && res.TriX && res.TriX.graph && res.TriX.graph.length > 0) {
@@ -605,7 +604,6 @@ internals.applyRoutes = function (server, next) {
 
 
             });
-*/
 
 
 

@@ -1,14 +1,19 @@
 /**
  * Created by ismaro3 on 30/07/17.
+ * Stores functionality for interacting with mappings and mappings-history models on DB.
  */
 'use strict';
 const Config = require('../../config');
 const MongoModels = require('mongo-models');
 const Mapping = require('../../server/models/mapping.js');
+const MappingHistory = require('../../server/models/mapping-history.js');
 const URI = Config.get('/hapiMongoModels/mongodb/uri');
 
 
 let dbConnection;
+/**
+ * Function to connect to DB. Reuses the same connection always.
+ */
 const connectToDB = function (){
 
     if (dbConnection){
@@ -31,11 +36,14 @@ const connectToDB = function (){
 
 };
 
-//Delete a mapping from the DB
+
+/**
+ * Deletes a mapping.
+ */
 const deleteMapping = function (template,lang) {
 
     const query = { _id: { template, lang } };
-    const username = 'githubSyncProcess';
+    const username = 'GithubScript';
 
     return connectToDB()
         .then(() => {
@@ -69,7 +77,9 @@ const deleteMapping = function (template,lang) {
         });
 };
 
-//Create a mapping on the DB
+/**
+ * Creates a mapping.
+ */
 const createMapping = function (template,lang,rml,statsToInsert) {
 
     const comment = 'Imported from Github';
@@ -107,6 +117,9 @@ const createMapping = function (template,lang,rml,statsToInsert) {
 
 };
 
+/**
+ * Updates or creates a mapping.
+ */
 const updateOrCreate = function (template,lang,rml,statsToInsert) {
 
     return connectToDB()
@@ -144,6 +157,70 @@ const updateOrCreate = function (template,lang,rml,statsToInsert) {
         });
 };
 
+/**
+ * Returns {username,message} object with username of last change and edition message.
+ * Searchs on active mappings. If deleted, searchs on history. If not found, no info.
+ */
+const getChangeInfo = function (template,lang,deleted){
+
+    return connectToDB()
+        .then(() => {
+            if (!deleted){
+                return new Promise((resolve, reject) => {
+
+                    Mapping.findOne({ _id: { template, lang } }, (err, mapping) => {
+
+                        if (err) {
+                            return reject({ code: 'ERROR_GETTING_CHANGE_MESSAGE', msg: err });
+                        }
+
+                        if (!mapping) {
+                            return resolve({ username: 'Unknown', message: 'No commit info' });
+                        }
+
+                        resolve({ username: mapping.edition.username, message: mapping.edition.comment });
+                    });
+                });
+            }
+
+            return new Promise((resolve, reject) => {
+                //In case mapping was deleted, search on deleted
+                Mapping.getLastVersion(template, lang, (err, version) => {
+
+                    if (err) {
+                        return reject({ code: 'ERROR_GETTING_CHANGE_MESSAGE', msg: err });
+                    }
+
+                    if (version < 0){
+                        return resolve({ username: 'Unknown', message: 'Permanently deleted mapping' });
+                    }
+
+                    MappingHistory.findOne({ _id: { template,lang,version } }, (err,mapping) => {
+                        if (err) {
+                            return reject({ code: 'ERROR_GETTING_CHANGE_MESSAGE', msg: err });
+                        }
+
+                        if (!mapping || !mapping.deletion) {
+                            return resolve({ username: 'Unknown', message: 'Permanently deleted mapping' });
+                        }
+
+                        resolve({ username: mapping.deletion.username, message: 'Deleted mapping' });
+
+                    });
+
+
+                });
+
+            });
+
+        });
+
+
+};
+
+/**
+ * Updates a mapping
+ */
 const updateMapping = function (template,lang,rml) {
 
     const comment = 'Updated from Github';
@@ -205,5 +282,6 @@ module.exports = {
     deleteMapping,
     createMapping,
     updateMapping,
-    updateOrCreate
+    updateOrCreate,
+    getChangeInfo
 };

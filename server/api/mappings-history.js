@@ -229,8 +229,9 @@ internals.applyRoutes = function (server, next) {
                 if (err){
                     return reply(err);
                 }
-
                 reply(null,res);
+
+
             });
         }
     });

@@ -4,7 +4,7 @@
 'use strict';
 const MappingsUpdater = require('./githubMappings/periodicMappingUpdateWorker');
 const OntologyUpdater = require('./githubOntology/periodicOntologyUpdateWorker');
-const GithubNetrc = require('./github-netrc');
+//const GithubNetrc = require('./github-netrc');
 
 const Config = require('../config');
 const Await = require('asyncawait/await');
@@ -27,7 +27,8 @@ const start = Async((runMappings,runOntology) => {
     if (!runMappings && !runOntology) {
         console.log('[ERROR] Please specify at least one update to run');
     }
-    GithubNetrc.putLoginIntoNetrc(); //Initialize github login data
+    //GithubNetrc.putLoginIntoNetrc(); //Initialize github login data
+    //Only used to update ontology, not used right now
 
     //noinspection InfiniteLoopJS
     for (;;){

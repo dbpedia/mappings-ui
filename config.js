@@ -36,7 +36,7 @@ const config = {
             mappings: {
                 $filter: 'env',
                 production: true,
-                $default: false
+                $default: true
             },
             ontology: {
                 $filter: 'env',
@@ -97,7 +97,7 @@ const config = {
         repositoryMappingsFolder: 'mappings/',
         repositoryOntologyFolder: 'ontology/',
         repositoryBranch: 'master',
-        updateFrequencyMinutes: 2
+        updateFrequencyMinutes: 1
     },
     webProtegeIntegration: {
         mongodb:{

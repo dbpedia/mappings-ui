@@ -1,5 +1,6 @@
 /**
  * Created by ismaro3 on 17/07/17.
+ * Functionality for interacting with MongoDB to get all the mappings and indicate update status.
  */
 'use strict';
 const MongoClient = require('mongodb').MongoClient;
