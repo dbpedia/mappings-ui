@@ -4,7 +4,6 @@ const MongoModels = require('mongo-models');
 const Mongodb = require('mongodb');
 const Dotenv = require('dotenv');
 Dotenv.config({ silent: true });
-const GithubNetrc = require('./scripts/github-netrc');
 
 const rootmail = 'root@mail.com';
 const rootpass = 'dbpedia';
@@ -253,38 +252,6 @@ Async.auto({
                         done(err, docs && docs[0]);
                     });
                 });
-            }],
-           /* addRegularUserToWP: ['regularUser', function (dbResults, done) {
-
-                WPDatabase.addUser('user','Name Surname','user@mail.com','dbpedia')
-                    .then((res) => {
-
-                        console.log('Regular user added to WebProtege');
-
-                        return WPDatabase.setAdmin('user',false);
-
-                    })
-                    .then((res) => {
-
-                        console.log('Regular user granted regular permissions to WebProtege');
-                        done(undefined,res.result);
-                    });
-
-
-
-
-            }],*/
-            putDetailsInNetRC: ['clean', function (dbResults, done) {
-
-                const correct = GithubNetrc.putLoginIntoNetrc();
-                if (correct){
-                    done(undefined);
-                }
-                else {
-                    done('error putting github loing into netrc');
-                }
-
-
             }]
         }, (err, dbResults) => {
 
