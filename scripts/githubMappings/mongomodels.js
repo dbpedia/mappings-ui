@@ -37,6 +37,33 @@ const connectToDB = function (){
 };
 
 
+const setMappingStatus = function (template,lang,error,message){
+
+    const query = { _id: { template,lang } };
+    const update = { $set: { status: { error,message } } };
+
+    return connectToDB()
+        .then(() => {
+
+            return new Promise((resolve,reject) => {
+
+                Mapping.findOneAndUpdate(query,update,(err,res) => {
+
+                    if (err) {
+                        return reject('Error updating mapping status');
+                    }
+
+
+                    //Mapping may be not found, maybe it was archived in the meanwhile... OK
+                    return resolve('Mapping status updated');
+
+                });
+            });
+        });
+
+
+
+};
 /**
  * Deletes a mapping.
  */
@@ -78,7 +105,7 @@ const deleteMapping = function (template,lang) {
 };
 
 /**
- * Creates a mapping.
+ * Creates a mapping. When imported from github, its status is set to OK
  */
 const createMapping = function (template,lang,rml,statsToInsert) {
 
@@ -98,18 +125,27 @@ const createMapping = function (template,lang,rml,statsToInsert) {
                         return reject(err);
                     }
 
-                    if (statsToInsert) {
-                        Mapping.findOneAndUpdate({ _id:{ template,lang } },{ $set: { stats:statsToInsert } },(err2,res) => {
+                    //Set status to OK, as external changes are seen as good
+                    Mapping.findOneAndUpdate({ _id: { template,lang } }, { $set: { status: { error: false, message: 'OK' } } }, (err2,res2) => {
 
-                            if (err) {
-                                return reject(err2);
-                            }
+                        if (err2) {
+                            return reject(err2);
+                        }
+
+                        if (statsToInsert) {
+                            Mapping.findOneAndUpdate({ _id:{ template,lang } },{ $set: { stats:statsToInsert } },(err3,res3) => {
+
+                                if (err3) {
+                                    return reject(err3);
+                                }
+                                resolve('OK');
+                            });
+                        }
+                        else {
                             resolve('OK');
-                        });
-                    }
-                    else {
-                        resolve('OK');
-                    }
+                        }
+                    });
+
 
                 });
             });
@@ -269,7 +305,17 @@ const updateMapping = function (template,lang,rml) {
                                 return reject('Error while updating mapping');
                             }
 
-                            return resolve(updatedRes);
+                            Mapping.findOneAndUpdate({ _id: { template,lang } }, { $set: { status: { error: false, message: 'OK' } } }, (err2,res2) => {
+
+                                if (err2) {
+                                    return reject('Error while updating mapping');
+                                }
+
+                                return resolve(res2);
+                            });
+
+
+
 
                         });
 
@@ -285,5 +331,6 @@ module.exports = {
     createMapping,
     updateMapping,
     updateOrCreate,
-    getChangeInfo
+    getChangeInfo,
+    setMappingStatus
 };

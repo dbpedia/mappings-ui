@@ -233,6 +233,10 @@ class Mapping extends MongoModels {
             comment,
             date: new Date()
         };
+        updateObject.$set.status = {
+            error: false,
+            message: 'PENDING'
+        };
 
         Mapping.findOneAndUpdate({ _id: this._id }, updateObject, callback);
 

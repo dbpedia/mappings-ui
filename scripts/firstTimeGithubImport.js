@@ -52,6 +52,24 @@ const cloneRepository = function (repoURL,destFolder){
 
 };
 
+//Returns true if file didn't exists and has been created
+//Returns false if file existed, therefore having a problem.
+const createWitnessFile = function (){
+
+    const path = REPO_FOLDER + '/' + '.importWitness';
+    if (Fs.existsSync(path)){
+        return false;
+    }
+    Fs.closeSync(Fs.openSync(path, 'w'));
+    return true;
+
+};
+
+const deleteWitnessFile = function () {
+
+    Fs.unlinkSync(REPO_FOLDER + '/' + '.importWitness');
+};
+
 const getDirectories = function (srcpath) {
 
     return Fs.readdirSync(srcpath)
@@ -197,7 +215,9 @@ const start = function () {
         })
         .then(() => {
 
-            const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER;
+            createWitnessFile(); //Create witness, once we have the repository
+
+            const basePath = REPO_FOLDER + '/' +  REPO_MAPPINGS_FOLDER + '/';
             const languageDirs = getDirectories(basePath);
             console.log('[INFO] Importing into DB');
             console.log('');
@@ -219,6 +239,7 @@ const start = function () {
         })
         .then(() => {
 
+            deleteWitnessFile();
             console.log('');
             console.log('[INFO] Imported successfully.');
             return 'OK';

@@ -17,8 +17,6 @@ const defaultValues = {
     template: '',
     lang: '',
     errored: '',
-    minCompletion: 0,
-    maxCompletion: 100,
     sort: '-_id.template',
     limit: '20',
     page: '1'

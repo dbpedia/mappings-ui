@@ -489,6 +489,8 @@ lab.experiment('Mapping Instance Methods', () => {
             Code.expect(query).to.be.an.object();
             Code.expect(query.$set).to.be.an.object();
             Code.expect(query.$set.rml).to.be.equal('updatedRML');
+            Code.expect(query.$set.status.error).to.be.equal(false);
+            Code.expect(query.$set.status.message).to.be.equal('PENDING');
             Code.expect(query.$set.edition.username).to.be.equal('newUsername');
             Code.expect(query.$set.edition.comment).to.be.equal('newComment');
             Code.expect(query.$set.version).to.be.equal(4);

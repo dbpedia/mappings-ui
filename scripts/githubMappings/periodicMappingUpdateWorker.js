@@ -16,6 +16,7 @@ const REPO_URL = Config.get('/github/repositoryURL');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
 const REPO_MAPPINGS_FOLDER = Config.get('/github/repositoryMappingsFolder');
 const Mongomodels = require('./mongomodels');
+const MAPPING_PATTERN = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
 
 const clearMappings = function (){
 
@@ -41,6 +42,31 @@ const clearMappings = function (){
 
 };
 
+
+const witnessExists = function (){
+
+    const path = REPO_FOLDER + '/' + '.importWitness';
+    return Fs.existsSync(path);
+
+};
+
+//Returns true if file didn't exists and has been created
+//Returns false if file existed, therefore having a problem.
+const createWitnessFile = function (){
+
+    const path = REPO_FOLDER + '/' + '.importWitness';
+    if (Fs.existsSync(path)){
+        return false;
+    }
+    Fs.closeSync(Fs.openSync(path, 'w'));
+    return true;
+
+};
+
+const deleteWitnessFile = function () {
+
+    Fs.unlinkSync(REPO_FOLDER + '/' + '.importWitness');
+};
 
 /**
  * SYNC FUNCTION
@@ -155,7 +181,7 @@ const getChangesFromGithub = function () {
 
 const preCommitCheck = function (path){
     //PUT HERE ANY PRE-COMMIT CHECKS
-    return Promise.resolve(true);
+    return Promise.resolve({ error: false, message: 'OK' });
 };
 
 
@@ -164,14 +190,19 @@ const doChecksAndCommit = function (repoObject,index,path,deleted){
     return preCommitCheck(path)
         .then((checksPassed) => {
 
-            if (checksPassed){ //If checks pass, then I retrieve the changes info and commit
+            const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
+            const ext = path.match(mappingPattern);
+            const lang = ext[1];
+            const template = ext[2];
 
-                const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
-                const ext = path.match(mappingPattern);
-                const lang = ext[1];
-                const template = ext[2];
+            if (!checksPassed.error){ //If checks pass, then I retrieve the changes info and commit
 
-                return Mongomodels.getChangeInfo(template,lang,deleted)
+
+                return Mongomodels.setMappingStatus(template,lang,false, 'OK' )
+                    .then(() => {
+
+                        return Mongomodels.getChangeInfo(template,lang,deleted);
+                    })
                     .then((changesInfo) => {
 
                         let info = changesInfo.message;
@@ -183,9 +214,10 @@ const doChecksAndCommit = function (repoObject,index,path,deleted){
                     });
             }
 
-            //TODO: If there is any error, report to backend.
-            //If not passed checks, do not add and commit that file. At beginning of next iteration,
-            //unstaged changes will be staged and droped, so no problem.
+
+            return Mongomodels.setMappingStatus(template,lang,true,checksPassed.message);
+
+
         })
         .catch((err) => {
 
@@ -220,6 +252,31 @@ const doAction = function () {
         .then((re) => {
 
             repo = re;
+            let promise = Promise.resolve();
+
+            if (witnessExists()){
+                promise =  new Promise((resolve, reject) => {
+                    //If witness exists, panic... Remove directory
+                    Rimraf(REPO_FOLDER, (err,res) => {
+
+                        if (err) {
+                            reject( { code: 'ERROR_INITIALIZING_REPO', msg: 'Mapping import from github not successfull, would retry but cant delete repo folder' });
+                        }
+
+                        reject( { code: 'ERROR_INITIALIZING_REPO', msg: 'Problem initializing repo, will retry... (Witness file not deleted)' });
+
+                    });
+                });
+
+            }
+            //Now we can create our witness
+            createWitnessFile();
+
+            return promise;
+
+        })
+        .then(() => {
+
             return getChangesFromGithub();
         })
         .then(() => {
@@ -275,11 +332,13 @@ const doAction = function () {
 
                         const path = change.path;
                         const deleted = change.status === 'deleted';
-                        sequence = sequence.then(() => {
+                        if (MAPPING_PATTERN.test(path)){
+                            sequence = sequence.then(() => {
 
-                            //TODO: Change message with username: lastEditionMessage
-                            return doChecksAndCommit(repo,index,path,deleted);
-                        });
+                                return doChecksAndCommit(repo,index,path,deleted);
+                            });
+                        }
+
 
                     });
 
@@ -297,11 +356,16 @@ const doAction = function () {
 
             console.log('\t[INFO] Files pushed.');
             console.log('\t[INFO] Finished successfully.');
-
+            deleteWitnessFile(); //As long has process finishes, good
             return Mongo.endProcess(recordId,false,'OK','');
         })
         .catch((err) => {
 
+            if ( witnessExists()){
+                deleteWitnessFile(); //As long has process finishes, good
+            }
+
+            //Do not care if error, witness is used if process freezes.
             if (err.code){
                 console.log('\t[ERROR] ' + err.code);
                 console.log(err.msg);

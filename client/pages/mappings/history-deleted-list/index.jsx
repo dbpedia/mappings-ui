@@ -67,13 +67,6 @@ class SearchPage extends React.Component {
             event.stopPropagation();
         }
 
-        //To control number input
-        if (!this.els.filters.state.minCompletion || this.els.filters.state.minCompletion < 0 ) {
-            this.els.filters.state.minCompletion = 0;
-        }
-        if (!this.els.filters.state.maxCompletion || this.els.filters.state.maxCompletion > 100) {
-            this.els.filters.state.maxCompletion = 100;
-        }
 
 
         Actions.changeSearchQuery(this.els.filters.state, this.props.history);
