@@ -390,7 +390,7 @@ class RowConditionalTemplate extends React.Component {
                                             <ClassSearchInput
                                                    className={'form-control ' + (this.state.errors.class ? 'error' : '')}
                                                    id="class"
-                                                   placeholder="e.g. dbo:Person"
+                                                   placeholder="e.g. Person"
                                                    value={this.state.content.parameters.class}
                                                    onChange={this.handleChange.bind(this,'class')}/>
                                         </div>

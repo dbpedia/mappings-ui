@@ -63,7 +63,7 @@ const getSuggestionValue = (suggestion) => suggestion.name;
 const renderSuggestion = (suggestion) => (
 
     <div>
-        <b>{suggestion.name}</b> ({suggestion.count})
+        <b>{suggestion.name}</b>
     </div>
 );
 

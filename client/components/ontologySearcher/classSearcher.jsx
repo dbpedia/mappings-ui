@@ -42,7 +42,7 @@ class ClassSearcher extends React.Component {
                             <ClassSearcherInput
                                 onChange={this.onChange.bind(this)}
                                 value={this.state.value}
-                                placeholder="e.g: dbo:Artist"
+                                placeholder="e.g: Artist"
                                 className="form-control"
                             />
 

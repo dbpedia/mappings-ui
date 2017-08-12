@@ -1,10 +1,23 @@
 'use strict';
 const Joi = require('joi');
+const Request = require('request');
+const Boom = require('boom');
+const Config = require('../../config');
+
 const internals = {};
 
-//TODO: Implement it to retrieve real wikipedia pages. Maybe, wire the frontend directly to Wikipedia API.
+
+let ontologyUpdateTime;
+let updatingOntology = false;
+
 internals.applyRoutes = function (server, next) {
 
+
+    const OntologyProperty = server.plugins['hapi-mongo-models'].OntologyProperty;
+    const OntologyClass = server.plugins['hapi-mongo-models'].OntologyClass;
+
+    const efURL = Config.get('/extractionFrameworkURL');
+    const UPDATE_TIME = Config.get('/github/updateFrequencyMinutes') * 1.25; //Margin time
 
     const pages = [
         {
@@ -17,48 +30,6 @@ internals.applyRoutes = function (server, next) {
         }
     ];
 
-
-    const classes = [
-        {
-            name: 'dbo:SoccerPlayer',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 2352
-        },
-        {
-            name: 'dbo:Writer',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 1234
-        },
-        {
-            name: 'dbo:Politician',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 123
-        }
-    ];
-
-    const properties = [
-        {
-            name: 'dbo:project',
-            domain: 'dbo:Person',
-            range: 'dbo:Project',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 2352
-        },
-        {
-            name: 'dbo:population',
-            domain: 'dbo:PopulatedPlace',
-            range: 'dbo:Population',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 1234
-        },
-        {
-            name: 'dbo:musicBand',
-            domain: 'dbo:MusicalArtist',
-            range: 'dbo:Band',
-            uri: 'http://wikipedia.org/wiki/David_Beckham',
-            count: 742
-        }
-    ];
 
     server.route({
         method: 'GET',
@@ -102,20 +73,114 @@ internals.applyRoutes = function (server, next) {
                     //Can search by title, lastEditor username, and visible status
                     name: Joi.string().allow('').default('')
                 }
-            }
+            },
+            pre: [{
+                assign: 'updateCache',
+                method: function (request, reply) {
+
+                    if (updatingOntology) {
+                        //Go to response directly, only one updating at same time
+                        reply(true);
+                    }
+
+
+                    //Not time defined or update time has passed, we have to update cache
+                    if (!ontologyUpdateTime || (new Date() - ontologyUpdateTime > UPDATE_TIME * 60 * 1000)) {
+                        updatingOntology = true;
+
+                        //First, delete all previous search results
+                        OntologyClass.deleteMany({}, (err,res) => {
+
+
+                            if (err) {
+                                return reply(Boom.internal(err));
+                            }
+
+                            //Now, go to server
+                            Request.get({
+                                url: efURL + '/server/rml/ontology/classes',
+                                json: true
+                            }, (err, res2, payload) => {
+
+
+                                if (err){
+                                    return reply(Boom.internal(err));
+                                }
+
+                                if (res2.statusCode >= 400){
+                                    return reply(Boom.badRequest(payload));
+                                }
+
+                                const classes = payload.classes;
+
+                                //Now,we insert into DB
+                                const promises = [];
+                                classes.forEach((cl) => {
+
+                                    promises.push(
+                                        new Promise((resolve, reject) => {
+
+                                            OntologyClass.create(cl,(err2,res3) => {
+
+                                                if (err2) {
+                                                    return reject(err2);
+                                                }
+                                                resolve();
+                                            });
+
+                                        })
+                                    );
+                                });
+
+                                Promise.all(promises)
+                                    .then(() => {
+                                        //Update internal status
+                                        ontologyUpdateTime = new Date();
+                                        updatingOntology = false;
+                                        reply(true);
+                                    });
+
+
+                            });
+                        });
+                    }
+
+                    else {
+                        reply(true); //Do not have to update
+                    }
+                }
+            }]
         },
         handler: function (request, reply) {
 
-            const input = request.query.name;
+            const input = request.query.name.trim();
 
-            const results =  input.length === 0 ? [] : classes.filter((page) =>
 
-                page.name.toLowerCase().indexOf(input.toLowerCase()) > -1
-            );
+            if (input.length === 0) {   //Do not search if empty
+                reply([]);
+            }
 
-            reply(results);
+            const regex = '.*' + input + '.*';
+            const filter = {
+                name: { '$regex': new RegExp(regex,'i') }
+            };
+            const sort = { length: 1 };
+
+            const fields = OntologyClass.fieldsAdapter('name uri');
+            const limit = 5;
+
+            OntologyClass.pagedFind(filter,fields,sort,limit,1,(err,res) => {
+
+                if (err) {
+                    return reply(Boom.internal(err));
+                }
+
+                reply(null,res.data);
+            });
+
         }
     });
+
 
     server.route({
         method: 'GET',
@@ -129,18 +194,109 @@ internals.applyRoutes = function (server, next) {
                     //Can search by title, lastEditor username, and visible status
                     name: Joi.string().allow('').default('')
                 }
-            }
+            },
+            pre: [{
+                assign: 'updateCache',
+                method: function (request, reply) {
+
+                    if (updatingOntology) {
+                        //Go to response directly, only one updating at same time
+                        reply(true);
+                    }
+                    //Not time defined or update time has passed, we have to update cache
+                    if (!ontologyUpdateTime || (new Date() - ontologyUpdateTime > UPDATE_TIME * 60 * 1000)) {
+                        updatingOntology = true;
+
+                        //First, delete all previous search results
+                        OntologyProperty.deleteMany({}, (err,res) => {
+
+
+                            if (err) {
+                                return reply(Boom.internal(err));
+                            }
+
+                            //Now, go to server
+                            Request.get({
+                                url: efURL + '/server/rml/ontology/properties',
+                                json: true
+                            }, (err, res2, payload) => {
+
+
+                                if (err){
+                                    return reply(Boom.internal(err));
+                                }
+
+                                if (res2.statusCode >= 400){
+                                    return reply(Boom.badRequest(payload));
+                                }
+
+                                const props = payload.properties;
+
+                                //Now,we insert into DB
+                                const promises = [];
+                                props.forEach((property) => {
+
+                                    promises.push(
+                                        new Promise((resolve, reject) => {
+
+                                            OntologyProperty.create(property,(err2,res3) => {
+
+                                                if (err2) {
+                                                    return reject(err2);
+                                                }
+                                                resolve();
+                                            });
+
+                                        })
+                                    );
+                                });
+
+                                Promise.all(promises)
+                                    .then(() => {
+                                        //Update internal status
+                                        ontologyUpdateTime = new Date();
+                                        updatingOntology = false;
+                                        reply(true);
+                                    });
+
+
+                            });
+                        });
+                    }
+
+                    else {
+                        reply(true); //Do not have to update
+                    }
+                }
+            }]
         },
         handler: function (request, reply) {
 
-            const input = request.query.name;
+            const input = request.query.name.trim();
 
-            const results =  input.length === 0 ? [] : properties.filter((page) =>
 
-                page.name.toLowerCase().indexOf(input.toLowerCase()) > -1
-            );
+            if (input.length === 0) {   //Do not search if empty
+                reply([]);
+            }
 
-            reply(results);
+            const regex = '.*' + input + '.*';
+            const filter = {
+                name: { '$regex': new RegExp(regex,'i') }
+            };
+            const sort = { length: 1 };
+
+            const fields = OntologyProperty.fieldsAdapter('name uri range domain');
+            const limit = 5;
+
+            OntologyProperty.pagedFind(filter,fields,sort,limit,1,(err,res) => {
+
+                if (err) {
+                    return reply(Boom.internal(err));
+                }
+
+                reply(null,res.data);
+            });
+
         }
     });
 

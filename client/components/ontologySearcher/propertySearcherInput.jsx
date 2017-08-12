@@ -58,9 +58,9 @@ const getSuggestionValue = (suggestion) => suggestion.name;
 const renderSuggestion = (suggestion) => (
 
     <div>
-        <span className="propertySearchMain"><b>{suggestion.name}</b></span> ({suggestion.count})<br/>
-        <span className="propertySearchDetail">domain: {suggestion.domain}</span> <br/>
-        <span className="propertySearchDetail" >range: {suggestion.range}</span>
+        <span className="propertySearchMain"><b>{suggestion.name}</b></span><br/>
+        <span className="propertySearchDetail">domain: {suggestion.domain.name}</span> <br/>
+        <span className="propertySearchDetail" >range: {suggestion.range.name}</span>
     </div>
 );
 

@@ -183,7 +183,7 @@ class RowSimplePropertyTemplate extends React.Component {
                                             <PropertySearchInput
                                                 className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                 id="ontologyProperty"
-                                                placeholder="e.g: dbo:name"
+                                                placeholder="e.g: name"
                                                 value={this.state.content.parameters.ontologyProperty}
                                                 onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>

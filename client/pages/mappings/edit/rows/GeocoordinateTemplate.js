@@ -171,7 +171,7 @@ class RowGeocoordinateTemplate extends React.Component {
                                             <PropertySearchInput
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder='e.g. dbo:residence'
+                                                   placeholder='e.g. residence'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>

@@ -67,11 +67,7 @@ class EditPage extends React.Component {
 
     }
 
-    //Introduce value in editor
-    onOntologySearchSubmit(value){
 
-        this.refs.details.insertTextAtCursor(value);
-    }
 
     //Called when new template has been added
     onTemplateAdded(childType,content){
@@ -201,7 +197,6 @@ class EditPage extends React.Component {
 
 
                         <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
-                        <OntologySearchPanel onSubmit={this.onOntologySearchSubmit.bind(this)}/>
                         <MappingTesterPanel
                             {...this.state.test}
                             lang={this.state.details._id.lang}

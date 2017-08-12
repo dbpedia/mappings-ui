@@ -160,7 +160,7 @@ class RowConstantTemplate extends React.Component {
                                             <PropertySearchInput
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder='e.g. dbo:country'
+                                                   placeholder='e.g. country'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>
@@ -171,7 +171,7 @@ class RowConstantTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.value ? 'error' : '')}
                                                    id="value"
-                                                   placeholder='e.g. dbr-en:Australia'
+                                                   placeholder='e.g. Australia'
                                                    value={this.state.content.parameters.value}
                                                    onChange={this.handleChange.bind(this,'value')}/>
                                         </div>

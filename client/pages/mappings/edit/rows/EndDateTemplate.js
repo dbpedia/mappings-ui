@@ -159,7 +159,7 @@ class RowEndDateTemplate extends React.Component {
                                             <PropertySearchInput
                                                    className={'form-control ' + (this.state.errors.ontologyProperty ? 'error' : '')}
                                                    id="ontologyProperty"
-                                                   placeholder='e.g. dbo:endYear'
+                                                   placeholder='e.g. endYear'
                                                    value={this.state.content.parameters.ontologyProperty}
                                                    onChange={this.handleChange.bind(this,'ontologyProperty')}/>
                                         </div>

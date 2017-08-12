@@ -281,7 +281,7 @@ class RowIntermediateTemplate extends React.Component {
                                                 <ClassSearchInput
                                                        className={'form-control ' + (this.state.errors.class ? 'error' : '')}
                                                        id="class"
-                                                       placeholder="e.g. dbo:Place"
+                                                       placeholder="e.g. Place"
                                                        value={this.state.content.parameters.class}
                                                        onChange={this.handleChange.bind(this,'class')}/>
                                             </div>
