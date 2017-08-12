@@ -78,7 +78,8 @@ const manifest = {
                         MappingUpdateStatus: './server/models/mappingUpdateStatus',
                         OntologyUpdateStatus: './server/models/ontologyUpdateStatus',
                         OntologyProperty: './server/models/ontologyProperty',
-                        OntologyClass: './server/models/ontologyClass'
+                        OntologyClass: './server/models/ontologyClass',
+                        OntologyDatatype: './server/models/ontologyDatatype'
                     },
                     autoIndex: Config.get('/hapiMongoModels/autoIndex')
                 }

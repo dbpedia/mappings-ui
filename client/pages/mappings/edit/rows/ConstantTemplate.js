@@ -7,6 +7,7 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const ButtonGroup = require('../../../../components/button-group.jsx');
 const PropertySearchInput = require('../../../../components/ontologySearcher/propertySearcherInput.jsx');
+const DatatypeSearchInput =  require('../../../../components/ontologySearcher/datatypeSearcherInput.jsx');
 
 const propTypes = {
     onClose: PropTypes.func,
@@ -184,7 +185,7 @@ class RowConstantTemplate extends React.Component {
                                     <div className="form-group">
                                         <label className="control-label col-sm-2" htmlFor="unit">Unit{required.indexOf('unit') > -1 ? '*' : ''}</label>
                                         <div className="col-sm-10">
-                                            <input type="text"
+                                            <DatatypeSearchInput
                                                    className={'form-control ' + (this.state.errors.unit ? 'error' : '')}
                                                    id="unit"
                                                    placeholder='e.g. hectare'
