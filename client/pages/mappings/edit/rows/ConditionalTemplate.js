@@ -244,6 +244,9 @@ class RowConditionalTemplate extends React.Component {
         for (let i = 0; i < required.length; ++i){
 
             const fieldName = required[i];
+            if(this.state.content.parameters.condition.operator === 'IsSet' && fieldName === 'value'){
+                continue;
+            }
             let field = this.state.content.parameters[fieldName];
             if (fieldName === 'property' || fieldName === 'value'){
                 field = this.state.content.parameters.condition.parameters[fieldName];
@@ -466,6 +469,7 @@ class RowConditionalTemplate extends React.Component {
                                             <input type="text"
                                                    className={'form-control ' + (this.state.errors.value ? 'error' : '')}
                                                    id="value"
+                                                   disabled={this.state.content.parameters.condition.operator === 'IsSet'}
                                                    placeholder='e.g. Jon Smith'
                                                    value={this.state.content.parameters.condition.parameters.value}
                                                    onChange={this.handleConditionParametersChange.bind(this,'value')}/>

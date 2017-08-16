@@ -43,6 +43,11 @@ const config = {
                 production: false,
                 $default: false
             }
+        },
+        statsUpdater: {
+            $filter: 'env',
+            production: true,
+            $default: true
         }
     },
     baseUrl: {
@@ -65,7 +70,8 @@ const config = {
         charLimit: 100000
     },
     mappings:{
-        charLimit: 1000000
+        charLimit: 1000000,
+        statsUpdateFrequencyMinutes: 1
     },
     hapiMongoModels: {
         mongodb: {

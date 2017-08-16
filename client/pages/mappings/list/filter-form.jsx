@@ -58,8 +58,8 @@ class FilterForm extends React.Component {
                                     <option value="-stats.numProperties">properties &#9660;</option>
                                     <option value="status.message">status &#9650;</option>
                                     <option value="-status.message">status &#9660;</option>
-                                    <option value="stats.completionPercentage">completion &#9650;</option>
-                                    <option value="-stats.completionPercentage">completion &#9660;</option>
+                                    <option value="stats.mappedPercentage">completion &#9650;</option>
+                                    <option value="-stats.mappedPercentage">completion &#9660;</option>
 
                                 </SelectControl>
                             </div>

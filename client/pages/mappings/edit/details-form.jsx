@@ -18,7 +18,7 @@ const propTypes = {
     edition: PropTypes.object,
     status: PropTypes.object,
     stats: PropTypes.object,
-    error: PropTypes.string,
+    error: PropTypes.any,
     hasError: PropTypes.object,
     help: PropTypes.object,
     loading: PropTypes.bool,
@@ -117,6 +117,21 @@ class DetailsForm extends React.Component {
 
     render() {
 
+        let templateList = [];
+        if(this.props.templateObject && this.props.templateObject.templates){
+            this.props.templateObject.templates.forEach((t,i) => {
+                templateList.push(
+                    <TemplateList key={i} template={t} loading={this.props.templatesLoading}/>
+                );
+            });
+        }
+
+        if (templateList.length === 0) {
+            templateList = <span><i>No templates found in code.</i></span>
+        }
+
+
+
         const alerts = [];
 
         if (this.props.showSaveSuccess) {
@@ -133,13 +148,17 @@ class DetailsForm extends React.Component {
                 key="danger"
                 type="danger"
                 message={this.props.error}
+                onClose={Actions.hideError}
             />);
         }
 
         const tabs =
             <ul className="nav nav-tabs edition-tabs">
                 <li onClick={this.changeView.bind(this,true)} className={this.state.showRML  ? 'active' : ''}><a href="#">Edit RML</a></li>
-                <li onClick={this.changeView.bind(this,false)} className={!this.state.showRML ? 'active' : ''}><a href="#">List templates</a></li>
+                {(this.state.rml && this.state.rml.trim().length > 0) && <li onClick={this.changeView.bind(this,false)}
+                    className={!this.state.showRML ? 'active' : ''}>
+                    <a href="#">List templates</a>
+                </li> }
             </ul>;
 
 
@@ -180,12 +199,20 @@ class DetailsForm extends React.Component {
             {this.props.edition.comment}
                 </div>
 
+            {/*Show error if any*/}
+            {this.props.error &&
+                <span><i>There are some errors in your code. Please fix them.</i></span>}
+
 
             {!this.state.showRML &&
 
-                <TemplateList template={this.props.templateObject} loading={this.props.templatesLoading}/>
+            (
+                (this.props.templatesLoading && (<span><i className="fa fa-refresh fa-spin"></i> Loading...</span>))
+                || (!this.props.templatesLoading && templateList))
+
 
             }
+
 
 
 

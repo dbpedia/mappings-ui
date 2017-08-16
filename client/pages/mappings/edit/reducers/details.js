@@ -22,7 +22,8 @@ const reducer = function (state = initialState, action) {
     if (action.type === Constants.GET_DETAILS) {
         return ObjectAssign({}, initialState, {
             hydrated: false,
-            loading: true
+            loading: true,
+            error: false
         });
     }
 
@@ -54,7 +55,8 @@ const reducer = function (state = initialState, action) {
         return ObjectAssign({}, state, {
             loading: true,
             title: action.request.data.title,
-            rml: action.request.data.rml
+            rml: action.request.data.rml,
+            error: false
         });
     }
 
@@ -90,18 +92,28 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
+    if (action.type === Constants.HIDE_ERROR) {
+        return ObjectAssign({}, state, {
+            error: false
+        });
+    }
 
     if (action.type === Constants.GET_TEMPLATE_LIST) {
         return ObjectAssign({}, state, {
             templateObject: {},
-            templatesLoading: true
+            templatesLoading: true,
+            error: false
         });
     }
 
     if (action.type === Constants.GET_TEMPLATE_LIST_RESPONSE) {
+        const validation = ParseValidation(action.response);
+
+        //Shows error if error when getting templates.
         return ObjectAssign({}, state, {
             templateObject: action.response,
-            templatesLoading: false
+            templatesLoading: false,
+            error: validation.error
         });
     }
 

@@ -186,12 +186,7 @@ class EditPage extends React.Component {
                                     <b>Total properties: </b> {this.state.details.stats.numProperties}<br/>
                                     <b>Mapped properties: </b> {this.state.details.stats.numMappedProperties}
                                          &nbsp;({this.getPercentage(this.state.details.stats.numMappedProperties,this.state.details.stats.numProperties)} %)<br/>
-                                    <b>Property ocurrences: </b> {this.state.details.stats.numPropertyOcurrences}<br/>
-                                    <b>Mapped property ocurrences: </b> {this.state.details.stats.numMappedPropertyOcurrences}
-                                        &nbsp;({this.getPercentage(this.state.details.stats.numMappedPropertyOcurrences,this.state.details.stats.numPropertyOcurrences)} %)<br/>
-                                    <b>Not found properties: </b> {this.state.details.stats.numPropertiesNotFound}
-                                        &nbsp;({this.getPercentage(this.state.details.stats.numPropertiesNotFound,this.state.details.stats.numProperties)} %)<br/>
-                                </div> }
+                                    </div> }
                                 { (!this.state.details.stats || Object.keys(this.state.details.stats).length === 0) &&  <div>
                                     No statistics available yet.
                                 </div>

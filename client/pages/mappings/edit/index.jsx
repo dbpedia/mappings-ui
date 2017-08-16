@@ -8,7 +8,6 @@ const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
 const MappingTesterPanel = require('../../../components/mappingTesterPanel.jsx');
-const OntologySearchPanel = require('../../../components/ontologySearchPanel.jsx');
 const AddTemplatePanel = require('./addTemplatePanel.jsx');
 const Link = ReactRouter.Link;
 const propTypes = {

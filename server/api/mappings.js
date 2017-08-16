@@ -161,6 +161,7 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+    //CREATE NEW MAPPING
     server.route({
         method: 'POST',
         path: '/mappings',
@@ -180,7 +181,6 @@ internals.applyRoutes = function (server, next) {
             },
             pre: [
                 AuthPlugin.preware.ensureHasPermissions('can-create-mappings'),
-
                 {
                     assign: 'idCheck',
                     method: function (request, reply) {
@@ -205,14 +205,61 @@ internals.applyRoutes = function (server, next) {
                         });
 
                     }
+                },
+                {
+                    assign: 'getNewRML',
+                    method: function (request, reply) {
+
+                        //If no payload provided, then get it from EF
+                        if (!request.payload.rml || request.payload.rml.trim().length === 0){
+                            //Get from EF
+                            const apiRequest = {
+                                parameters: {
+                                    template: request.payload.template,
+                                    language: request.payload.lang
+                                }
+                            };
+
+                            Request.post({
+                                url: efURL + '/server/rml/mappings/',
+                                body: apiRequest,
+                                json: true
+                            }, (err, res, payload) => {
+
+
+                                if (err){
+                                    return reply('');
+                                }
+
+
+                                if (res && res.statusCode >= 400){
+                                    return reply('');
+                                }
+
+                                if (payload && !payload.mapping && !payload.mapping.dump) {
+                                    return reply('');
+                                }
+
+                                //No error, return RML dump
+                                reply(payload.mapping.dump);
+                            });
+
+                        }
+                        else {
+                            reply(request.payload.rml);
+                        }
+
+
+                    }
                 }
             ]
         },
         handler: function (request, reply) {
 
             const template = request.payload.template;
+            const templateName = template.replace(/ /g, '-');
             const lang = request.payload.lang;
-            const rml = request.payload.rml;
+            const rml = request.pre.getNewRML;
             let comment = request.payload.comment;
             const username = request.auth.credentials.user.username;
 
@@ -220,7 +267,7 @@ internals.applyRoutes = function (server, next) {
                 comment = 'Mapping created';
             }
 
-            Mapping.create(template,lang, rml, username,comment, (err, mapping) => {
+            Mapping.create(templateName,lang, rml, username,comment, (err, mapping) => {
 
 
                 if (err) {
@@ -342,11 +389,11 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
+
     server.route({
         method: 'POST',
         path: '/mappings/rml',
         config: {
-            //Only authenticated users can create mappings
             auth: {
                 mode:'try',
                 strategy: 'session'
@@ -406,6 +453,8 @@ internals.applyRoutes = function (server, next) {
             }
 
 
+            console.log(JSON.stringify(apiRequest));
+
             Request.post({
                 url: efURL + '/server/rml/templates/' + path,
                 body: apiRequest,
@@ -417,6 +466,7 @@ internals.applyRoutes = function (server, next) {
                 if (err){
                     return reply(Boom.badRequest(err));
                 }
+
 
                 if (res.statusCode !== 200){
                     return reply(Boom.badRequest(payload.msg));
@@ -453,33 +503,36 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            /*const apiRequest = {
-                name: request.payload.mappingName,
-                language: request.payload.mappingLang,
-                dump: request.payload.mappingDump
+            const apiRequest = {
+                mapping: {
+                    name: request.payload.mappingName,
+                    language: request.payload.mappingLang,
+                    dump: request.payload.mappingDump
+                }
+
             };
 
+
+
             Request.post({
-                url: efURL + '/server/rml/templates/',
+                url: efURL + '/server/rml/templates',
                 body: apiRequest,
                 json: true
             }, (err, res, payload) => {
-                /!* do stuff *!/
-
 
                 if (err){
                     return reply(Boom.internal(err));
                 }
 
-                if (res.statusCode !== 200){
-                    return reply(Boom.badRequest(payload));
+                if (res.statusCode >= 400){
+                    return reply(Boom.badRequest(payload.msg));
                 }
 
 
                 reply(null,payload);
-            });*/
+            });
 
-            const response = {
+          /*  const response = {
                 'name':'IntermediateTemplate (Fake Data)',
                 'parameters':{
                     'class':'dbo:Writer',
@@ -518,7 +571,7 @@ internals.applyRoutes = function (server, next) {
                 '_alias':'IntermediateTemplate (dbo:project)'
             };
 
-            reply(null,response);
+            reply(null,response);*/
 
 
 

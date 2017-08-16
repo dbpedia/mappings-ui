@@ -57,9 +57,10 @@ class CreateNewForm extends React.Component {
 
         event.preventDefault();
         event.stopPropagation();
+        const templateName = this.state.template.replace(/ /g, '-');
 
         Actions.createNew({
-            template: this.state.template,
+            template: templateName,
             lang: this.state.lang,
             rml: '',
             comment: 'New mapping created'

@@ -36,6 +36,14 @@ class Actions {
         });
     }
 
+
+    static hideError() {
+
+        Store.dispatch({
+            type: Constants.HIDE_ERROR
+        });
+    }
+
     static delete(template,lang, history) {
 
         ApiActions.delete(

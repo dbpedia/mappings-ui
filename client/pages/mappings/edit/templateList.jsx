@@ -87,8 +87,9 @@ class TemplateList extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = {data: {}};
+        this.state = {data: this.generateDataFromTemplate(this.props.template,true)};
         this.onToggle = this.onToggle.bind(this);
+
     }
 
 
@@ -108,6 +109,7 @@ class TemplateList extends React.Component {
 
 
 
+
         for (var k in template.parameters) {
             if (template.parameters.hasOwnProperty(k)) {
 
@@ -120,13 +122,40 @@ class TemplateList extends React.Component {
                         }
                     );
                 }
-                //Templates
+
+                if(template.name==='ConditionalTemplate' && k === 'condition' ) {
+                    root.children.push(
+                        {
+                            name: <span><u>operator</u>: {prop.operator}</span>
+                        }
+                    );
+                    root.children.push(
+                        {
+                            name: <span><u>property</u>: {prop.parameters.property}</span>
+                        }
+                    );
+                    root.children.push(
+                        {
+                            name: <span><u>value</u>: {prop.parameters.value}</span>
+                        }
+                    );
+                }
+                //Fallback is as one more property (only in conditional template)
+                if(k === 'fallback' && typeof prop === 'object' && prop !== null){
+                    root.children.push(this.generateDataFromTemplate(
+                        prop,
+                        false,
+                        <span><b>{prop.name}</b> (Fallback)</span>)
+                    )
+                }
+
+                //If property templates inside object (only in conditional template)
                 if(k === 'templates' && prop instanceof Array && prop.length > 0 ) {
                     const temp ={
-                            name: <span><u>templates</u> ({prop.length})</span>,
-                            toggled: false,
-                            children: []
-                        };
+                        name: <span><u>templates</u> ({prop.length})</span>,
+                        toggled: false,
+                        children: []
+                    };
 
                     for(let i = 0; i < prop.length; i++){ //Add unfoldable
                         const template = prop[i];
@@ -136,23 +165,35 @@ class TemplateList extends React.Component {
                     }
                     root.children.push(temp);
                 }
-                //Fallback is as one more property
-                if(k === 'fallback' && typeof prop === 'object'){
-                    root.children.push(this.generateDataFromTemplate(
-                        prop,
-                        false,
-                        <span><b>{prop.name}</b> (Fallback)</span>)
-                    )
-                }
+
+
 
             }
         }
+
+        //Has children
+        if (template.templates && template.templates instanceof Array && template.templates.length > 0){
+            const temp ={
+                name: <span><u>templates</u> ({template.templates.length})</span>,
+                toggled: false,
+                children: []
+            };
+
+            for(let i = 0; i < template.templates.length; i++){ //Add unfoldable
+                const t = template.templates[i];
+                temp.children.push(
+                    this.generateDataFromTemplate(t,false)
+                );
+            }
+            root.children.push(temp);
+        }
+
 
 
         return root;
 
     }
-    componentWillReceiveProps(nextProps) {
+    /*componentWillReceiveProps(nextProps) {
         if (nextProps.template !== this.props.template) {
             //Here, we should process and store processed data into state.data
 
@@ -162,7 +203,7 @@ class TemplateList extends React.Component {
         }
 
 
-    }
+    }*/
 
     onToggle(node, toggled){
         if(this.state.cursor){this.state.cursor.active = false;}
@@ -171,6 +212,7 @@ class TemplateList extends React.Component {
         this.setState({ cursor: node });
     }
     render(){
+
         return (
             <div>
                 {!this.props.loading &&
@@ -178,7 +220,6 @@ class TemplateList extends React.Component {
                     data={this.state.data}
                     onToggle={this.onToggle}
                     style={theme}
-                    animations={false}
                 />}
 
                 {this.props.loading &&
