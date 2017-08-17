@@ -40,7 +40,7 @@ const config = {
             },
             ontology: {
                 $filter: 'env',
-                production: true,
+                production: false,
                 $default: false
             }
         },
