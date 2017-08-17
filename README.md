@@ -12,7 +12,7 @@ Based on Aqua Framework.
 
 ## Installation
 
-The Mappings UI can be run either using Docker or your local system. But, before running, some steps have to be followed:
+The Mappings UI can be run either using **Docker (Recommended)**  or your local system. But, before running, some steps have to be followed:
 
 First of all, clone the project and enter into its directory: 
 ```bash
@@ -42,7 +42,7 @@ $ sudo docker-compose buld
 $ sudo docker-compose up
 ```
 
-That's it. You can access the interface via `http://localhost:8000` and the MongoDB instance on your local port `27018`.
+That's it. You can access the interface via `http://localhost:8000` and the MongoDB instance on your local port `27018`. See the _Default accounts_ section below to obtain login details.
 
 ## Running using your local system
 
@@ -56,4 +56,16 @@ By default, it is run on development mode. If you want to run the system in prod
  ```bash
 $ export NODE_ENV=production
 ```
+
+That's it. You can access the interface via `http://localhost:8000`. See the _Default accounts_ section below to obtain login details.
+
+## Default accounts
+The first time that the system is executed, some default accounts are created:
+
+| user type                            | username | password |
+|:------------------------------ |:-------- |:-------- |
+| Administrator | root     | dbpedia     |
+| Regular | user     | dbpedia     |
+
+Please, change those password ASAP.
 
