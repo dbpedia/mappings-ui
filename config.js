@@ -56,7 +56,7 @@ const config = {
         production: 'https://mappings-ui.herokuapp.com',
         $default: 'http://127.0.0.1:8000'
     },
-    extractionFrameworkURL: 'http://localhost:9999',
+    extractionFrameworkURL:  process.env.EXTRACTION_FRAMEWORK_URL,
     authAttempts: {
         forIp: 50,
         forIpAndUser: 7
