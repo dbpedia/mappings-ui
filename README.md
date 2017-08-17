@@ -24,14 +24,19 @@ Then, copy the sample `.env-sample` file into `.env.` That file will be used to 
 $ cp .env-sample .env
 $ vi .env
 ```
-Edit the file with your own configuration parameters. If you need more help, please see the [`ENVIRONMENT VARIABLES`](https://github.com/dbpedia/mappings-ui/wiki/%5BINFO%5D-Environment-variables) wiki page.
+Edit the file with your own configuration parameters. Please read the [`ENVIRONMENT VARIABLES`](https://github.com/dbpedia/mappings-ui/wiki/%5BINFO%5D-Environment-variables) wiki page to obtain more details.
 
 After that, edit the `config.json` file to edit the rest of configuration parameters.
 
 ```bash
 $ vi config.json
 ```
- Edit only those whose value do not start with `process.env`. Also, take into account that if you are going to use docker, it will run in production mode, so edit always the `production` configuration values. If you need more help, please see the `CONFIG FILE` wiki page.
+ Edit only those whose value do not start with `process.env`. Also, take into account that if you are going to use docker, it will run in production mode, so edit always the `production` configuration values. Please read the [`CONFIG FILE`](https://github.com/dbpedia/mappings-ui/wiki/%5BINFO%5D-Config.js-file) wiki page to obtain more details.
+ 
+ ## Github sync configuration
+ 
+ The Mappings UI is capable of synchronizing the Mappings with a github repository (two-way) and integrate with a WebProtege instance to edit an ontology and push it to a Github repository. If you want to know more details and configure it, please read the [Pushing mappings and ontology to Github](https://github.com/dbpedia/mappings-ui/wiki/%5BINFO%5D-Pushing-mappings-and-ontology-to-Github) wiki page.
+ 
  
  ## Running using Docker (Recommended)
  
