@@ -7,6 +7,7 @@ const PropTypes = require('prop-types');
 const Debounce = require('lodash').debounce;
 const Modal = require('./modal.jsx');
 const Alert = require('./alert.jsx');
+const CopyToClipboard = require('react-copy-to-clipboard');
 
 const propTypes = {
     lang: PropTypes.string,
@@ -14,7 +15,7 @@ const propTypes = {
     rml: PropTypes.string,
     action: PropTypes.func,
     loading: PropTypes.bool,
-    dump: PropTypes.array,
+    dump: PropTypes.string,
     msg: PropTypes.string,
     showModal: PropTypes.bool,
     error: PropTypes.string
@@ -76,7 +77,6 @@ const renderSuggestion = (suggestion) => (
 );
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
-
 class MappingTesterPanel extends React.Component {
 
 
@@ -86,12 +86,16 @@ class MappingTesterPanel extends React.Component {
         this.state = {
             value: '',
             suggestions: [],
-            loading: false
+            loading: false,
+            format:'turtle-triples'
         };
 
         this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),500);
     }
 
+    formatChange(event){
+        this.setState({ format: event.target.value });
+    }
     loadSuggestions(value) {
 
 
@@ -145,6 +149,10 @@ class MappingTesterPanel extends React.Component {
         if (nextProps.showModal !== this.props.showModal) {
             this.setState({ showModal: nextProps.showModal });
         }
+
+        if (nextProps.dump !== this.props.dump){
+            this.setState({ dump: nextProps.dump });
+        }
         if (nextProps.error !== this.props.error) {
             this.setState({ error: nextProps.error });
         }
@@ -177,9 +185,10 @@ class MappingTesterPanel extends React.Component {
 
     extract(){
 
-        this.props.action(this.props.template,this.props.lang,this.props.rml,this.state.value);
+        this.props.action(this.props.template,this.props.lang,this.props.rml,this.state.value,this.state.format);
 
     }
+
 
     render() {
 
@@ -192,14 +201,14 @@ class MappingTesterPanel extends React.Component {
         };
 
 
-        const tableBody = [];
+        /*const tableBody = [];
         if (this.props.dump) {
             this.props.dump.forEach((triple,i) => {
                 tableBody.push(
                     <tr key={i}><td>{triple[0]}</td><td>{triple[1]}</td><td>{triple[2]}</td></tr>
                 );
             });
-        }
+        }*/
 
         return (
 
@@ -214,6 +223,7 @@ class MappingTesterPanel extends React.Component {
                                 key="danger"
                                 type="danger"
                                 onClose={() => {
+
                                     this.setState({ error:undefined });
                                 }}
                                 message={this.state.error}
@@ -221,23 +231,29 @@ class MappingTesterPanel extends React.Component {
                     }
                     <div className="testModalWrapper">
                         <Modal
+                            style={{ display: (this.state.showModal ? '' :  'none') }}
                             onClose={() => {
                                 this.setState({ showModal:false });
                             }}
-                            header="Extraction result"
+                            header={<div><span>Extraction result</span><CopyToClipboard text={this.state.dump}>
+                                <span><a href="#">&nbsp;(Copy text)</a></span>
+                            </CopyToClipboard></div>}
                             show={this.state.showModal}>
-                            <table className="table">
-                                <thead>
-                                <tr>
-                                    <th>Subject</th>
-                                    <th>Predicate</th>
-                                    <th>Object</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {tableBody}
-                                </tbody>
-                            </table>
+
+                            <div className="row">
+                                <div className="col-sm-12">
+
+                                </div>
+                            </div>
+                            <div className="row">
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <textarea value={this.state.dump} style={{ width: '100%',resize:'none' }}></textarea>
+                                </div>
+                            </div>
+
+
 
                         </Modal>
                     </div>
@@ -254,6 +270,18 @@ class MappingTesterPanel extends React.Component {
                                 shouldRenderSuggestions={this.shouldRender.bind(this)}
                                 highlightFirstSuggestion={true}
                             />
+                        </div>
+                        <div className="col-sm-12">
+                            <select className="form-control"
+                                    style={{ marginTop:'0px',marginBottom:'5px' }}
+                                    value={this.state.format}
+                                    onChange={this.formatChange.bind(this)}>
+                                <option value="turtle-triples">Turtle Triples</option>
+                                <option value="turtle-quads">Turtle Quads</option>
+                                <option value="n-triples">N-Triples</option>
+                                <option value="n-quads">N-Quads</option>
+                                <option value="rdf-json">RDF-JSON</option>
+                            </select>
                         </div>
                     </div>
                     <div className="row">

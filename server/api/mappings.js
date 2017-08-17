@@ -5,7 +5,6 @@ const Boom = require('boom');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const Request = require('request');
-const ParseString = require('xml2js').parseString;
 const internals = {};
 const cleanObject = function (obj){
 
@@ -592,7 +591,8 @@ internals.applyRoutes = function (server, next) {
                     mappingName: Joi.string().required(),
                     mappingLang: Joi.string().required(),
                     mappingDump: Joi.string().required().allow(''),
-                    wikititle: Joi.string().required()
+                    wikititle: Joi.string().required(),
+                    format: Joi.string().required()
                 }
             }
         },
@@ -607,17 +607,13 @@ internals.applyRoutes = function (server, next) {
                 },
                 parameters: {
                     wikititle: request.payload.wikititle,
-                    format: 'TURTLE'
+                    format: request.payload.format
                 }
             };
 
+           /* reply(null,{ dump:request.payload.format,msg:'hi2' });*/
 
-          /*  const res = {
-                'dump': [['fakeData','fakeData','fakeData']],
-                'msg': 'Extraction successfull'
-            };
-
-            reply(null,res);*/
+            console.log(apiRequest);
             Request.post({
                 url: efURL + '/server/rml/extract',
                 body: apiRequest,
@@ -633,11 +629,12 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.badRequest(payload));
                 }
 
+                reply(null,{ dump:payload.dump,msg:payload.msg });
                 //We parse the XML
-                const xml = payload.dump;
-                const result = [];
+                /*const xml = payload.dump;
+                const result = [];*/
 
-                console.log(xml);
+               /* console.log(xml);
                 ParseString(xml, (err,res2) => {
 
                     if (err){
@@ -656,7 +653,7 @@ internals.applyRoutes = function (server, next) {
                     }
 
                     reply(null,[]);
-                });
+                });*/
 
 
             });

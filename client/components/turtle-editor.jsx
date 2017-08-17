@@ -14,7 +14,8 @@ const propTypes = {
     onLoad: PropTypes.func,
     isScriptLoaded: PropTypes.bool,
     isScriptLoadSucceed: PropTypes.bool,
-    readOnly:  PropTypes.bool
+    readOnly:  PropTypes.bool,
+    id: PropTypes.string
 };
 
 
@@ -38,9 +39,13 @@ class Editor extends React.Component {
     }
 
 
-    initEditor(){
+    setText(text){
+        console.log(text);
+    }
 
-        const editor = ace.edit('editor');
+    initEditor(){
+        console.log('nuevo');
+        const editor = ace.edit(this.props.id);
         const TurtleMode = ace.require('ace/mode/turtle').Mode;
         editor.session.setMode(new TurtleMode());
         const options = {
@@ -84,7 +89,7 @@ class Editor extends React.Component {
             <div>
 
 
-                    <div id="editor" style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content }</div>
+                    <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content }</div>
                     <i style={{ visibility: !this.state.initialized ? 'visible' : 'hidden' }}>Loading editor...</i>
 
 

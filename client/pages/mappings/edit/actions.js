@@ -115,13 +115,14 @@ class Actions {
     }
 
     //Used to update the template object used to show the template overview
-    static extractTriples(template,lang,dump,wikititle){
+    static extractTriples(template,lang,dump,wikititle,format){
 
         const data = {
             mappingName: template,
             mappingLang: lang,
             mappingDump: dump,
-            wikititle
+            wikititle,
+            format
         };
 
         ApiActions.post(
