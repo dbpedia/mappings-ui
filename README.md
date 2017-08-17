@@ -24,7 +24,7 @@ Then, copy the sample `.env-sample` file into `.env.` That file will be used to 
 $ cp .env-sample .env
 $ vi .env
 ```
-Edit the file with your own configuration parameters. If you need more help, please see the `ENVIRONMENT VARIABLES` wiki page.
+Edit the file with your own configuration parameters. If you need more help, please see the [`ENVIRONMENT VARIABLES`](https://github.com/dbpedia/mappings-ui/wiki/%5BINFO%5D-Environment-variables) wiki page.
 
 After that, edit the `config.json` file to edit the rest of configuration parameters.
 
