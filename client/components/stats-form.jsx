@@ -33,9 +33,7 @@ class StatsForm extends React.Component {
                     <span className="group-list"><b>Last log-in:</b> {Moment(this.props.timeLastLogin).format('DD/MM/YYYY, HH:mm:ss') }</span>
                 </ControlGroup>
 
-                <ControlGroup hideLabel={true} hideHelp={true}>
-                    <span className="group-list"><b>Edited templates:</b> 125</span>
-                </ControlGroup>
+
 
 
 

@@ -40,7 +40,7 @@ const config = {
             },
             ontology: {
                 $filter: 'env',
-                production: false,
+                production: true,
                 $default: false
             }
         },
@@ -79,7 +79,7 @@ const config = {
                 $filter: 'env',
                 production: process.env.MONGODB_URI,
                 test: 'mongodb://localhost:27017/aqua-test',
-                $default: 'mongodb://localhost:27017/aqua'
+                $default: process.env.MONGODB_URI_DEV
             }
         },
         autoIndex: true
@@ -88,12 +88,12 @@ const config = {
     github: {
         username: process.env.GITHUB_USERNAME,
         password: process.env.GITHUB_PASSWORD,
-        name: 'OntologyPusher',
-        email: 'i.smaro.394@gmail.com',
+        name: process.env.GITHUB_NAME,
+        email: process.env.GITHUB_EMAIL,
         repositoryURL: {
             $filter: 'env',
-            production: 'https://github.com/dbpedia/mappings-tracker',
-            $default: 'https://github.com/ontologypusher/mappings'
+            production: process.env.GITHUB_REPOSITORY,
+            $default: process.env.GITHUB_REPOSITORY_DEV
         },
         repositoryFolder: {
             $filter: 'env',
@@ -127,18 +127,18 @@ const config = {
         port: 465,
         secure: true,
         auth: {
-            user: 'jedireza@gmail.com',
+            user: process.env.SMTP_ADDRESS,
             pass: process.env.SMTP_PASSWORD
         }
     },
     system: {
         fromAddress: {
-            name: 'Aqua',
-            address: 'jedireza@gmail.com'
+            name: process.env.SMTP_NAME,
+            address: process.env.SMTP_ADDRESS
         },
         toAddress: {
-            name: 'Aqua',
-            address: 'jedireza@gmail.com'
+            name: process.env.SMTP_NAME,
+            address: process.env.SMTP_ADDRESS
         }
     }
 };

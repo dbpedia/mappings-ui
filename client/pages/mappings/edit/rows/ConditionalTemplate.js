@@ -244,7 +244,11 @@ class RowConditionalTemplate extends React.Component {
         for (let i = 0; i < required.length; ++i){
 
             const fieldName = required[i];
-            if(this.state.content.parameters.condition.operator === 'IsSet' && fieldName === 'value'){
+            if (this.state.content.parameters.condition.operator === 'IsSet' && fieldName === 'value'){
+                continue;
+            }
+
+            if (this.state.content.parameters.condition.operator === 'Otherwise' && (fieldName === 'value' || fieldName === 'property')){
                 continue;
             }
             let field = this.state.content.parameters[fieldName];
@@ -452,29 +456,36 @@ class RowConditionalTemplate extends React.Component {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="property">Property{required.indexOf('property') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.property ? 'error' : '')}
-                                                   id="property"
-                                                   placeholder='e.g. name'
-                                                   value={this.state.content.parameters.condition.parameters.property}
-                                                   onChange={this.handleConditionParametersChange.bind(this,'property')}/>
+                                    {this.state.content.parameters.condition.operator !== 'Otherwise' &&
+                                        <div className="form-group">
+                                            <label className="control-label col-sm-2" htmlFor="property">Property{required.indexOf('property') > -1 ? '*' : ''}</label>
+                                            <div className="col-sm-10">
+                                                <input type="text"
+                                                       className={'form-control ' + (this.state.errors.property ? 'error' : '')}
+                                                       id="property"
+                                                       placeholder='e.g. name'
+                                                       disabled={this.state.content.parameters.condition.operator === 'Otherwise'}
+
+                                                       value={this.state.content.parameters.condition.parameters.property}
+                                                       onChange={this.handleConditionParametersChange.bind(this,'property')}/>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="value">Value{required.indexOf('value') > -1 ? '*' : ''}</label>
-                                        <div className="col-sm-10">
-                                            <input type="text"
-                                                   className={'form-control ' + (this.state.errors.value ? 'error' : '')}
-                                                   id="value"
-                                                   disabled={this.state.content.parameters.condition.operator === 'IsSet'}
-                                                   placeholder='e.g. Jon Smith'
-                                                   value={this.state.content.parameters.condition.parameters.value}
-                                                   onChange={this.handleConditionParametersChange.bind(this,'value')}/>
+                                    }
+
+                                    {this.state.content.parameters.condition.operator !== 'IsSet' && this.state.content.parameters.condition.operator !== 'Otherwise' &&
+                                        <div className="form-group">
+                                            <label className="control-label col-sm-2" htmlFor="value">Value{required.indexOf('value') > -1 ? '*' : ''}</label>
+                                            <div className="col-sm-10">
+                                                <input type="text"
+                                                       className={'form-control ' + (this.state.errors.value ? 'error' : '')}
+                                                       id="value"
+                                                       placeholder='e.g. Jon Smith'
+                                                       value={this.state.content.parameters.condition.parameters.value}
+                                                       onChange={this.handleConditionParametersChange.bind(this,'value')}/>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
+
 
                                 </form>
                             </div>
