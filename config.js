@@ -71,7 +71,7 @@ const config = {
     },
     mappings:{
         charLimit: 1000000,
-        statsUpdateFrequencyMinutes: 1
+        statsUpdateFrequencyMinutes: 10
     },
     hapiMongoModels: {
         mongodb: {

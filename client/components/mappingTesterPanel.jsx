@@ -249,12 +249,9 @@ class MappingTesterPanel extends React.Component {
                             </div>
                             <div className="row">
                                 <div className="col-sm-12">
-                                    <textarea value={this.state.dump} style={{ width: '100%',resize:'none' }}></textarea>
+                                    <textarea rows="20" value={this.state.dump} style={{ width: '100%', height:'90%',resize:'none' }}></textarea>
                                 </div>
                             </div>
-
-
-
                         </Modal>
                     </div>
                     <div className="row">

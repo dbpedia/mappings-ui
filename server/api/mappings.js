@@ -6,6 +6,7 @@ const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const Request = require('request');
 const internals = {};
+const EFInteraction = require('../efInteraction/calls.js');
 const cleanObject = function (obj){
 
     if (obj._alias){
@@ -25,11 +26,12 @@ const cleanObject = function (obj){
         }
     }
 };
+const efURL = Config.get('/extractionFrameworkURL');
+
 internals.applyRoutes = function (server, next) {
 
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
     const charLimit = Config.get('/mappings/charLimit');
-    const efURL = Config.get('/extractionFrameworkURL');
 
     server.route({
         method: 'GET',
@@ -295,7 +297,27 @@ internals.applyRoutes = function (server, next) {
                     comment: Joi.string().required().allow('')
                 }
             },
-            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings')]
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings'),
+                {
+                    assign: 'checkSyntax',
+                    method: function (request,reply) {
+
+                        EFInteraction.validateSyntax(request.params.template,request.params.lang,request.payload.rml)
+                            .then((res) => {
+
+                                if (!res.valid) {
+                                    reply(Boom.badRequest(res.msg));
+                                }
+                                else {
+                                    reply(null,res);
+                                }
+                            })
+                            .catch((err) => {
+
+                                reply(Boom.badRequest(err));
+                            });
+                    }
+                }]
         },
         handler: function (request, reply) {
 
@@ -340,7 +362,7 @@ internals.applyRoutes = function (server, next) {
                             return reply(Boom.internal('Error while updating mapping'));
                         }
 
-                        return reply(updatedRes);
+                        return reply(request.pre.checkSyntax);
 
                     });
 
@@ -613,7 +635,6 @@ internals.applyRoutes = function (server, next) {
 
            /* reply(null,{ dump:request.payload.format,msg:'hi2' });*/
 
-            console.log(apiRequest);
             Request.post({
                 url: efURL + '/server/rml/extract',
                 body: apiRequest,
@@ -630,30 +651,6 @@ internals.applyRoutes = function (server, next) {
                 }
 
                 reply(null,{ dump:payload.dump,msg:payload.msg });
-                //We parse the XML
-                /*const xml = payload.dump;
-                const result = [];*/
-
-               /* console.log(xml);
-                ParseString(xml, (err,res2) => {
-
-                    if (err){
-                        return reply(err);
-                    }
-                    if ( res2 && res2.TriX && res2.TriX.graph && res2.TriX.graph.length > 0) {
-
-                        for (let i = 0; i < res2.TriX.graph.length; ++i){
-                            const elem = res2.TriX.graph[i];
-                            for (let j = 0; j < elem.triple.length; ++j){
-                                result.push(elem.triple[j].uri);
-                            }
-
-                        }
-                        return reply(null,{ dump: result, msg: payload.msg });
-                    }
-
-                    reply(null,[]);
-                });*/
 
 
             });

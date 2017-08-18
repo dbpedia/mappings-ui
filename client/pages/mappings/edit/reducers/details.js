@@ -56,7 +56,9 @@ const reducer = function (state = initialState, action) {
             loading: true,
             title: action.request.data.title,
             rml: action.request.data.rml,
-            error: false
+            error: false,
+            msg: undefined,
+            showSaveSuccess: false
         });
     }
 
@@ -73,6 +75,11 @@ const reducer = function (state = initialState, action) {
         if (action.response.hasOwnProperty('rml')) {
             stateUpdates.rml = action.response.rml;
         }
+
+        if (action.response.hasOwnProperty('msg')) {
+            stateUpdates.msg = action.response.msg;
+        }
+
         if (action.response.hasOwnProperty('edition')) {
             stateUpdates.edition = {
                 username: action.response.edition.username,

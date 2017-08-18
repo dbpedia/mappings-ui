@@ -36,7 +36,6 @@ lab.before((done) => {
     const proxy = {};
     proxy[Path.join(process.cwd(), './server/models/mapping')] = stub.Mapping;
     proxy[Path.join(process.cwd(), './server/models/mapping-history')] = stub.MappingHistory;
-
     const ModelsPlugin = {
         register: Proxyquire('hapi-mongo-models', proxy),
         options: Manifest.get('/registrations').filter((reg) => {
@@ -51,6 +50,8 @@ lab.before((done) => {
             return false;
         })[0].plugin.options
     };
+
+
 
     const plugins = [HapiAuth, ModelsPlugin, AuthPlugin, MappingsPlugin];
     server = new Hapi.Server();

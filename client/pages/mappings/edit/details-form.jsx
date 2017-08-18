@@ -139,7 +139,7 @@ class DetailsForm extends React.Component {
                 key="success"
                 type="success"
                 onClose={Actions.hideDetailsSaveSuccess}
-                message="Success. Changes have been saved."
+                message={'Mapping saved successfully ' + (this.props.msg ? '(' + this.props.msg + ')' : '')}
             />);
         }
 
