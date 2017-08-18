@@ -5,11 +5,10 @@
 'use strict';
 const Moment = require('moment');
 const Languages = require('../languages');
-const Request = require('request');
 const MongoClient = require('mongodb').MongoClient;
+const EFInteraction = require('../../server/efInteraction/calls.js');
 
 const Config = require('../../config');
-const efURL = Config.get('/extractionFrameworkURL');
 const URI = Config.get('/hapiMongoModels/mongodb/uri');
 let database;
 /**
@@ -32,31 +31,7 @@ const connectToDB = function (){
 
 };
 
-const retrieveUpdate = function (lang) {
 
-    return new Promise((resolve, reject) => {
-
-        Request.get({
-            url: efURL + '/server/rml/' + lang + '/statistics/',
-            json: true
-        }, (err, res, payload) => {
-
-
-            if (err) {
-                return reject(err);
-            }
-
-            if (res && res.statusCode >= 400){
-                return reject('No stats available for language ' + lang);
-            }
-
-            resolve(payload);
-
-        });
-    });
-
-
-};
 
 const updateStats = function (lang,content){
 
@@ -112,7 +87,7 @@ const doAction = function () {
     Languages.forEach((lang) => {
 
         const p =
-            retrieveUpdate(lang.tag)        //1.- Retrieve updated stats data from EF
+            EFInteraction.getStatistics(lang.tag)        //1.- Retrieve updated stats data from EF
                 .then((res) => {
 
                     return updateStats(lang.tag,res.statistics);

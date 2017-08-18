@@ -1,8 +1,8 @@
 'use strict';
 const Joi = require('joi');
-const Request = require('request');
 const Boom = require('boom');
 const Config = require('../../config');
+const EFInteraction = require('../efInteraction/calls.js');
 
 const internals = {};
 
@@ -17,7 +17,6 @@ internals.applyRoutes = function (server, next) {
     const OntologyClass = server.plugins['hapi-mongo-models'].OntologyClass;
     const OntologyDatatype = server.plugins['hapi-mongo-models'].OntologyDatatype;
 
-    const efURL = Config.get('/extractionFrameworkURL');
     const UPDATE_TIME = Config.get('/github/updateFrequencyMinutes') * 1.25; //Margin time
 
     const pages = [
@@ -81,13 +80,14 @@ internals.applyRoutes = function (server, next) {
 
                     if (updatingOntology) {
                         //Go to response directly, only one updating at same time
-                        reply(true);
+                        return reply(true);
                     }
 
 
                     //Not time defined or update time has passed, we have to update cache
                     if (!ontologyUpdateTime || (new Date() - ontologyUpdateTime > UPDATE_TIME * 60 * 1000)) {
                         updatingOntology = true;
+
 
                         //First, delete all previous search results
                         OntologyDatatype.deleteMany({}, (err,res) => {
@@ -97,57 +97,43 @@ internals.applyRoutes = function (server, next) {
                                 return reply(Boom.internal(err));
                             }
 
-                            //Now, go to server
-                            Request.get({
-                                url: efURL + '/server/rml/ontology/datatypes',
-                                json: true
-                            }, (err, res2, payload) => {
+                            EFInteraction.getDatatypes()
+                                .then((datatypes) => {
+                                    //Now,we insert into DB
+                                    const promises = [];
+                                    datatypes.forEach((dt) => {
 
+                                        promises.push(
+                                            new Promise((resolve, reject) => {
 
-                                if (err){
-                                    return reply(Boom.internal(err));
-                                }
+                                                OntologyDatatype.create(dt,(err2,res3) => {
 
-                                if (res2.statusCode >= 400){
-                                    return reply(Boom.badRequest(payload));
-                                }
+                                                    if (err2) {
+                                                        return reject(err2);
+                                                    }
+                                                    resolve();
+                                                });
 
-                                const datatypes = payload.datatypes;
-
-                                //Now,we insert into DB
-                                const promises = [];
-                                datatypes.forEach((dt) => {
-
-                                    promises.push(
-                                        new Promise((resolve, reject) => {
-
-                                            OntologyDatatype.create(dt,(err2,res3) => {
-
-                                                if (err2) {
-                                                    return reject(err2);
-                                                }
-                                                resolve();
-                                            });
-
-                                        })
-                                    );
-                                });
-
-                                Promise.all(promises)
-                                    .then(() => {
-                                        //Update internal status
-                                        ontologyUpdateTime = new Date();
-                                        updatingOntology = false;
-                                        reply(true);
+                                            })
+                                        );
                                     });
+                                    return Promise.all(promises);
+                                })
+                                .then(() => {
 
+                                    ontologyUpdateTime = new Date();
+                                    updatingOntology = false;
+                                    return reply(true);
+                                })
+                                .catch((err) => {
 
-                            });
+                                    return reply(Boom.badRequest(err));
+                                });
                         });
                     }
 
                     else {
-                        reply(true); //Do not have to update
+                        return reply(true); //Do not have to update
                     }
                 }
             }]
@@ -209,6 +195,7 @@ internals.applyRoutes = function (server, next) {
                     if (!ontologyUpdateTime || (new Date() - ontologyUpdateTime > UPDATE_TIME * 60 * 1000)) {
                         updatingOntology = true;
 
+
                         //First, delete all previous search results
                         OntologyClass.deleteMany({}, (err,res) => {
 
@@ -217,52 +204,38 @@ internals.applyRoutes = function (server, next) {
                                 return reply(Boom.internal(err));
                             }
 
-                            //Now, go to server
-                            Request.get({
-                                url: efURL + '/server/rml/ontology/classes',
-                                json: true
-                            }, (err, res2, payload) => {
+                            EFInteraction.getClasses()
+                                .then((classes) => {
+                                    //Now,we insert into DB
+                                    const promises = [];
+                                    classes.forEach((dt) => {
 
+                                        promises.push(
+                                            new Promise((resolve, reject) => {
 
-                                if (err){
-                                    return reply(Boom.internal(err));
-                                }
+                                                OntologyClass.create(dt,(err2,res3) => {
 
-                                if (res2.statusCode >= 400){
-                                    return reply(Boom.badRequest(payload));
-                                }
+                                                    if (err2) {
+                                                        return reject(err2);
+                                                    }
+                                                    resolve();
+                                                });
 
-                                const classes = payload.classes;
-
-                                //Now,we insert into DB
-                                const promises = [];
-                                classes.forEach((cl) => {
-
-                                    promises.push(
-                                        new Promise((resolve, reject) => {
-
-                                            OntologyClass.create(cl,(err2,res3) => {
-
-                                                if (err2) {
-                                                    return reject(err2);
-                                                }
-                                                resolve();
-                                            });
-
-                                        })
-                                    );
-                                });
-
-                                Promise.all(promises)
-                                    .then(() => {
-                                        //Update internal status
-                                        ontologyUpdateTime = new Date();
-                                        updatingOntology = false;
-                                        reply(true);
+                                            })
+                                        );
                                     });
+                                    return Promise.all(promises);
+                                })
+                                .then(() => {
 
+                                    ontologyUpdateTime = new Date();
+                                    updatingOntology = false;
+                                    return reply(true);
+                                })
+                                .catch((err) => {
 
-                            });
+                                    return reply(Boom.badRequest(err));
+                                });
                         });
                     }
 
@@ -328,6 +301,7 @@ internals.applyRoutes = function (server, next) {
                     if (!ontologyUpdateTime || (new Date() - ontologyUpdateTime > UPDATE_TIME * 60 * 1000)) {
                         updatingOntology = true;
 
+
                         //First, delete all previous search results
                         OntologyProperty.deleteMany({}, (err,res) => {
 
@@ -336,52 +310,38 @@ internals.applyRoutes = function (server, next) {
                                 return reply(Boom.internal(err));
                             }
 
-                            //Now, go to server
-                            Request.get({
-                                url: efURL + '/server/rml/ontology/properties',
-                                json: true
-                            }, (err, res2, payload) => {
+                            EFInteraction.getProperties()
+                                .then((properties) => {
+                                    //Now,we insert into DB
+                                    const promises = [];
+                                    properties.forEach((dt) => {
 
+                                        promises.push(
+                                            new Promise((resolve, reject) => {
 
-                                if (err){
-                                    return reply(Boom.internal(err));
-                                }
+                                                OntologyProperty.create(dt,(err2,res3) => {
 
-                                if (res2.statusCode >= 400){
-                                    return reply(Boom.badRequest(payload));
-                                }
+                                                    if (err2) {
+                                                        return reject(err2);
+                                                    }
+                                                    resolve();
+                                                });
 
-                                const props = payload.properties;
-
-                                //Now,we insert into DB
-                                const promises = [];
-                                props.forEach((property) => {
-
-                                    promises.push(
-                                        new Promise((resolve, reject) => {
-
-                                            OntologyProperty.create(property,(err2,res3) => {
-
-                                                if (err2) {
-                                                    return reject(err2);
-                                                }
-                                                resolve();
-                                            });
-
-                                        })
-                                    );
-                                });
-
-                                Promise.all(promises)
-                                    .then(() => {
-                                        //Update internal status
-                                        ontologyUpdateTime = new Date();
-                                        updatingOntology = false;
-                                        reply(true);
+                                            })
+                                        );
                                     });
+                                    return Promise.all(promises);
+                                })
+                                .then(() => {
 
+                                    ontologyUpdateTime = new Date();
+                                    updatingOntology = false;
+                                    return reply(true);
+                                })
+                                .catch((err) => {
 
-                            });
+                                    return reply(Boom.badRequest(err));
+                                });
                         });
                     }
 

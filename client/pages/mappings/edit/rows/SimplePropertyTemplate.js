@@ -274,7 +274,7 @@ class RowSimplePropertyTemplate extends React.Component {
                                                     <DatatypeSearchInput
                                                            className={'form-control ' + (this.state.errors.unit ? 'error' : '')}
                                                            id="unit"
-                                                           placeholder='e.g: milesPerHour'
+                                                           placeholder='e.g: milePerHour'
                                                            value={this.state.content.parameters.unit}
                                                            onChange={this.handleChange.bind(this,'unit')}/>
                                                 </div>

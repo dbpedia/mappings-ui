@@ -4,7 +4,6 @@ const EscapeRegExp = require('escape-string-regexp');
 const Boom = require('boom');
 const Config = require('../../config');
 const AuthPlugin = require('../auth');
-const Request = require('request');
 const internals = {};
 const EFInteraction = require('../efInteraction/calls.js');
 const cleanObject = function (obj){
@@ -26,7 +25,6 @@ const cleanObject = function (obj){
         }
     }
 };
-const efURL = Config.get('/extractionFrameworkURL');
 
 internals.applyRoutes = function (server, next) {
 
@@ -213,38 +211,16 @@ internals.applyRoutes = function (server, next) {
 
                         //If no payload provided, then get it from EF
                         if (!request.payload.rml || request.payload.rml.trim().length === 0){
-                            //Get from EF
-                            const apiRequest = {
-                                parameters: {
-                                    template: request.payload.template,
-                                    language: request.payload.lang
-                                }
-                            };
 
-                            Request.post({
-                                url: efURL + '/server/rml/mappings/',
-                                body: apiRequest,
-                                json: true
-                            }, (err, res, payload) => {
+                            EFInteraction.getNewRML(request.payload.template,request.payload.lang)
+                                .then((res) => {
 
+                                    return reply(null,res);
+                                })
+                                .catch((err) => {
 
-                                if (err){
-                                    return reply('');
-                                }
-
-
-                                if (res && res.statusCode >= 400){
-                                    return reply('');
-                                }
-
-                                if (payload && !payload.mapping && !payload.mapping.dump) {
-                                    return reply('');
-                                }
-
-                                //No error, return RML dump
-                                reply(payload.mapping.dump);
-                            });
-
+                                    return reply(Boom.badRequest(err));
+                                });
                         }
                         else {
                             reply(request.payload.rml);
@@ -432,74 +408,24 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+
+            const name = request.payload.mappingName;
+            const lang = request.payload.mappingLang;
+            const dump = request.payload.mappingDump;
             const content = request.payload.templateContent;
+            const type = request.payload.templateType;
 
             cleanObject(content); //Deletes _alias and changes empty strings to null
 
-            const apiRequest = {
-                template: content,
-                mapping: {
-                    name: request.payload.mappingName,
-                    language: request.payload.mappingLang,
-                    dump: request.payload.mappingDump
-                }
-            };
+            EFInteraction.RMLFromTemplate(name,lang,dump,content,type)
+                .then((res) => {
 
+                    return reply(null,res);
+                })
+                .catch((err) => {
 
-            let path = '';
-            switch (request.payload.templateType) {
-                case 'SimplePropertyTemplate':
-                    path = 'simpleproperty';
-                    break;
-                case 'StartDateTemplate':
-                    path = 'startdate';
-                    break;
-                case 'EndDateTemplate':
-                    path = 'enddate';
-                    break;
-                case 'ConstantTemplate':
-                    path = 'constant';
-                    break;
-                case 'GeocoordinateTemplate':
-                    path = 'geocoordinate';
-                    break;
-                case 'IntermediateTemplate':
-                    path = 'intermediate';
-                    break;
-                case 'ConditionalTemplate':
-                    path = 'conditional';
-                    break;
-                default:
-                    break;
-            }
-
-
-            console.log(JSON.stringify(apiRequest));
-
-            Request.post({
-                url: efURL + '/server/rml/templates/' + path,
-                body: apiRequest,
-                json: true
-            }, (err, res, payload) => {
-                /* do stuff */
-
-
-                if (err){
                     return reply(Boom.badRequest(err));
-                }
-
-
-                if (res.statusCode !== 200){
-                    return reply(Boom.badRequest(payload.msg));
-                }
-
-
-                reply(null,payload);
-            });
-
-
-
-
+                });
 
         }
     });
@@ -524,77 +450,19 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
-            const apiRequest = {
-                mapping: {
-                    name: request.payload.mappingName,
-                    language: request.payload.mappingLang,
-                    dump: request.payload.mappingDump
-                }
+            const name = request.payload.mappingName;
+            const lang = request.payload.mappingLang;
+            const dump = request.payload.mappingDump;
 
-            };
+            EFInteraction.templatesFromRML(name,lang,dump)
+                .then((res) => {
 
+                    return reply(null,res);
+                })
+                .catch((err) => {
 
-
-            Request.post({
-                url: efURL + '/server/rml/templates',
-                body: apiRequest,
-                json: true
-            }, (err, res, payload) => {
-
-                if (err){
-                    return reply(Boom.internal(err));
-                }
-
-                if (res.statusCode >= 400){
-                    return reply(Boom.badRequest(payload.msg));
-                }
-
-
-                reply(null,payload);
-            });
-
-          /*  const response = {
-                'name':'IntermediateTemplate (Fake Data)',
-                'parameters':{
-                    'class':'dbo:Writer',
-                    'property':'dbo:project',
-                    'templates':[
-                        {
-                            'name':'SimplePropertyTemplate',
-                            'parameters':{
-                                'ontologyProperty':'dbo:population',
-                                'property':'population',
-                                'select':'first',
-                                'prefix':'',
-                                'suffix':'',
-                                'transform':'',
-                                'unit':'',
-                                'factor':''
-                            },
-                            '_alias':'SimplePropertyTemplate (population)'
-                        },
-                        {
-                            'name':'SimplePropertyTemplate',
-                            'parameters':{
-                                'ontologyProperty':'dbo:musicBand',
-                                'property':'music_band',
-                                'select':'',
-                                'prefix':'',
-                                'suffix':'',
-                                'transform':'',
-                                'unit':'',
-                                'factor':''
-                            },
-                            '_alias':'SimplePropertyTemplate (music_band)'
-                        }
-                    ]
-                },
-                '_alias':'IntermediateTemplate (dbo:project)'
-            };
-
-            reply(null,response);*/
-
-
+                    return reply(Boom.badRequest(err));
+                });
 
         }
     });
@@ -620,45 +488,21 @@ internals.applyRoutes = function (server, next) {
         },
         handler: function (request, reply) {
 
+            const name = request.payload.mappingName;
+            const lang = request.payload.mappingLang;
+            const dump = request.payload.mappingDump;
+            const wikititle = request.payload.wikititle;
+            const format = request.payload.format;
 
-            const apiRequest = {
-                mapping: {
-                    name: 'Mapping_' + request.payload.mappingLang + ':' + request.payload.mappingName,
-                    language: request.payload.mappingLang,
-                    dump: request.payload.mappingDump
-                },
-                parameters: {
-                    wikititle: request.payload.wikititle,
-                    format: request.payload.format
-                }
-            };
+            EFInteraction.extractDump(name,lang,dump,wikititle,format)
+                .then((res) => {
 
-/*
-            reply(null,{ dump:'<uno> <dos> "name"^^<tres>',msg:'hi2' });
-*/
+                    return reply(null,res);
+                })
+                .catch((err) => {
 
-            Request.post({
-                url: efURL + '/server/rml/extract',
-                body: apiRequest,
-                json: true
-            }, (err, res, payload) => {
-
-
-                if (err){
                     return reply(Boom.badRequest(err));
-                }
-
-                if (res.statusCode >= 400){
-                    return reply(Boom.badRequest(payload));
-                }
-
-                reply(null,{ dump:payload.dump,msg:payload.msg });
-
-
-            });
-
-
-
+                });
         }
     });
 
