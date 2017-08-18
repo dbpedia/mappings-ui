@@ -193,6 +193,7 @@ class DetailsForm extends React.Component {
                 <Editor content={this.state.editedRml}
                         ref="editor"
                         id="mainEditor"
+                        canExternallyChange={false}
                         onLoad={this.onEditorLoad.bind(this)}
                         onChange={this.onChange.bind(this)}/>
             {this.props && <span>Last edited on { Moment(this.props.edition.date).format('DD/MM/YYYY, HH:mm:ss') } by { this.props.edition.username}</span>}

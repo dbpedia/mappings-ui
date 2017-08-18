@@ -15,9 +15,10 @@ const propTypes = {
     isScriptLoaded: PropTypes.bool,
     isScriptLoadSucceed: PropTypes.bool,
     readOnly:  PropTypes.bool,
-    id: PropTypes.string
+    id: PropTypes.string,
+    canExternallyChange: PropTypes.bool,
+    showGutter: PropTypes.bool
 };
-
 
 class Editor extends React.Component {
 
@@ -35,16 +36,21 @@ class Editor extends React.Component {
 
         }
 
+        if (nextProps.content && nextProps.content !== this.props.content){
+            this.setText(nextProps.content);
+        }
+
 
     }
 
-
-    setText(text){
-        console.log(text);
+    setText(text) {
+        if (this.state.initialized && this.state.editor) {
+            this.state.editor.session.doc.setValue(text,0);
+        }
     }
+
 
     initEditor(){
-        console.log('nuevo');
         const editor = ace.edit(this.props.id);
         const TurtleMode = ace.require('ace/mode/turtle').Mode;
         editor.session.setMode(new TurtleMode());
@@ -52,6 +58,7 @@ class Editor extends React.Component {
             fontSize: 15,
             maxLines: 40,
             minLines: 20,
+            showGutter: this.props.showGutter,
             wrap:true,
             theme: 'ace/theme/github',
             enableBasicAutocompletion: true,
@@ -88,8 +95,12 @@ class Editor extends React.Component {
 
             <div>
 
-
-                    <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content }</div>
+                { !this.props.canExternallyChange &&
+                    <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content}</div>
+                }
+                { this.props.canExternallyChange &&
+                    <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{}</div>
+                }
                     <i style={{ visibility: !this.state.initialized ? 'visible' : 'hidden' }}>Loading editor...</i>
 
 

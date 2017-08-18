@@ -623,7 +623,7 @@ internals.applyRoutes = function (server, next) {
 
             const apiRequest = {
                 mapping: {
-                    name: request.payload.mappingName,
+                    name: 'Mapping_' + request.payload.mappingLang + ':' + request.payload.mappingName,
                     language: request.payload.mappingLang,
                     dump: request.payload.mappingDump
                 },
@@ -633,7 +633,9 @@ internals.applyRoutes = function (server, next) {
                 }
             };
 
-           /* reply(null,{ dump:request.payload.format,msg:'hi2' });*/
+/*
+            reply(null,{ dump:'<uno> <dos> "name"^^<tres>',msg:'hi2' });
+*/
 
             Request.post({
                 url: efURL + '/server/rml/extract',
@@ -643,7 +645,7 @@ internals.applyRoutes = function (server, next) {
 
 
                 if (err){
-                    return reply(Boom.internal(err));
+                    return reply(Boom.badRequest(err));
                 }
 
                 if (res.statusCode >= 400){

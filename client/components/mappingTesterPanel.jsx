@@ -8,6 +8,10 @@ const Debounce = require('lodash').debounce;
 const Modal = require('./modal.jsx');
 const Alert = require('./alert.jsx');
 const CopyToClipboard = require('react-copy-to-clipboard');
+const AceEditor = require('react-ace').default;
+require('brace/mode/json');
+require('brace/theme/github');
+const Editor = require('./turtle-editor.jsx');
 
 const propTypes = {
     lang: PropTypes.string,
@@ -218,6 +222,7 @@ class MappingTesterPanel extends React.Component {
                     <h3 className="panel-title text-center"><b>Mapping test</b></h3>
                 </div>
                 <div className="panel-body">
+
                     {   this.state.error &&
                             <Alert
                                 key="danger"
@@ -243,13 +248,58 @@ class MappingTesterPanel extends React.Component {
                             <div className="row">
                                 <div className="col-sm-12">
 
+                                    {this.state.format !== 'rdf-json' &&
+                                        <Editor content={this.state.dump}
+                                                ref="editor"
+                                                canExternallyChange={true}
+                                                readOnly={true}
+                                                showGutter={false}
+                                                onChange={() => {}}
+                                                id="extractionEditor"/>
+                                    }
+
+                                    { this.state.format === 'rdf-json' &&
+                                    <AceEditor
+                                        className="editor"
+                                        mode="json"
+                                        theme="github"
+                                        onChange={() => {}}
+                                        readOnly={true}
+                                        name="rdfjsonEditor"
+                                        value={this.state.dump ? (this.state.dump) : ''}
+                                        width="100%"
+                                        fontSize={15}
+                                        wrapEnabled={true}
+                                        maxLines={40}
+                                        showGutter={false}
+                                        editorProps={ { $blockScrolling: true } }
+                                    />
+
+                                    }
+
                                 </div>
                             </div>
                             <div className="row">
                             </div>
                             <div className="row">
                                 <div className="col-sm-12">
+
+
+{/*
                                     <textarea rows="20" value={this.state.dump} style={{ width: '100%', height:'90%',resize:'none' }}></textarea>
+*/}
+                                   {/* <AceEditor
+                                        mode="turtle"
+                                        theme="github"
+                                        onChange={this.onChange.bind(this)}
+                                        name="edition"
+                                        value={this.state.dump ? this.state.dump : ''}
+                                        width="100%"
+                                        fontSize={15}
+                                        wrapEnabled={true}
+                                        maxLines={40}
+                                        editorProps={ { $blockScrolling: true } }
+                                    />*/}
                                 </div>
                             </div>
                         </Modal>
