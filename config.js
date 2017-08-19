@@ -56,7 +56,7 @@ const config = {
         production: 'https://mappings-ui.herokuapp.com',
         $default: 'http://127.0.0.1:8000'
     },
-    extractionFrameworkURL:  process.env.EXTRACTION_FRAMEWORK_URL,
+    extractionFrameworkURL:  'http://localhost:9999',
     authAttempts: {
         forIp: 50,
         forIpAndUser: 7
@@ -92,8 +92,8 @@ const config = {
         email: process.env.GITHUB_EMAIL,
         repositoryURL: {
             $filter: 'env',
-            production: process.env.GITHUB_REPOSITORY,
-            $default: process.env.GITHUB_REPOSITORY_DEV
+            production: 'https://github.com/ontologypusher/mappings',
+            $default: 'https://github.com/ontologypusher/mappings'
         },
         repositoryFolder: {
             $filter: 'env',
@@ -108,14 +108,14 @@ const config = {
         mongodb:{
             uri:  {
                 $filter: 'env',
-                production: process.env.MONGODB_WEBPROTEGE_URI,
+                production: 'mongodb://localhost:27017/webprotege',
                 $default: 'mongodb://localhost:27017/webprotege'
             }
         },
         projectID: '95513977-dbb6-4a90-a29c-4d73c760e4b3',
         webProtegeURL:{
             $filter: 'env',
-            production: process.env.WEBPROTEGE_URL,
+            production: 'http://localhost:8080/webprotege-3.0.0-SNAPSHOT',
             $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
         },
         ontologyFileBaseName: 'dbpedia-ontology',   //Name of file to be saved in repository
@@ -133,11 +133,11 @@ const config = {
     },
     system: {
         fromAddress: {
-            name: process.env.SMTP_NAME,
+            name: 'DBpedia Mappings',
             address: process.env.SMTP_ADDRESS
         },
         toAddress: {
-            name: process.env.SMTP_NAME,
+            name: 'DBpedia Mappings',
             address: process.env.SMTP_ADDRESS
         }
     }
