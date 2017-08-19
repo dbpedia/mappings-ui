@@ -1,10 +1,8 @@
 'use strict';
 const Gulp = require('gulp');
 const Nodemon = require('gulp-nodemon');
-const Config = require('../config');
 
-const LOCAL_ONTOLOGY_DIRECTORY = Config.get('/webProtegeIntegration/localOntologyFolder');
-const ONTOLOGY_REPOSITORY_DIRECTORY = Config.get('/webProtegeIntegration/githubRepositoryFolder');
+
 
 Gulp.task('nodemon', () => {
 
@@ -21,9 +19,7 @@ Gulp.task('nodemon', () => {
             'client/**/*',
             'gulp/**/*',
             'public/**/*',
-            'node_modules/**/*',
-            LOCAL_ONTOLOGY_DIRECTORY + '/*',
-            ONTOLOGY_REPOSITORY_DIRECTORY + '/*'
+            'node_modules/**/*'
         ],
         nodeArgs
     })
