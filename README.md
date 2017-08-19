@@ -40,10 +40,10 @@ $ vi config.json
  
  ## Running using Docker (Recommended)
  
- To run in Docker, just make that you have `docker-compose` installed, and run:
+ To run in Docker, just make that you have `docker` and `docker-compose` installed, and run:
  
  ```bash
-$ sudo docker-compose buld
+$ sudo docker-compose build
 $ sudo docker-compose up
 ```
 
@@ -73,5 +73,5 @@ The first time that the system is executed, some default accounts are created:
 | Administrator | root     | dbpedia     |
 | Regular | user     | dbpedia     |
 
-Please, change those password ASAP.
+Please, change those passwords ASAP.
 
