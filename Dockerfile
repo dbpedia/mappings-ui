@@ -11,4 +11,4 @@ RUN npm install --global gulp
 COPY . /usr/src/app
 RUN gulp build
 EXPOSE 8000
-CMD [ "/bin/bash", "start.sh"]
+CMD [ "/bin/sh", "-c", "./docker-set-hosts.sh && ./start.sh"]
