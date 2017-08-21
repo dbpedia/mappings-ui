@@ -91,31 +91,6 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
                 reject(err);
             }
 
-            const errorRate = Math.floor((Math.random() * 100)); //0-100
-            const hasError = errorRate < 20;
-            let statusMessage = 'OK';
-            if (hasError) {
-                statusMessage = 'ERROR';
-            }
-            const mappingToInsert = {
-                _id: {
-                    template: templateName,
-                    lang
-                },
-                templateFullName: templateName,
-                rml: data,
-                version: 1,
-                status: {
-                    error: hasError,
-                    message: statusMessage
-                },
-                edition: {
-                    username: 'admin',
-                    comment: 'Imported from Github',
-                    date: new Date()
-                }
-            };
-
             MongoModels.updateOrCreate(templateName, lang, data)
                 .then( () => {
 
