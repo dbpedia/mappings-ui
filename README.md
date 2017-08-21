@@ -1,9 +1,8 @@
 # DBpedia RML Mappings UI
 
-Developed under the "DBPedia Mappings Front-end Administration" GSoC 2017 project.
+Web application (front and back-end) that provides a user-friendly interface so the DBPedia community can easily view, create and administrate DBPedia mapping rules using RML. It includes users and groups management, mapping list, a powerful RML editor, and integration with the DBPedia Extraction Framework to provide mapping stats, test extractions and many powerful features.
 
-Please go to the Wiki for more information.
-
+Developed under the ["DBPedia Mappings Front-end Administration"](https://docs.google.com/document/d/10ylUFwgj-i0BxDQ9LAbHkpanbNr9TFklgMnejSIXISg/edit?usp=sharing) GSoC 2017 project.
 
 Based on Aqua Framework.
 
