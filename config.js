@@ -36,7 +36,7 @@ const config = {
             mappings: {
                 $filter: 'env',
                 production: true,
-                $default: false
+                $default: true
             },
             ontology: {
                 $filter: 'env',
