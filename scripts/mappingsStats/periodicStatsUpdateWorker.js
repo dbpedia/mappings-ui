@@ -55,7 +55,7 @@ const updateStats = function (lang,content){
                             numOcurrences: item.count,
                             numProperties: item.propertiesCount,
                             numMappedProperties: item.mappedPropertiesCount,
-                            mappedPercentage: item.mappedRatio.toFixed(2)
+                            mappedPercentage: parseFloat(item.mappedRatio.toFixed(2))
                         }
                     }
                 };
