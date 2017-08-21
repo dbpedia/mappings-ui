@@ -88,7 +88,7 @@ class Navbar extends React.Component {
                                 <a href={'/mappings?lang=' + this.getUserLanguage()}>Mappings</a>
                             </li>
 
-                            { this.state.isAuthenticated &&
+                            { this.state.isAuthenticated && webprotegeURL && webprotegeURL.length > 0 &&
                             <li className={this.tabClass('editontology')}>
                                 <a href={URL}>Edit Ontology</a>
                             </li>

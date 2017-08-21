@@ -115,8 +115,8 @@ const config = {
         projectID: '95513977-dbb6-4a90-a29c-4d73c760e4b3',
         webProtegeURL:{
             $filter: 'env',
-            production: 'http://localhost:8080/webprotege-3.0.0-SNAPSHOT',
-            $default:'http://localhost:8080/webprotege-3.0.0-SNAPSHOT'
+            production: '',
+            $default:''
         },
         ontologyFileBaseName: 'dbpedia-ontology',   //Name of file to be saved in repository
         ontologyFormats: 'owx,owl,ttl,omx,ofn'      //Formats to extract
