@@ -56,6 +56,7 @@ To run in your own system, make sure that you have `node` (v6), `npm` and `mongo
  ```bash
 $ npm install
 $ sudo npm install -g gulp  #You need to install gulp globally also
+$ gulp build
 $ bash start.sh
 ```
 By default, it is run on development mode. If you want to run the system in production mode, set NODE_ENV variable to production:
