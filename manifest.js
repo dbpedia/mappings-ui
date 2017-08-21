@@ -40,6 +40,14 @@ const manifest = {
             plugin: 'hapi-auth-cookie'
         },
         {
+            plugin: {
+                register: 'crumb',
+                options: {
+                    restful: true
+                }
+            }
+        },
+        {
             plugin: 'vision'
         },
         {

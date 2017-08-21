@@ -53,7 +53,7 @@ const config = {
     baseUrl: {
         $filter: 'env',
         $meta: 'values should not end in "/"',
-        production: 'http://127.0.0.1:8000',
+        production: 'https://mappings-ui.herokuapp.com',
         $default: 'http://127.0.0.1:8000'
     },
     extractionFrameworkURL:  process.env.EXTRACTION_FRAMEWORK_URL,
