@@ -1,4 +1,6 @@
 # DBpedia RML Mappings UI
+[![Build Status](https://travis-ci.org/dbpedia/mappings-ui.svg?branch=master)](https://travis-ci.org/dbpedia/mappings-ui)
+[![Heroku](https://heroku-badge.herokuapp.com/?app=mappings-ui)](https://mappings-ui.herokuapp.com)
 
 Web application (front and back-end) that provides a user-friendly interface so the DBPedia community can easily view, create and administrate DBPedia mapping rules using RML. It includes users and groups management, mapping list, a powerful RML editor, and integration with the DBPedia Extraction Framework to provide mapping stats, test extractions and many powerful features.
 
@@ -6,8 +8,7 @@ Developed under the ["DBPedia Mappings Front-end Administration"](https://docs.g
 
 Based on Aqua Framework.
 
-[![Build Status](https://travis-ci.org/dbpedia/mappings-ui.svg?branch=master)](https://travis-ci.org/dbpedia/mappings-ui)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=mappings-ui)](https://mappings-ui.herokuapp.com)
+
 
 ## Installation
 
