@@ -116,28 +116,6 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
                 }
             };
 
-            //Random construction of stats
-
-            const numOcurrences = Math.floor((Math.random() * 5000) + 1); //1-5000
-            const numProperties = Math.floor((Math.random() * 300) + 1); //1-300
-            const numMappedProperties = Math.floor((Math.random() * numProperties)); //0-numProperties
-            const numPropertyOcurrences = Math.floor((Math.random() * 500) + 1); //1-500
-            const numMappedPropertyOcurrences = Math.floor((Math.random() * numProperties)); //0-numPropertyOcurrences
-            const numPropertiesNotFound = Math.floor((Math.random() * 10)); //0-10
-            const mappedPercentage = (numMappedProperties * 100 / numProperties).toFixed(2);
-            const statsToInsert = {
-                numOcurrences,
-                numProperties,
-                numMappedProperties,
-                numPropertyOcurrences,
-                numMappedPropertyOcurrences,
-                numPropertiesNotFound,
-                mappedPercentage
-
-            };
-            mappingToInsert.stats = statsToInsert;
-
-
             MongoModels.updateOrCreate(templateName, lang, data,statsToInsert)
                 .then( () => {
 
