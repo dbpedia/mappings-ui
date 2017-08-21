@@ -116,7 +116,7 @@ const insertMapping = function (lang,file,mappingsCollection, statsCollection){
                 }
             };
 
-            MongoModels.updateOrCreate(templateName, lang, data,statsToInsert)
+            MongoModels.updateOrCreate(templateName, lang, data)
                 .then( () => {
 
                     resolve();
