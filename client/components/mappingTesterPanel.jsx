@@ -91,59 +91,75 @@ class MappingTesterPanel extends React.Component {
             value: '',
             suggestions: [],
             loading: false,
-            format:'turtle-triples'
+            format:'turtle-triples',
+            cachedResults: undefined //Cache of Wikipedia call
         };
 
-        this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),500);
+        //Minimal wait, as suggestions are local
+        this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),0);
     }
 
     formatChange(event){
         this.setState({ format: event.target.value });
     }
+
+
     loadSuggestions(value) {
 
+        if (this.state.cachedResults !== undefined) { //Get results from cache
 
-        let lang = this.props.lang;
-        if (!lang){
-            lang = 'en';
+            const result = this.state.cachedResults.filter((elem) => {
+                if (elem.title.toLowerCase().indexOf(value.toLowerCase()) > -1 ) {
+                    return true;
+                }
+            });
+
+            this.setState({ suggestions:result.slice(0,5), loading: false });
         }
-        let result = [];
-        this.setState({
-            isLoading: true
-        });
-        const self = this;
-        $.ajax( {
-            url: 'https://' + lang + '.wikipedia.org/w/api.php',
-            jsonp: 'callback',
-            dataType: 'jsonp',
-            data: {
-                action: 'query',
-                list: 'search',
-                srlimit: 5,
-                srprop: 'timestamp',
-                srsearch: 'intitle:' + value.toLowerCase(),
-                format: 'json'
-            },
-            xhrFields: { withCredentials: true },
-            success: function (response) {
 
-
-                if (!response || !response.query ) {
-                    result = [];
-                }
-                else {
-
-                    result = response.query.search;
-                }
-
-
-                self.setState({
-                    isLoading: false,
-                    suggestions: result
-                });
-
+        else {      //Load to cache and then, call this method again and search
+            let lang = this.props.lang;
+            if (!lang){
+                lang = 'en';
             }
-        });
+            this.setState({
+                isLoading: true
+            });
+            const self = this;
+            $.ajax( {
+                url: 'https://' + lang + '.wikipedia.org/w/api.php',
+                jsonp: 'callback',
+                dataType: 'jsonp',
+                data: {
+                    action: 'query',
+                    list: 'embeddedin',
+                    eilimit: 500,
+                    eititle: 'Template:' + this.props.template,
+                    format: 'json'
+                },
+                xhrFields: { withCredentials: true },
+                success: function (response) {
+
+
+                    if (!response || !response.query ) {
+                        self.setState({ cachedResults : [] }, () => {
+                            self.loadSuggestions(value);
+                        });
+                    }
+                    else {
+
+                        self.setState({ cachedResults : response.query.embeddedin }, () => {
+                            self.loadSuggestions(value);
+                        });
+                    }
+
+
+
+                }
+            });
+        }
+
+
 
 
     }

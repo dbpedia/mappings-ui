@@ -494,6 +494,9 @@ internals.applyRoutes = function (server, next) {
             const wikititle = request.payload.wikititle;
             const format = request.payload.format;
 
+            //TODO: Check if that title has the required infobox.
+            //If not, return error saying so so it's displayed.
+
             EFInteraction.extractDump(name,lang,dump,wikititle,format)
                 .then((res) => {
 
