@@ -36,7 +36,7 @@ const config = {
             mappings: {
                 $filter: 'env',
                 production: true,
-                $default: true
+                $default: false
             },
             ontology: {
                 $filter: 'env',
@@ -92,7 +92,7 @@ const config = {
         email: process.env.GITHUB_EMAIL,
         repositoryURL: {
             $filter: 'env',
-            production: 'https://github.com/ontologypusher/mappings',
+            production: 'https://github.com/dbpedia/mappings-tracker',
             $default: 'https://github.com/ontologypusher/mappings'
         },
         repositoryFolder: {
