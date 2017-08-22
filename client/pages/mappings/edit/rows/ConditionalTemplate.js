@@ -12,7 +12,8 @@ const TemplateList = require('./TemplateList');
 const propTypes = {
     onClose: PropTypes.func,
     childLevel: PropTypes.number,
-    content: PropTypes.object
+    content: PropTypes.object,
+    isFallback: PropTypes.bool
 };
 
 const name = 'ConditionalTemplate';
@@ -149,10 +150,11 @@ class RowConditionalTemplate extends React.Component {
                 return React.createFactory(require('./' + this.state.childType))({
                     onClose: this.onFallbackChildClose.bind(this),
                     ref: 'child',
+                    isFallback: true,
                     childLevel: this.props.childLevel + 1,
                     content: this.state.content.parameters.fallback });
             }
-            return React.createFactory(require('./' + this.state.childType))({ onClose: this.onFallbackChildClose.bind(this), ref: 'child',childLevel: this.props.childLevel + 1 });
+            return React.createFactory(require('./' + this.state.childType))({ isFallback: true, onClose: this.onFallbackChildClose.bind(this), ref: 'child',childLevel: this.props.childLevel + 1 });
         }
 
 
@@ -361,8 +363,6 @@ class RowConditionalTemplate extends React.Component {
                 <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
 
-
-
                             <h5 className="panel-title pull-left" style={{ paddingTop: '7.5px' }}>
                                 {
                                     this.state.hasChild &&
@@ -452,7 +452,7 @@ class RowConditionalTemplate extends React.Component {
                                                     <option value="IsSet">IsSet</option>
                                                     <option value="Equals">Equals</option>
                                                     <option value="Contains">Contains</option>
-                                                    <option value="Otherwise">Otherwise</option>
+                                                    { this.props.isFallback && <option value="Otherwise">Otherwise</option> }
                                             </select>
                                         </div>
                                     </div>
