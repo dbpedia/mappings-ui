@@ -181,11 +181,16 @@ const updateOrCreate = function (template,lang,rml,statsToInsert) {
                                 resolve();
                             });
                     }
-                    return updateMapping(template,lang,rml)
-                        .then(() => {
 
-                            resolve();
-                        });
+                    if (mapping && mapping.rml !== rml) { //Only if different
+                        return updateMapping(template,lang,rml)
+                            .then(() => {
+
+                                resolve();
+                            });
+                    }
+
+                    resolve();
 
                 });
             });
