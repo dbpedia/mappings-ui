@@ -324,6 +324,10 @@ internals.applyRoutes = function (server, next) {
                     return reply(Boom.notFound('Mapping not found.'));
                 }
 
+                if (mapping.rml === rml) {
+                    return reply({ msg:'No changes detected' });
+                }
+
                 /*Then, archive the document */
                 mapping.archive(false,username, (err,res) => {
 

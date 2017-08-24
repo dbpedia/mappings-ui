@@ -93,7 +93,7 @@ class DetailsForm extends React.Component {
 
         const editElements = <div>
 
-            <Editor content={this.state.editedRml}
+            <Editor content={this.state.editedRml} id="mainEditor"
                     onChange={this.onChange.bind(this)} readOnly={true}/>
 
         </div>;
