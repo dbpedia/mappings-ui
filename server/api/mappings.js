@@ -392,10 +392,9 @@ internals.applyRoutes = function (server, next) {
         path: '/mappings/rml',
         config: {
             auth: {
-                mode:'try',
                 strategy: 'session'
             },
-            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings')],
             validate: {
                 payload: {
                     mappingName: Joi.string().required(),
@@ -436,10 +435,9 @@ internals.applyRoutes = function (server, next) {
         path: '/mappings/templates',
         config: {
             auth: {
-                mode:'try',
                 strategy: 'session'
             },
-            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
+            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings')],
             validate: {
                 payload: {
                     mappingName: Joi.string().required(),

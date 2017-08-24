@@ -66,7 +66,8 @@ internals.applyRoutes = function (server, next) {
         path: '/search/datatypes',
         config: {
             auth: {
-                strategy: 'session'
+                strategy: 'session',
+                scope: ['111111111111111111111111', '000000000000000000000000']
             },
             validate: {
                 query: {
@@ -173,7 +174,8 @@ internals.applyRoutes = function (server, next) {
         path: '/search/classes',
         config: {
             auth: {
-                strategy: 'session'
+                strategy: 'session',
+                scope: ['111111111111111111111111', '000000000000000000000000']
             },
             validate: {
                 query: {
@@ -281,7 +283,8 @@ internals.applyRoutes = function (server, next) {
         path: '/search/properties',
         config: {
             auth: {
-                strategy: 'session'
+                strategy: 'session',
+                scope: ['111111111111111111111111', '000000000000000000000000']
             },
             validate: {
                 query: {
