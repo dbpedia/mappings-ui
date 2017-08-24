@@ -211,7 +211,7 @@ class MappingTesterPanel extends React.Component {
     };
 
     shouldRender(value){
-        return value.length > 1;
+        return value.length > 0;
     }
 
     extract(){
