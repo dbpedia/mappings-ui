@@ -80,6 +80,12 @@ const renderSuggestion = (suggestion) => (
     </div>
 );
 
+const unicodeToChar = function (text) {
+    return text.replace(/\\u[\dA-F]{4}/gi,
+        (match) => {
+            return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+        });
+};
 // Teach Autosuggest how to calculate suggestions for any given input value.
 class MappingTesterPanel extends React.Component {
 
@@ -148,7 +154,12 @@ class MappingTesterPanel extends React.Component {
                     }
                     else {
 
-                        self.setState({ cachedResults : response.query.embeddedin }, () => {
+                        //Decode responses
+                        const res = response.query.embeddedin;
+                        for (let i = 0; i < res.length; ++i) {
+                            res[i].title = unicodeToChar(res[i].title);
+                        }
+                        self.setState({ cachedResults : res }, () => {
                             self.loadSuggestions(value);
                         });
                     }
