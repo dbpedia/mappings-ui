@@ -36,6 +36,7 @@ class EditPage extends React.Component {
             language: this.props.user && this.props.user.mappingsLang,
             isAuthenticated: this.props.user
         });
+        document.title = 'Editing ' + this.props.match.params.template + '/' + this.props.match.params.lang + ' | DBpedia Mappings UI';
 
 
 

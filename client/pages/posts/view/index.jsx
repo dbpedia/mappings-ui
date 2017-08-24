@@ -99,7 +99,9 @@ class ViewPage extends React.Component {
         };
 
 
-
+        if (title) {
+            document.title =  title + ' | DBpedia Mappings UI';
+        }
 
 
         return (

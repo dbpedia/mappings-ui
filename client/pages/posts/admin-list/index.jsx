@@ -43,6 +43,8 @@ class SearchPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
+        document.title = 'Post list | DBpedia Mappings UI';
+
     }
 
     componentWillUnmount() {

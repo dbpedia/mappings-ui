@@ -46,6 +46,9 @@ class EditPage extends React.Component {
             isAuthenticated: this.props.user
         });
 
+        document.title = 'History (v' + this.props.match.params.version + ') of ' + this.props.match.params.template + '/' + this.props.match.params.lang + ' | DBpedia Mappings UI';
+
+
     }
 
     getUserLanguage(){

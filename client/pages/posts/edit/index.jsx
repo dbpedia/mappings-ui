@@ -33,6 +33,7 @@ class EditPage extends React.Component {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
 
+
     }
 
     componentWillUnmount() {
@@ -119,6 +120,10 @@ class EditPage extends React.Component {
             }
 
         ];
+
+        if (title) {
+            document.title = 'Editing post "' + title + '" | DBpedia Mappings UI';
+        }
 
         return (
             <section className="container">

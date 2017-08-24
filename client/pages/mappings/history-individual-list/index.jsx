@@ -40,6 +40,9 @@ class SearchPage extends React.Component {
     componentDidMount() {
 
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
+
+        document.title = 'History of ' + this.props.match.params.template + '/' + this.props.match.params.lang + ' | DBpedia Mappings UI';
+
     }
 
     componentWillUnmount() {
