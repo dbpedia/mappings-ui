@@ -351,6 +351,34 @@ const getStatistics = function (lang){
     });
 
 };
+
+
+const getInfoboxesOfPage = function (lang,title){
+
+    return new Promise((resolve, reject) => {
+
+        Request.get({
+            url: efURL + '/server/rml/' + lang + '/wiki/' + title + '/templates',
+            json: true
+        }, (err, res, payload) => {
+
+
+            if (err) {
+                return reject(err);
+            }
+
+            if (res && res.statusCode >= 400){
+                return reject('"' + title + '" page does not have any infoboxes.');
+            }
+
+            resolve(payload.templates);
+
+        });
+    });
+
+};
+
+
 module.exports = {
     validateSyntax,
     extractDump,
@@ -360,5 +388,6 @@ module.exports = {
     getDatatypes,
     getClasses,
     getProperties,
-    getStatistics
+    getStatistics,
+    getInfoboxesOfPage
 };

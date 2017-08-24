@@ -491,11 +491,16 @@ internals.applyRoutes = function (server, next) {
             const dump = request.payload.mappingDump;
             const wikititle = request.payload.wikititle;
             const format = request.payload.format;
+            EFInteraction.getInfoboxesOfPage(lang,wikititle)
+                .then((res) => {
 
-            //TODO: Check if that title has the required infobox.
-            //If not, return error saying so so it's displayed.
+                    if (res.includes(name)){
+                        return EFInteraction.extractDump(name,lang,dump,wikititle,format);
+                    }
 
-            EFInteraction.extractDump(name,lang,dump,wikititle,format)
+                    throw 'This mapping can\'t be applied to "' + wikititle + '" page.';
+
+                })
                 .then((res) => {
 
                     return reply(null,res);
@@ -504,6 +509,9 @@ internals.applyRoutes = function (server, next) {
 
                     return reply(Boom.badRequest(err));
                 });
+
+
+
         }
     });
 
