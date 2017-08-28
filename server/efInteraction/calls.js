@@ -13,9 +13,10 @@ const efURL = Config.get('/extractionFrameworkURL');
  */
 const validateSyntax = function (template,lang,dump){
 
+    const encodedName = encodeURIComponent(template);
     const apiRequest = {
         mapping: {
-            name: template,
+            name: encodedName,
             language: lang,
             dump
         }
@@ -29,7 +30,7 @@ const validateSyntax = function (template,lang,dump){
             json: true
         }, (err, res, payload) => {
 
-
+            console.log(payload);
             if (err){
                 return resolve({ valid: true, msg: 'Validation server not available.' });
             }
@@ -57,7 +58,7 @@ const extractDump = function (template,language,dump,wikititle,format){
 
     const apiRequest = {
         mapping: {
-            name: 'Mapping_' + language + ':' + template,
+            name: 'Mapping_' + language + ':' + encodeURIComponent(template),
             language,
             dump
         },
@@ -100,9 +101,11 @@ const extractDump = function (template,language,dump,wikititle,format){
  */
 const templatesFromRML = function (name,language,dump){
 
+    const encodedName = encodeURIComponent(name);
+
     const apiRequest = {
         mapping: {
-            name,
+            name: encodedName,
             language,
             dump
         }
@@ -358,14 +361,14 @@ const getInfoboxesOfPage = function (lang,title){
     return new Promise((resolve, reject) => {
 
         Request.get({
-            url: efURL + '/server/rml/' + lang + '/wiki/' + title + '/templates',
+            url: efURL + '/server/rml/' + lang + '/wiki/' + encodeURIComponent(title) + '/templates',
             json: true
         }, (err, res, payload) => {
-
 
             if (err) {
                 return reject(err);
             }
+
 
             if (res && res.statusCode >= 400){
                 return reject('"' + title + '" page does not have any infoboxes.');

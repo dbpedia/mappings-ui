@@ -511,6 +511,7 @@ internals.applyRoutes = function (server, next) {
                 })
                 .catch((err) => {
 
+                    console.log(err);
                     return reply(Boom.badRequest(err));
                 });
 
