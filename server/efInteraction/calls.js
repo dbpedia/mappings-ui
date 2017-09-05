@@ -111,6 +111,7 @@ const templatesFromRML = function (name,language,dump){
         }
     };
 
+    console.log(JSON.stringify(apiRequest));
     return new Promise((resolve,reject) => {
 
         Request.post({

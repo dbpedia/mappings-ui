@@ -439,9 +439,10 @@ internals.applyRoutes = function (server, next) {
         path: '/mappings/templates',
         config: {
             auth: {
+                mode:'try',
                 strategy: 'session'
             },
-            pre: [AuthPlugin.preware.ensureHasPermissions('can-edit-mappings')],
+            plugins: { 'hapi-auth-cookie': { redirectTo: false } },
             validate: {
                 payload: {
                     mappingName: Joi.string().required(),
