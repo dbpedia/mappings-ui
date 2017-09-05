@@ -124,21 +124,25 @@ class TemplateList extends React.Component {
                 }
 
                 if(template.name==='ConditionalTemplate' && k === 'condition' ) {
-                    root.children.push(
-                        {
-                            name: <span><u>operator</u>: {prop.operator}</span>
-                        }
-                    );
-                    root.children.push(
-                        {
-                            name: <span><u>property</u>: {prop.parameters.property}</span>
-                        }
-                    );
-                    root.children.push(
-                        {
-                            name: <span><u>value</u>: {prop.parameters.value}</span>
-                        }
-                    );
+
+                    if (prop) {
+                        root.children.push(
+                            {
+                                name: <span><u>operator</u>: {prop.operator}</span>
+                            }
+                        );
+                        root.children.push(
+                            {
+                                name: <span><u>property</u>: {prop.parameters.property}</span>
+                            }
+                        );
+                        root.children.push(
+                            {
+                                name: <span><u>value</u>: {prop.parameters.value}</span>
+                            }
+                        );
+                    }
+
                 }
                 //Fallback is as one more property (only in conditional template)
                 if(k === 'fallback' && typeof prop === 'object' && prop !== null){

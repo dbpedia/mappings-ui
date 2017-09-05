@@ -91,6 +91,25 @@ const reducer = function (state = initialState, action) {
         });
     }
 
+    if (action.type === Constants.GET_TEMPLATE_LIST) {
+        return ObjectAssign({}, state, {
+            templateObject: {},
+            templatesLoading: true,
+            error: false
+        });
+    }
+
+    if (action.type === Constants.GET_TEMPLATE_LIST_RESPONSE) {
+        const validation = ParseValidation(action.response);
+
+        //Shows error if error when getting templates.
+        return ObjectAssign({}, state, {
+            templateObject: action.response,
+            templatesLoading: false,
+            error: validation.error
+        });
+    }
+
     return state;
 };
 

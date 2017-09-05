@@ -463,7 +463,12 @@ internals.applyRoutes = function (server, next) {
                 })
                 .catch((err) => {
 
+                    if (err.exception) {
+                        return reply(Boom.badRequest(err.exception));
+                    }
+
                     return reply(Boom.badRequest(err));
+
                 });
 
         }

@@ -37,6 +37,25 @@ class Actions {
         );
 
     }
+
+    //Used to update the template object used to show the template overview
+    static getTemplatesFromRML(template,lang,dump){
+
+        const data = {
+            mappingName: template,
+            mappingLang: lang,
+            mappingDump: dump
+        };
+
+        ApiActions.post(
+            '/api/mappings/templates',
+            data,
+            Store,
+            Constants.GET_TEMPLATE_LIST,
+            Constants.GET_TEMPLATE_LIST_RESPONSE
+        );
+
+    }
 }
 
 
