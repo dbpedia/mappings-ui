@@ -8,7 +8,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 
-
 const propTypes = {
     accountId: PropTypes.string,
     error: PropTypes.string,
@@ -19,12 +18,9 @@ const propTypes = {
     enabled: PropTypes.bool
 };
 
-
 class GroupsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             groups: props.groups,
@@ -33,7 +29,6 @@ class GroupsForm extends React.Component {
     }
 
     handleNewGroup() {
-
         const selectedOption = this.els.newGroup.options[this.els.newGroup.selectedIndex];
 
         if (!selectedOption.value) {
@@ -53,11 +48,8 @@ class GroupsForm extends React.Component {
     }
 
     handleDeleteGroup(key) {
-
         const updatedGroups = this.state.groups;
-
         delete updatedGroups[key];
-
         this.setState({
             groups: updatedGroups,
             newGroup: ''
@@ -65,20 +57,16 @@ class GroupsForm extends React.Component {
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const id = this.props.accountId;
         const data = {
             groups: this.state.groups
         };
-
         Actions.saveGroups(id, data);
     }
 
     render() {
-
         const alerts = [];
 
         if (this.props.showSaveSuccess) {
@@ -203,8 +191,5 @@ class GroupsForm extends React.Component {
         );
     }
 }
-
 GroupsForm.propTypes = propTypes;
-
-
 module.exports = GroupsForm;

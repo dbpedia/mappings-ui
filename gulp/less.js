@@ -5,10 +5,7 @@ const Newer = require('gulp-newer');
 const Concat = require('gulp-concat');
 const Less = require('gulp-less');
 
-
-
 Gulp.task('less', () => {
-
     const bundleConfigs = [{
         entries: [
             './client/core/bootstrap.less',
@@ -64,11 +61,8 @@ Gulp.task('less', () => {
         dest: './public/pages',
         outputName: 'githubupdates.min.css'
     }
-
     ];
-
     return bundleConfigs.map((bundleConfig) => {
-
         return Gulp.src(bundleConfig.entries)
             .pipe(Newer(Path.join(bundleConfig.dest, bundleConfig.outputName)))
             .pipe(Concat(bundleConfig.outputName))

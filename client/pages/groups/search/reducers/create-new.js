@@ -3,7 +3,6 @@ const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
 
-
 const initialState = {
     show: false,
     loading: false,
@@ -13,7 +12,6 @@ const initialState = {
     name: ''
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.CREATE_NEW) {
         return ObjectAssign({}, state, {
             loading: true,
@@ -33,7 +31,6 @@ const reducer = function (state = initialState, action) {
         if (!validation.error) {
             stateUpdates.name = '';
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -48,9 +45,6 @@ const reducer = function (state = initialState, action) {
             show: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

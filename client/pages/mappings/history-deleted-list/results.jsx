@@ -14,7 +14,6 @@ const propTypes = {
 };
 
 const rowBackground = function (record){
-
     if (record.ignore) {
         return 'row-disabled';
     }
@@ -23,17 +22,12 @@ const rowBackground = function (record){
         return 'danger';
     }
 
-
-
     return '';
 };
 
-
 class Results extends React.Component {
     render() {
-
         const rows = this.props.data.map((record) => {
-
             return (
                 <tr key={record._id.template} className={ rowBackground(record) }>
                     <td>{record._id.lang}</td>
@@ -66,10 +60,7 @@ class Results extends React.Component {
                         }
 
                     </td>
-
-
                 </tr>
-
             );
         });
 
@@ -78,20 +69,12 @@ class Results extends React.Component {
                 <table className="table  table-results">
                     <thead>
                         <tr>
-
                             <th>Lang</th>
-
                             <th>Name</th>
-
                             <th>Last Version</th>
-
                             <th>Deletion</th>
-
                             <th>Status</th>
-
                             <th>Actions</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -102,8 +85,5 @@ class Results extends React.Component {
         );
     }
 }
-
 Results.propTypes = propTypes;
-
-
 module.exports = Results;

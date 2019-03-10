@@ -1,8 +1,6 @@
 'use strict';
 
-
 const parseReason = function (message) {
-
     const regexBecause = /because \[(.*?)(\]|$)/;
     let parsedMessage = message;
 
@@ -18,7 +16,6 @@ const parseReason = function (message) {
 };
 
 const parseValidation = function (response) {
-
     const validation = response && response.validation;
     const message = response && response.message;
     const error = response && response.error;
@@ -27,7 +24,6 @@ const parseValidation = function (response) {
         hasError: {},
         help: {}
     };
-
 
     if (validation && validation.keys) {
         const forField = validation.keys.pop();
@@ -47,12 +43,6 @@ const parseValidation = function (response) {
     //if (!result.error){
     //    result.error = result.help[Object.keys(result.help)[0]];
     //}
-
-
     return result;
-
-
 };
-
-
 module.exports = parseValidation;

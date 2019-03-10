@@ -3,8 +3,6 @@
 const ClassNames = require('classnames');
 const PropTypes = require('prop-types');
 const React = require('react');
-
-
 const propTypes = {
     children: PropTypes.node,
     footer: PropTypes.node,
@@ -13,12 +11,9 @@ const propTypes = {
     show: PropTypes.bool
 };
 
-
 class Modal extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             bgHeight: window.innerHeight
@@ -28,19 +23,16 @@ class Modal extends React.Component {
     }
 
     componentDidMount() {
-
         window.addEventListener('resize', this.boundWindowResize);
     }
 
     componentWillUnmount() {
-
         window.removeEventListener('resize', this.boundWindowResize);
         document.removeEventListener('keyup', this.boundKeyUp);
         document.body.classList.remove('modal-open');
     }
 
     componentWillUpdate(nextProps, nextState) {
-
         if (nextProps.show) {
             document.addEventListener('keyup', this.boundKeyUp);
             document.body.classList.add('modal-open');
@@ -52,26 +44,22 @@ class Modal extends React.Component {
     }
 
     onWindowResize() {
-
         this.setState({ bgHeight: window.innerHeight });
     }
 
     onBackdropClick(event) {
-
         if (event.target === event.currentTarget) {
             this.props.onClose();
         }
     }
 
     onKeyUp(event) {
-
         if (event.which === 27) {
             this.props.onClose();
         }
     }
 
     render() {
-
         const modalClasses = ClassNames({
             modal: true
         });
@@ -140,8 +128,5 @@ class Modal extends React.Component {
         );
     }
 }
-
 Modal.propTypes = propTypes;
-
-
 module.exports = Modal;

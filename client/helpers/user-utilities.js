@@ -1,12 +1,9 @@
 'use strict';
-
-
 /*
     Utilities to handle the user object.
  */
 
 const hasPermission = function (user,permission) {
-
     if (!user){
         return false;
     }
@@ -20,11 +17,9 @@ const hasPermission = function (user,permission) {
     }
 
     return false;
-
 };
 
 const parseUserFromHTML = function (){
-
     let credentials;
 
     //Recover credentials from html
@@ -43,7 +38,6 @@ const parseUserFromHTML = function (){
         }
 
     }
-
     return credentials;
 };
 

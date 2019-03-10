@@ -9,7 +9,6 @@ const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     error: PropTypes.string,
     hasError: PropTypes.object,
@@ -22,12 +21,9 @@ const propTypes = {
     enabled: PropTypes.bool
 };
 
-
 class PasswordForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             password: props.password,
             passwordConfirm: props.passwordConfirm
@@ -35,7 +31,6 @@ class PasswordForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         this.setState({
             password: nextProps.password,
             passwordConfirm: nextProps.passwordConfirm
@@ -43,23 +38,18 @@ class PasswordForm extends React.Component {
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const id = this.props.userId;
         const data = {
             password: this.state.password,
             passwordConfirm: this.state.passwordConfirm
         };
-
         Actions.savePassword(id, data);
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -120,8 +110,5 @@ class PasswordForm extends React.Component {
         );
     }
 }
-
 PasswordForm.propTypes = propTypes;
-
-
 module.exports = PasswordForm;

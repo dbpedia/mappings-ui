@@ -3,11 +3,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
-
     static getDetails() {
-
         ApiActions.get(
             '/api/accounts/my',
             undefined,
@@ -18,7 +15,6 @@ class Actions {
     }
 
     static getGroupOptions() {
-
         ApiActions.get(
             '/api/account-groups',
             undefined,
@@ -28,10 +24,7 @@ class Actions {
         );
     }
 
-
-
     static saveDetails(data) {
-
         ApiActions.put(
             '/api/accounts/my',
             data,
@@ -42,17 +35,12 @@ class Actions {
     }
 
     static hideDetailsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_DETAILS_SAVE_SUCCESS
         });
     }
 
-
-
-
     static savePassword(data) {
-
         if (data.password !== data.passwordConfirm) {
             return Store.dispatch({
                 type: Constants.SAVE_PASSWORD_RESPONSE,
@@ -62,9 +50,7 @@ class Actions {
                 }
             });
         }
-
         delete data.passwordConfirm;
-
         ApiActions.put(
             '/api/accounts/my/password',
             data,
@@ -80,9 +66,5 @@ class Actions {
             type: Constants.HIDE_PASSWORD_SAVE_SUCCESS
         });
     }
-
-
 }
-
-
 module.exports = Actions;

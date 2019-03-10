@@ -6,9 +6,6 @@ const React = require('react');
 const Autosuggest = require('react-autosuggest');
 const JsonFetch = require('../../helpers/json-fetch');
 const Debounce = require('lodash').debounce;
-
-
-
 const theme = {
     container: {
         position: 'relative',
@@ -52,11 +49,8 @@ const theme = {
     }
 };
 
-
 const getSuggestionValue = (suggestion) => suggestion.name;
-
 const renderSuggestion = (suggestion) => (
-
     <div>
         <span className="propertySearchMain"><b>{suggestion.name}</b></span><br/>
         <span className="propertySearchDetail">domain: {suggestion.domain.name}</span> <br/>
@@ -72,23 +66,17 @@ const propTypes = {
     id: PropTypes.string
 };
 class PropertySearcherInput extends React.Component {
-
-
     constructor(){
         super();
-
         this.state = {
             value: '',
             suggestions: [],
             loading: false
         };
-
         this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),300);
-
     }
 
     loadSuggestions(value) {
-
         this.setState({
             isLoading: true
         });
@@ -96,7 +84,6 @@ class PropertySearcherInput extends React.Component {
         let result = [];
         const request = { method: 'GET', url: '/api/search/properties', query: { name: value } };
         JsonFetch(request, (err, response) => {
-
             if (err || !response){
                 result = [];
             }
@@ -113,9 +100,7 @@ class PropertySearcherInput extends React.Component {
 
     }
 
-
     onChange(event, { newValue }){
-
         const e = {
             target: {
                 value: newValue
@@ -125,11 +110,8 @@ class PropertySearcherInput extends React.Component {
         this.props.onChange(e);
     };
 
-
-
     onSuggestionsFetchRequested({ value }){
         this.loadSuggestions(value);
-
     };
 
     // Autosuggest will call this function every time you need to clear suggestions.
@@ -139,11 +121,8 @@ class PropertySearcherInput extends React.Component {
         });
     };
 
-
     render() {
-
         theme.input = this.props.className;
-
         const  { suggestions } = this.state;
         const inputProps = {
             placeholder: this.props.placeholder,
@@ -151,10 +130,7 @@ class PropertySearcherInput extends React.Component {
             onChange: this.onChange.bind(this)
         };
 
-
-
         return (
-
                             <Autosuggest
                                 suggestions={suggestions}
                                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested.bind(this)}
@@ -165,8 +141,6 @@ class PropertySearcherInput extends React.Component {
                                 theme={theme}
                                 highlightFirstSuggestion={true}
                             />
-
-
         );
     }
 }

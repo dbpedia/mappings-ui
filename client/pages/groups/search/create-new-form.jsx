@@ -10,7 +10,6 @@ const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     error: PropTypes.string,
     hasError: PropTypes.object,
@@ -21,12 +20,9 @@ const propTypes = {
     show: PropTypes.bool
 };
 
-
 class CreateNewForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             showing: false,
@@ -35,31 +31,26 @@ class CreateNewForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         this.setState({
             name: nextProps.name
         });
     }
 
     componentDidUpdate() {
-
         if (this.props.show && this.state.name.length === 0) {
             this.els.name.focus();
         }
     }
 
     onSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.createNew({
             name: this.state.name
         }, this.props.history);
     }
 
     render() {
-
         let alert;
 
         if (this.props.error) {
@@ -106,8 +97,5 @@ class CreateNewForm extends React.Component {
         );
     }
 }
-
 CreateNewForm.propTypes = propTypes;
-
-
 module.exports = CreateNewForm;

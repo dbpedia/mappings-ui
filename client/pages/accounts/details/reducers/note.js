@@ -2,8 +2,6 @@
 const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
-
-
 const initialState = {
     loading: false,
     showSaveSuccess: false,
@@ -15,7 +13,6 @@ const initialState = {
     newNote: ''
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const stateUpdates = ObjectAssign({}, initialState);
 
@@ -49,7 +46,6 @@ const reducer = function (state = initialState, action) {
             stateUpdates.newNote = '';
             stateUpdates.notes = action.response.notes.reverse();
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -58,9 +54,6 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

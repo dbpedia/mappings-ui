@@ -4,14 +4,12 @@ const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const ControlGroup = require('../../../components/form/control-group.jsx');
 const MappingLangSelector = require('../../../components/mapping-lang-selector.jsx');
-
 const LinkState = require('../../../helpers/link-state.js');
 const Modal = require('../../../components/modal.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
-
 
 const propTypes = {
     error: PropTypes.string,
@@ -24,15 +22,11 @@ const propTypes = {
     password: PropTypes.string,
     email: PropTypes.string,
     mappingsLang: PropTypes.string
-
 };
-
 
 class CreateNewForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             name: '',
@@ -43,25 +37,19 @@ class CreateNewForm extends React.Component {
         };
     }
 
-
     /*componentDidUpdate() {
-
         if (this.props.show && this.state.name.length === 0) {
             this.els.name.focus();
         }
     }*/
 
     handleNewLanguage(newLang){
-
         this.setState( { mappingsLang:newLang } );
     }
 
-
     onSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.createNew({
             name: this.state.name,
             username: this.state.username,
@@ -72,16 +60,13 @@ class CreateNewForm extends React.Component {
     }
 
     render() {
-
         let alert;
-
         if (this.props.error) {
             alert = <Alert
                 type="danger"
                 message={this.props.error}
             />;
         }
-
         const formElements = <fieldset>
             {alert}
             <TextControl
@@ -153,8 +138,5 @@ class CreateNewForm extends React.Component {
         );
     }
 }
-
 CreateNewForm.propTypes = propTypes;
-
-
 module.exports = CreateNewForm;

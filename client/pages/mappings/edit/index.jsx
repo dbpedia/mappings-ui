@@ -16,71 +16,50 @@ const propTypes = {
     user: PropTypes.object
 };
 
-
 class EditPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         Actions.getDetails(this.props.match.params.template,this.props.match.params.lang);
-
         this.state = Store.getState();
-
-
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
         this.setState({
             language: this.props.user && this.props.user.mappingsLang,
             isAuthenticated: this.props.user
         });
-        document.title = 'Editing ' + this.props.match.params.template + '/' + this.props.match.params.lang + ' | DBpedia Mappings UI';
-
-
-
+        document.title = 'Editing ' + this.props.match.params.template + '/' + this.props.match.params.lang + '
+            | DBpedia Mappings UI';
     }
 
     getUserLanguage(){
-
         if (this.state.isAuthenticated){
             if (!this.state.language){
                 return '';
             }
             return this.state.language;
         }
-
         return 'en';
-
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
-
         this.setState(Store.getState());
-
     }
-
-
 
     //Called when new template has been added
     onTemplateAdded(childType,content){
-
-
         const dump = this.refs.details.getCurrentText();
         const templatePanel = this.refs.templatePanel;
-        Actions.getRMLfromTemplate(this.props.match.params.template,this.props.match.params.lang,dump,childType,content,this.refs.details,templatePanel);
-
+        Actions.getRMLfromTemplate(this.props.match.params.template,this.props.match.params.lang,dump,childType,content,
+            this.refs.details,templatePanel);
     }
 
     changeShownURL(newPath){
-
         if (this.props.history){
             this.props.history.replace(newPath);
         }
@@ -88,20 +67,16 @@ class EditPage extends React.Component {
 
     //Go to the view
     cancelEditing(){
-
         window.confirm('Are you sure? All unsaved changes will be lost.') &&
         this.props.history.push(`/mappings/view/${this.state.details._id.template}/${this.state.details._id.lang}`);
-
     }
 
     goToHistory(){
-
-        window.confirm('Are you sure? Unsaved content will be lost.') && this.props.history.push('/mappings/history/' + this.state.details._id.template + '/' + this.state.details._id.lang);
+        window.confirm('Are you sure? Unsaved content will be lost.') && this.props.history.push('/mappings/history/'
+            + this.state.details._id.template + '/' + this.state.details._id.lang);
     }
 
-
     remove(template,lang) {
-
         window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(template,lang,this.props.history);
     }
 
@@ -112,7 +87,6 @@ class EditPage extends React.Component {
     }
 
     render() {
-
         if (!this.state.details.hydrated) {
             return (
                 <section className="container">
@@ -154,11 +128,9 @@ class EditPage extends React.Component {
                 disabled: !UserUtilities.hasPermission(this.props.user,'can-remove-mappings')
 
             }
-
         ];
 
         const buttonRestore = [
-
             {
                 type: 'btn-default',
                 text: <span><i className="fa fa-history" aria-hidden="true"></i>&nbsp;View old versions</span>,
@@ -171,32 +143,27 @@ class EditPage extends React.Component {
 
         return (
             <section className="container">
-
                 <div className="page-header">
-
                     <ButtonGroup float='right' buttons={buttons}/>
                     <span style={{ float: 'right' }}>&nbsp;</span>
                     <ButtonGroup float='right' buttons={buttonRestore}/>
                     <h2 >
-
-                        Editing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> / <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>{title + ' / ' + lang}</Link>
+                        Editing <Link to={'/mappings?lang=' + this.getUserLanguage()}>Mappings</Link> /
+                        <Link to={'/mappings/view/' + this.state.details._id.template + '/' + lang}>
+                            {title + ' / ' + lang}
+                        </Link>
                     </h2>
-
                 </div>
 
                 <div className="row">
                     <div className="col-sm-8">
-
-
-
                         <DetailsForm ref="details" {...this.state.details} onChange={this.onEditorChange.bind(this)}/>
-
-
                     </div>
                     <div className="col-sm-4">
 
 
-                        <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)} {...this.state.template}/>
+                        <AddTemplatePanel ref="templatePanel" onTemplateFinish={this.onTemplateAdded.bind(this)}
+                        {...this.state.template}/>
                         <MappingTesterPanel
                             {...this.state.test}
                             lang={this.state.details._id.lang}
@@ -210,8 +177,5 @@ class EditPage extends React.Component {
         );
     }
 }
-
 EditPage.propTypes = propTypes;
-
-
 module.exports = EditPage;

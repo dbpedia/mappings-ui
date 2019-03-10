@@ -3,7 +3,6 @@ const Joi = require('joi');
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
-
     const MappingUpdateStatus = server.plugins['hapi-mongo-models'].MappingUpdateStatus;
     const OntologyUpdateStatus = server.plugins['hapi-mongo-models'].OntologyUpdateStatus;
 
@@ -56,7 +55,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'GET',
         path: '/github-updates/ontology',
@@ -81,7 +79,6 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
             const query = {};
             const fields = OntologyUpdateStatus.fieldsAdapter('');
             const sort = request.query.sort;
@@ -97,11 +94,7 @@ internals.applyRoutes = function (server, next) {
                 if (!results.data){
                     return reply(results);
                 }
-
-
                 reply(results);
-
-
             });
         }
     });
@@ -117,46 +110,27 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
-
-
             const query = {};
             MappingUpdateStatus.deleteMany(query,(err,res) => {
-
                 if (err){
                     return reply(err);
                 }
-
                 OntologyUpdateStatus.deleteMany(query, (err,res2) => {
-
                     if (err){
                         return reply(err);
                     }
-
                     return reply(null,res);
-
                 });
-
-
             });
-
-
         }
     });
-
-
     next();
 };
-
-
 
 exports.register = function (server, options, next) {
-
     server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'github-updates'

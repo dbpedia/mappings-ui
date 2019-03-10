@@ -14,20 +14,15 @@ const propTypes = {
     childLevel: PropTypes.number,
     content: PropTypes.object
 };
-
 const name = 'SimplePropertyTemplate';
 const required = ['ontologyProperty','property'];
-
 
 /**
  * Possible children: None.
  */
 class RowSimplePropertyTemplate extends React.Component {
-
-
     //this.state.content has TemplateMapping content
     constructor(props){
-
         super(props);
         this.state = this.getNewState();
 
@@ -35,12 +30,9 @@ class RowSimplePropertyTemplate extends React.Component {
         if (this.props.content) {
             this.state.content = this.props.content;
         }
-
     }
 
-
     getNewState(){
-
         return  {
             content: {
                 name,
@@ -65,18 +57,15 @@ class RowSimplePropertyTemplate extends React.Component {
     }
 
     parametersSelectHandler(attribute,event){
-
         const content = { ...this.state.content };
         content.parameters[attribute] = event.target.value;
         this.setState({ content });
-
     }
 
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters[attribute] = value;
@@ -84,10 +73,7 @@ class RowSimplePropertyTemplate extends React.Component {
 
     }
 
-
-
     createAlias(){
-
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
@@ -100,7 +86,6 @@ class RowSimplePropertyTemplate extends React.Component {
      * Called by: this component.
      */
     onMeClose(save){
-
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
@@ -125,29 +110,21 @@ class RowSimplePropertyTemplate extends React.Component {
             return;
         }
 
-
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
-
-
 
         const c = { ...this.state.content };
         c._alias = this.createAlias();
         this.props.onClose(save,name,c);
 
-
        /* this.setState(this.getNewState(), () => {
 
             return this.props.onClose(save,name,c);
         });*/
-
-
     }
 
-
     render(){
-
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
@@ -163,9 +140,7 @@ class RowSimplePropertyTemplate extends React.Component {
             }
         ];
 
-
         return (
-
             <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
                 <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
@@ -297,22 +272,11 @@ class RowSimplePropertyTemplate extends React.Component {
                                 </div>
                             </div>
                         }
-
-
-
-
                     </div>
                 </div>
             </div>
-
-
         );
     }
-
-
 }
-
 RowSimplePropertyTemplate.propTypes = propTypes;
-
-
 module.exports = RowSimplePropertyTemplate;

@@ -7,7 +7,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 
-
 const propTypes = {
     error: PropTypes.string,
     hasError: PropTypes.object,
@@ -20,36 +19,28 @@ const propTypes = {
     successCloseAction: PropTypes.func
 };
 
-
 class NoteForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             newNote: ''
         };
     }
 
     componentWillReceiveProps(nextProps) {
-
         this.setState({
             newNote: nextProps.newNote
         });
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         this.props.saveAction(this.state.newNote);
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -68,9 +59,7 @@ class NoteForm extends React.Component {
         }
 
         const noteHistory = this.props.notes.map((note) => {
-
             const moment = Moment(note.timeCreated);
-
             return (
                 <li key={note.timeCreated} className="list-group-item">
                     <div>{note.data}</div>
@@ -128,8 +117,5 @@ class NoteForm extends React.Component {
         );
     }
 }
-
 NoteForm.propTypes = propTypes;
-
-
 module.exports = NoteForm;

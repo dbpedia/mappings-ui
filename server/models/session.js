@@ -5,29 +5,18 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const Uuid = require('uuid');
 
-
 class Session extends MongoModels {
-
     static generateKeyHash(callback) {
-
         const key = Uuid.v4();
-
-
         Async.auto({
             salt: function (done) {
-
                 //Todo: Bcrypt fails sometimes... Error (Native)
                 Bcrypt.genSalt(10, done);
-
             },
             hash: ['salt', function (results, done) {
-
-
                 Bcrypt.hash(key, results.salt, done);
             }]
         }, (err, results) => {
-
-
             if (err) {
                 return callback(err);
             }
@@ -36,29 +25,22 @@ class Session extends MongoModels {
                 key,
                 hash: results.hash
             });
-
-
         });
     }
 
     static create(userId, callback) {
-
         const self = this;
-
         Async.auto({
             keyHash: this.generateKeyHash.bind(this),
             newSession: ['keyHash', function (results, done) {
-
                 const document = {
                     userId,
                     key: results.keyHash.hash,
                     time: new Date()
                 };
-
                 self.insertOne(document, done);
             }],
             clean: ['newSession', function (results, done) {
-
                 const query = {
                     userId,
                     key: { $ne: results.keyHash.hash }
@@ -79,16 +61,12 @@ class Session extends MongoModels {
     }
 
     static findByCredentials(id, key, callback) {
-
         const self = this;
-
         Async.auto({
             session: function (done) {
-
                 self.findById(id, done);
             },
             keyMatch: ['session', function (results, done) {
-
                 if (!results.session) {
                     return done(null, false);
                 }
@@ -97,7 +75,6 @@ class Session extends MongoModels {
                 Bcrypt.compare(key, source, done);
             }]
         }, (err, results) => {
-
             if (err) {
                 return callback(err);
             }
@@ -111,9 +88,7 @@ class Session extends MongoModels {
     }
 }
 
-
 Session.collection = 'sessions';
-
 
 Session.schema = Joi.object().keys({
     _id: Joi.object(),
@@ -122,10 +97,8 @@ Session.schema = Joi.object().keys({
     time: Joi.date().required()
 });
 
-
 Session.indexes = [
     { key: { userId: 1 } }
 ];
-
 
 module.exports = Session;

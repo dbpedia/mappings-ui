@@ -3,15 +3,11 @@ const Async = require('async');
 const Boom = require('boom');
 const Config = require('../config');
 
-
 const internals = {};
 
-
 internals.applyStrategy = function (server, next) {
-
     const Session = server.plugins['hapi-mongo-models'].Session;
     const Account = server.plugins['hapi-mongo-models'].Account;
-
 
     //This strategy redirects to login if no user
     server.auth.strategy('session', 'cookie', {
@@ -21,13 +17,10 @@ internals.applyStrategy = function (server, next) {
         redirectTo: '/login',
         appendNext: 'returnUrl',
         validateFunc: function (request, data, callback) {
-
             Async.auto({
                 session: function (done) {
-
                     const id = data.session._id;
                     const key = data.session.key;
-
                     Session.findByCredentials(id, key, done);
                 },
                 user: ['session', function (results, done) {
@@ -78,25 +71,17 @@ internals.applyStrategy = function (server, next) {
             });
         }
     });
-
-
-
-
     next();
 };
-
 
 internals.preware = {
     ensureNotRoot: {
         assign: 'ensureNotRoot',
         method: function (request, reply) {
-
             if (request.auth.credentials.user.username === 'root') {
                 const message = 'Not permitted for root user.';
-
                 return reply(Boom.badRequest(message));
             }
-
             reply();
         }
     },
@@ -180,7 +165,6 @@ internals.preware = {
     }*/
 };
 
-
 exports.register = function (server, options, next) {
 
     server.dependency('hapi-mongo-models', internals.applyStrategy);
@@ -188,9 +172,7 @@ exports.register = function (server, options, next) {
     next();
 };
 
-
 exports.preware = internals.preware;
-
 
 exports.register.attributes = {
     name: 'auth'

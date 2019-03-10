@@ -9,8 +9,6 @@ const Moment = require('moment');
 const Rimraf = require('rimraf');
 const Fs = require('fs');
 const Mkdirp = require('mkdirp');
-
-
 const Config = require('../../config');
 const REPO_URL = Config.get('/github/repositoryURL');
 const REPO_FOLDER = Config.get('/github/repositoryFolder');
@@ -19,17 +17,13 @@ const Mongomodels = require('./mongomodels');
 const MAPPING_PATTERN = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
 
 const clearMappings = function (){
-
     return new Promise((resolve,reject) => {
-
         Rimraf(REPO_FOLDER + '/' + REPO_MAPPINGS_FOLDER, (err,res) => {
-
             if (err) {
                 reject({ code: 'ERROR_CLEARING_MAPPINGS_DIR', msg: err });
             }
 
             Mkdirp(REPO_FOLDER + '/' + REPO_MAPPINGS_FOLDER, (err) => {
-
                 if (err) {
                     reject({ code: 'ERROR_CLEARING_MAPPINGS_DIR', msg: err });
                 }
@@ -39,12 +33,9 @@ const clearMappings = function (){
             });
         });
     });
-
 };
 
-
 const witnessExists = function (){
-
     const path = REPO_FOLDER + '/' + '.importWitness';
     return Fs.existsSync(path);
 
@@ -53,7 +44,6 @@ const witnessExists = function (){
 //Returns true if file didn't exists and has been created
 //Returns false if file existed, therefore having a problem.
 const createWitnessFile = function (){
-
     const path = REPO_FOLDER + '/' + '.importWitness';
     if (Fs.existsSync(path)){
         return false;
@@ -64,7 +54,6 @@ const createWitnessFile = function (){
 };
 
 const deleteWitnessFile = function () {
-
     Fs.unlinkSync(REPO_FOLDER + '/' + '.importWitness');
 };
 
@@ -72,7 +61,6 @@ const deleteWitnessFile = function () {
  * SYNC FUNCTION
  */
 const createMappingFile = function (dbItem){
-
     const templateName = dbItem._id.template;
     const templateLang = dbItem._id.lang;
     const rml = dbItem.rml;
@@ -82,10 +70,7 @@ const createMappingFile = function (dbItem){
         Mkdirp.sync(langDirectory);
     }
     Fs.writeFileSync(langDirectory  + '/' + fileName,rml);
-
-
 };
-
 
 let repo;
 let updateDate;
@@ -96,14 +81,10 @@ let recordId;
  * Updates in the database according to the diff
  */
 const processDiff = function (diff){
-
-
     const fileName = diff.path;
     const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
 
-
     if ( mappingPattern.test(fileName) ){ //Change refers to mapping
-
         const ext = fileName.match(mappingPattern);
         const lang = ext[1];
         const template = ext[2];
@@ -126,9 +107,7 @@ const processDiff = function (diff){
         //console.log('\t\t* Updated ' + template + '/' + lang);
         const rml = Fs.readFileSync(REPO_FOLDER + '/' + fileName,'UTF8');
         return Mongomodels.updateMapping(template,lang,rml);
-
     }
-
     return Promise.resolve(); //If no mapping file, resolve
 
 
@@ -139,72 +118,53 @@ const processDiff = function (diff){
  * Then, each change of mappings is reflected into the DB (update, create, delete, rename).
  */
 const getChangesFromGithub = function () {
-
     return Git.startRepository(REPO_URL,REPO_FOLDER)
         .then((res) => {
-
             repo = res.repository;
             return Git.discardUnstashedChanges(repo); //Discard unstaged changes
 
         })
         .then((res) => {
-
             console.log('\t[INFO] Discarded unstaged changes');
             return Git.updateFromRemoteAndGetDiffs(repo);
         })
         .then((diffs) => {
-
             console.log('\t[INFO] Pulled changes from remote');
             let sequence = Promise.resolve();
             diffs.forEach((diff) => {
-
                 sequence = sequence.then(() => {
-
                     return processDiff(diff);
                 });
             });
-
             return sequence;
         })
         .then(() => { //Database has been updated with last changes
-
             console.log('\t[INFO] Database updated with remote changes');
         })
         .catch((err) => {
-
             throw { code: 'ERROR_UPDATING_FROM_GITHUB', msg: err };
         });
-
-
 };
-
 
 const preCommitCheck = function (path){
     //PUT HERE ANY PRE-COMMIT CHECKS
     return Promise.resolve({ error: false, message: 'OK' });
 };
 
-
 const doChecksAndCommit = function (repoObject,index,path,deleted){
-
     return preCommitCheck(path)
         .then((checksPassed) => {
-
             const mappingPattern = /mappings\/(\w+)\/Mapping_\w+:(.*)\.ttl/;
             const ext = path.match(mappingPattern);
             const lang = ext[1];
             const template = ext[2];
 
             if (!checksPassed.error){ //If checks pass, then I retrieve the changes info and commit
-
-
                 return Mongomodels.setMappingStatus(template,lang,false, 'OK' )
                     .then(() => {
-
                         return Mongomodels.getChangeInfo(template,lang,deleted);
                     })
                     .then((changesInfo) => {
-
                         let info = changesInfo.message;
                         if (!info || info.length === 0){
                             info = 'No change info';
@@ -213,14 +173,9 @@ const doChecksAndCommit = function (repoObject,index,path,deleted){
                         return Git.addAndCommit(repoObject,index,path,deleted,message);
                     });
             }
-
-
             return Mongomodels.setMappingStatus(template,lang,true,checksPassed.message);
-
-
         })
         .catch((err) => {
-
             throw err;
         });
 
@@ -238,13 +193,10 @@ const doChecksAndCommit = function (repoObject,index,path,deleted){
  *  (*) If push fails, will be retried in next iteration.
  */
 const doAction = function () {
-
     updateDate = Moment(new Date()).format('DD/MM hh:mm:ss');
     console.log('* Starting Github mappings update at ' + updateDate);
     return Mongo.startProcess()
         .then((id) => {
-
-
             console.log('\t[INFO] Inserted progress into MongoDB,');
             recordId = id;
             return Git.startRepository(REPO_URL,REPO_FOLDER);
@@ -276,24 +228,18 @@ const doAction = function () {
 
         })
         .then(() => {
-
             return getChangesFromGithub();
         })
         .then(() => {
-
             return clearMappings();
         })
         .then(() => {
-
             console.log('\t[INFO] Mappings cleared');
             return  Mongo.getMappings();
         })
         .then( (res) => {
-
             return new Promise((resolve,reject) => {
-
                 res.each( (err,item) => {
-
                     if (!err && item){
                         createMappingFile(item);
                     }
@@ -310,36 +256,25 @@ const doAction = function () {
 
         })
         .then(() => { //As createMappingfile is sync, for sure all files will be created at this point
-
             console.log('\t[INFO] Files created.');
             return Git.localChanges(repo); //todo: should also get messages from DB
-
         })
         .then((changes) => { //Add and commit files that have changed.
-
             console.log('\t[INFO] Local changes retrieved.');
-
             if (!changes || changes.length === 0) {
                 console.log('\t[INFO] No changes detected.');
             }
-
-
             return repo.refreshIndex() //Only get it once
                 .then((index) => {
-
                     let sequence = Promise.resolve();
                     changes.forEach((change) => {
-
                         const path = change.path;
                         const deleted = change.status === 'deleted';
                         if (MAPPING_PATTERN.test(path)){
                             sequence = sequence.then(() => {
-
                                 return doChecksAndCommit(repo,index,path,deleted);
                             });
                         }
-
-
                     });
 
                     //All changed files have been added and committed, each in one different commit
@@ -347,20 +282,16 @@ const doAction = function () {
                 });
         })
         .then(() => {
-
             console.log('\t[INFO] Files committed.');
             return Git.push(repo);
-
         })
         .then(() => {
-
             console.log('\t[INFO] Files pushed.');
             console.log('\t[INFO] Finished successfully.');
             deleteWitnessFile(); //As long has process finishes, good
             return Mongo.endProcess(recordId,false,'OK','');
         })
         .catch((err) => {
-
             if ( witnessExists()){
                 deleteWitnessFile(); //As long has process finishes, good
             }

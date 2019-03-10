@@ -3,7 +3,6 @@ const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
 
-
 const initialState = {
     hydrated: false,
     loading: false,
@@ -63,39 +62,28 @@ const reducer = function (state = initialState, action) {
             hasError: validation.hasError,
             help: validation.help
         };
-
         if (action.response.hasOwnProperty('title')) {
             stateUpdates.title = action.response.title;
         }
         if (action.response.hasOwnProperty('markdown')) {
             stateUpdates.markdown = action.response.markdown;
         }
-
         if (action.response.hasOwnProperty('visible')) {
             stateUpdates.visible = action.response.visible;
         }
-
         if (action.response.hasOwnProperty('lastEdition')) {
             stateUpdates.lastEdition = action.response.lastEdition;
         }
-
         if (action.response.hasOwnProperty('postId')) {
-
             stateUpdates.postId = action.response.postId;
         }
-
-
         return ObjectAssign({}, state, stateUpdates);
     }
-
     if (action.type === Constants.HIDE_DETAILS_SAVE_SUCCESS) {
         return ObjectAssign({}, state, {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

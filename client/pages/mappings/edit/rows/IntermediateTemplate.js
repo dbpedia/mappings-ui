@@ -25,23 +25,17 @@ const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','Star
  * Possible children: PropertyMapping, IntermediateNodeMapping, CustomMapping
  */
 class RowIntermediateTemplate extends React.Component {
-
-
     //this.state.content has TemplateMapping content
     constructor(props){
-
         super(props);
         this.state = this.getNewState();
-
         //In edit mode
         if (this.props.content) {
             this.state.content = this.props.content;
         }
     }
 
-
     getNewState(){
-
         return  {
             content: {
                 name,
@@ -53,27 +47,22 @@ class RowIntermediateTemplate extends React.Component {
                 _alias: 'Empty' //This attribute should be removed before POST
             },
             errors: {
-
             },
             hasChild: false,
             childType: '',
             editingChild: undefined,
             isCollapsed: false
-
         };
-
     }
 
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters[attribute] = value;
         this.setState({ content });
-
     }
 
     /**
@@ -81,26 +70,20 @@ class RowIntermediateTemplate extends React.Component {
      * Called by: this method.
      */
     showChild(type){
-
         this.setState({ hasChild:true,childType:type,isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
 
     showEditChild(type,index){
-
         this.setState({ hasChild:true,childType:type,editingChild:index,isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
-
 
     /**
      * Returns the current child component, and empty if none.
      * Called by: this method.
      */
     currentChild(){
-
         if (!this.state.hasChild){
             return undefined;
         }
@@ -113,14 +96,9 @@ class RowIntermediateTemplate extends React.Component {
                 content: this.state.content.parameters.templates[this.state.editingChild]
             });
         }
-
-        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this), ref: "child", childLevel: this.props.childLevel + 1 });
-
-
+        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this),
+            ref: "child", childLevel: this.props.childLevel + 1 });
     }
-
-
-
 
     /**
      * Called when child saves it state, so we incorporate its state into ours.
@@ -128,7 +106,6 @@ class RowIntermediateTemplate extends React.Component {
      * Called by: child.
      */
     onChildClose(save,childType,content){
-
         const c = { ...this.state.content };
         if (save){
             c.parameters.templates.push(content);       //Add child content as mapping
@@ -139,11 +116,9 @@ class RowIntermediateTemplate extends React.Component {
         c.isCollapsed = false;
         this.setState(c);                   //Set state
         this.refs.child.eraseState();
-
     }
 
     onEditedChildClose(index,save,childType,content){
-
         const c = { ...this.state.content };
         if (save){
             c.parameters.templates[index] = content;       //Add child content as mapping
@@ -160,7 +135,6 @@ class RowIntermediateTemplate extends React.Component {
     }
 
     createAlias(){
-
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
@@ -169,7 +143,6 @@ class RowIntermediateTemplate extends React.Component {
      * Called by: this component.
      */
     onMeClose(save){
-
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
@@ -201,9 +174,6 @@ class RowIntermediateTemplate extends React.Component {
         const c = { ...this.state.content };
         c._alias = this.createAlias();
         this.props.onClose(save,name,c);
-
-
-
     }
 
     eraseState(){
@@ -214,22 +184,20 @@ class RowIntermediateTemplate extends React.Component {
      * Removes a template from the children template list
      */
     removeTemplate(index){
-
         const c = { ...this.state.content };
         c.parameters.templates.splice(index,1);
         this.setState({ content:c });
     }
 
     toggleCollapse(){
-
         this.setState({ isCollapsed: !this.state.isCollapsed });
     }
 
     render(){
-
         const buttons = [
             { type: 'btn-success',
-                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
+                text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ?
+                'Save' : 'OK'}</span>,
                 action: this.onMeClose.bind(this,true),
                 sizeClass: 'btn-sm',
                 disabled: this.state.hasChild
@@ -242,9 +210,7 @@ class RowIntermediateTemplate extends React.Component {
             }
         ];
 
-
         return (
-
             <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
                 <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
@@ -269,17 +235,24 @@ class RowIntermediateTemplate extends React.Component {
                     <Collapse in={!this.state.isCollapsed}>
                         <div className={'panel-body ' + (this.state.hasChild ? 'disabled' : '')}>
                             {Object.keys(this.state.errors).length > 0 &&
-                            <div><span style={{ color:'red' }}>Please, fill all the required fields (*)</span><br/><br/></div>}
+                            <div>
+                                <span style={{ color:'red' }}>
+                                    Please, fill all the required fields (*)
+                                </span><br/><br/>
+                            </div>}
                             <div className="row">
 
                                 <div className="col-sm-6"> {/* Column of properties */}
 
                                     <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
                                         <div className="form-group">
-                                            <label className="control-label col-sm-2" htmlFor="class">Ontology class{required.indexOf('class') > -1 ? '*' : ''}:</label>
+                                            <label className="control-label col-sm-2" htmlFor="class">
+                                                Ontology class{required.indexOf('class') > -1 ? '*' : ''}:
+                                            </label>
                                             <div className="col-sm-10">
                                                 <ClassSearchInput
-                                                       className={'form-control ' + (this.state.errors.class ? 'error' : '')}
+                                                       className={'form-control ' + (this.state.errors.class ?
+                                                       'error' : '')}
                                                        id="class"
                                                        placeholder="e.g. Place"
                                                        value={this.state.content.parameters.class}
@@ -287,20 +260,21 @@ class RowIntermediateTemplate extends React.Component {
                                             </div>
                                         </div>
                                         <div className="form-group">
-                                            <label className="control-label col-sm-2" htmlFor="property">Ontology property{required.indexOf('property') > -1 ? '*' : ''}:</label>
+                                            <label className="control-label col-sm-2" htmlFor="property">
+                                                Ontology property{required.indexOf('property') > -1 ? '*' : ''}:
+                                            </label>
                                             <div className="col-sm-10">
                                                 <PropertySearchInput
-                                                       className={'form-control ' + (this.state.errors.property ? 'error' : '')}
+                                                       className={'form-control ' + (this.state.errors.property ?
+                                                       'error' : '')}
                                                        id="property"
                                                        placeholder="e.g. resting_place"
                                                        value={this.state.content.parameters.property}
                                                        onChange={this.handleChange.bind(this,'property')}/>
                                             </div>
                                         </div>
-
                                     </form>
                                 </div>
-
                                 <div className="col-sm-6"> {/* Column of mappings */}
                                     <TemplateList
                                         hasError={this.state.errors.templates}
@@ -312,24 +286,14 @@ class RowIntermediateTemplate extends React.Component {
                                         onRemove={this.removeTemplate.bind(this)}
                                     />
                                 </div>
-
                             </div>
-
-
                         </div>
                     </Collapse>
                 </div>
                 {this.currentChild()}
             </div>
-
-
         );
     }
-
-
 }
-
 RowIntermediateTemplate.propTypes = propTypes;
-
-
 module.exports = RowIntermediateTemplate;

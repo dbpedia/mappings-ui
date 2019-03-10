@@ -5,10 +5,8 @@ const Constants = require('./constants');
 const Store = require('./store');
 const Qs = require('qs');
 
-
 class Actions {
     static getResults(data) {
-
         ApiActions.get(
             '/api/accounts',
             data,
@@ -19,7 +17,6 @@ class Actions {
     }
 
     static changeSearchQuery(data, history) {
-
         history.push({
             pathname: '/accounts',
             search: `?${Qs.stringify(data)}`
@@ -29,7 +26,6 @@ class Actions {
     }
 
     static getGroupOptions() {
-
         ApiActions.get(
             '/api/account-groups?limit=0',
             undefined,
@@ -40,21 +36,18 @@ class Actions {
     }
 
     static showCreateNew() {
-
         Store.dispatch({
             type: Constants.SHOW_CREATE_NEW
         });
     }
 
     static hideCreateNew() {
-
         Store.dispatch({
             type: Constants.HIDE_CREATE_NEW
         });
     }
 
     static createNew(data, history) {
-
         ApiActions.post(
             '/api/accounts',
             data,
@@ -76,6 +69,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

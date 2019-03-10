@@ -4,11 +4,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
-
     static getDetails(template,lang) {
-
         ApiActions.get(
             `/api/mappings/${template}/${lang}`,
             undefined,
@@ -19,7 +16,6 @@ class Actions {
     }
 
     static saveDetails(template,lang, data,history) {
-
         ApiActions.put(
             `/api/mappings/${template}/${lang}`,
             data,
@@ -30,22 +26,18 @@ class Actions {
     }
 
     static hideDetailsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_DETAILS_SAVE_SUCCESS
         });
     }
 
-
     static hideError() {
-
         Store.dispatch({
             type: Constants.HIDE_ERROR
         });
     }
 
     static delete(template,lang, history) {
-
         ApiActions.delete(
             `/api/mappings/${template}/${lang}`,
             undefined,
@@ -53,7 +45,6 @@ class Actions {
             Constants.DELETE,
             Constants.DELETE_RESPONSE,
             (err, response) => {
-
                 if (!err) {
                     history.push('/mappings');
 
@@ -64,7 +55,6 @@ class Actions {
     }
 
     static getRMLfromTemplate(template,lang,dump,type,content,editorBox,templatePanel) {
-
         const data = {
             mappingName: template,
             mappingLang: lang,
@@ -72,7 +62,6 @@ class Actions {
             templateType: type,
             templateContent: content
         };
-
         ApiActions.post(
             '/api/mappings/rml',
             data,
@@ -80,30 +69,24 @@ class Actions {
             Constants.GET_RML_TEMPLATE,
             Constants.GET_RML_TEMPLATE_RESPONSE,
             (err, response) => {
-
-
                 if (!err) {
-
                     //Write result to box, it was OK
                     editorBox.setText(response.mapping.dump);
                     templatePanel.closeModal();
                     templatePanel.setAutoremoveAlert();
                     this.getTemplatesFromRML(template,lang,response.mapping.dump);
                 }
-
             }
         );
     }
 
     //Used to update the template object used to show the template overview
     static getTemplatesFromRML(template,lang,dump){
-
         const data = {
             mappingName: template,
             mappingLang: lang,
             mappingDump: dump
         };
-
         ApiActions.post(
             '/api/mappings/templates',
             data,
@@ -116,7 +99,6 @@ class Actions {
 
     //Used to update the template object used to show the template overview
     static extractTriples(template,lang,dump,wikititle,format){
-
         const data = {
             mappingName: template,
             mappingLang: lang,
@@ -124,7 +106,6 @@ class Actions {
             wikititle,
             format
         };
-
         ApiActions.post(
             '/api/mappings/extract',
             data,
@@ -132,9 +113,6 @@ class Actions {
             Constants.GET_EXTRACTION_TRIPLES,
             Constants.GET_EXTRACTION_TRIPLES_RESPONSE
         );
-
     }
 }
-
-
 module.exports = Actions;

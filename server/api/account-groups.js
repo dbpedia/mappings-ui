@@ -3,15 +3,10 @@ const Boom = require('boom');
 const EscapeRegExp = require('escape-string-regexp');
 const Joi = require('joi');
 
-
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const AccountGroup = server.plugins['hapi-mongo-models'].AccountGroup;
-
-
     server.route({
         method: 'GET',
         path: '/account-groups',
@@ -34,8 +29,6 @@ internals.applyRoutes = function (server, next) {
             ]
         },
         handler: function (request, reply) {
-
-
             const query = {};
             if (request.query.name) {
                 query.name = new RegExp('^.*?' + EscapeRegExp(request.query.name) + '.*$', 'i');
@@ -49,17 +42,13 @@ internals.applyRoutes = function (server, next) {
             const page = request.query.page;
 
             AccountGroup.pagedFind(query, fields, sort, limit, page, (err, results) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 reply(results);
             });
         }
     });
-
-
 
     server.route({
         method: 'GET',
@@ -89,7 +78,6 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
 
     server.route({
         method: 'POST',
@@ -122,7 +110,6 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
 
     server.route({
         method: 'PUT',
@@ -168,7 +155,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'PUT',
         path: '/account-groups/{id}/permissions',
@@ -209,7 +195,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'DELETE',
         path: '/account-groups/{id}',
@@ -244,19 +229,13 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
-
     server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'account-groups'

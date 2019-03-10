@@ -4,15 +4,11 @@ const React = require('react');
 const PropTypes = require('prop-types');
 
 const propTypes = {
-
     credentials: PropTypes.object
-
 };
-
 
 class AdminPanelPage extends React.Component {
     render() {
-
         const neck = [
             <link key="layout" rel="stylesheet" href="/public/layouts/default.min.css" />,
             <link key="page" rel="stylesheet" href="/public/pages/adminpanel.min.css" />
@@ -32,7 +28,5 @@ class AdminPanelPage extends React.Component {
         );
     }
 }
-
-
 AdminPanelPage.propTypes = propTypes;
 module.exports = AdminPanelPage;

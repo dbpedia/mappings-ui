@@ -248,14 +248,10 @@ internals.applyRoutes = function (server, next) {
             }]
         },
         handler: function (request, reply) {
-
             const input = request.query.name.trim();
-
-
             if (input.length === 0) {   //Do not search if empty
                 reply([]);
             }
-
             const regex = '.*' + input + '.*';
             const filter = {
                 name: { '$regex': new RegExp(regex,'i') }
@@ -266,17 +262,13 @@ internals.applyRoutes = function (server, next) {
             const limit = 5;
 
             OntologyClass.pagedFind(filter,fields,sort,limit,1,(err,res) => {
-
                 if (err) {
                     return reply(Boom.internal(err));
                 }
-
                 reply(null,res.data);
             });
-
         }
     });
-
 
     server.route({
         method: 'GET',
@@ -373,21 +365,15 @@ internals.applyRoutes = function (server, next) {
             const limit = 5;
 
             OntologyProperty.pagedFind(filter,fields,sort,limit,1,(err,res) => {
-
                 if (err) {
                     return reply(Boom.internal(err));
                 }
-
                 reply(null,res.data);
             });
-
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
 
@@ -395,7 +381,6 @@ exports.register = function (server, options, next) {
 
     next();
 };
-
 
 exports.register.attributes = {
     name: 'search'

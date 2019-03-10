@@ -1,14 +1,11 @@
 'use strict';
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
+
 //Represents a Mapping Archived Version (basic information, without stats)
 class MappingHistory extends MongoModels {
-
-
-
     //Receives a mappingObject and a 'deleted' status
     static create(mappingObject,deleted,username,callback){
-
         const document = {
             _id: {
                 template: mappingObject._id.template,
@@ -25,7 +22,6 @@ class MappingHistory extends MongoModels {
             },
             deleted
         };
-
 
         if (deleted){
             document.deletion = {
@@ -44,12 +40,9 @@ class MappingHistory extends MongoModels {
         });
     }
 
-
     constructor(attrs) {
-
         super(attrs);
     }
-
 
     /**
      * Restores an archived mapping.
@@ -58,44 +51,35 @@ class MappingHistory extends MongoModels {
      * A new version is created with the contents of the restored one.
      */
     static restoreFromHistory(username,template,lang,version,callback){
-
         //1. Get document corresponding to rev
         MappingHistory.findOne({ _id: { template,lang,version } }, (err, archivedMapping) => {
-
             if (err){
                 return callback(err);
             }
 
-
             const Mapping = require('./mapping');
             //2. Get document from active mappings
             Mapping.findOne({ _id: { template,lang } }, (err,activeMapping) => {
-
                 if (err){
                     return callback(err);
                 }
 
                 if (activeMapping){ //If there is an already active mapping, just update it.
-
                     activeMapping.archive(false, username, (err,res) => { //Archive current mapping
-
                         if (err){
                             return callback(err);
                         }
-
-                        const newComment = archivedMapping.edition.comment + ' (Restored from version ' + archivedMapping._id.version + ').';
+                        const newComment = archivedMapping.edition.comment + ' (Restored from version '
+                            + archivedMapping._id.version + ').';
 
                         //Update current mapping
-                        activeMapping.update({ rml: archivedMapping.rml, status: archivedMapping.status },username,newComment, (err,updatedRes) => {
-
+                        activeMapping.update({ rml: archivedMapping.rml, status: archivedMapping.status },username,
+                            newComment, (err,updatedRes) => {
                             if (err) {
                                 return callback(err);
                             }
-
                             return callback(null,updatedRes);
-
                         });
-
                     });
                 }
 
@@ -106,24 +90,18 @@ class MappingHistory extends MongoModels {
                             return callback(err);
                         }
 
-                        MappingHistory.findOneAndUpdate({ _id: archivedMapping._id },{ $set:{ deleted:false } }, (err,res) => {
-
+                        MappingHistory.findOneAndUpdate({ _id: archivedMapping._id },{ $set:{ deleted:false } },
+                         (err,res) => {
                             if (err) {
                                 return callback(err);
                             }
                             return callback(null,result);
                         });
-
                     });
                 }
-
-
             });
-
         });
-
     }
-
 }
 
 
@@ -156,13 +134,8 @@ MappingHistory.schema = Joi.object().keys({
     })
 });
 
-
-
-
-
 MappingHistory.indexes = [
     { key: { _id: 1 } }
 ];
-
 
 module.exports = MappingHistory;

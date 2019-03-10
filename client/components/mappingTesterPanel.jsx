@@ -25,7 +25,6 @@ const propTypes = {
     error: PropTypes.string
 };
 
-
 const theme = {
     container: {
         position: 'relative',
@@ -70,11 +69,8 @@ const theme = {
     }
 };
 
-
 const getSuggestionValue = (suggestion) => suggestion.title;
-
 const renderSuggestion = (suggestion) => (
-
     <div>
         {suggestion.title}
     </div>
@@ -86,13 +82,11 @@ const unicodeToChar = function (text) {
             return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
         });
 };
+
 // Teach Autosuggest how to calculate suggestions for any given input value.
 class MappingTesterPanel extends React.Component {
-
-
     constructor(){
         super();
-
         this.state = {
             value: '',
             suggestions: [],
@@ -109,11 +103,8 @@ class MappingTesterPanel extends React.Component {
         this.setState({ format: event.target.value });
     }
 
-
     loadSuggestions(value) {
-
         if (this.state.cachedResults !== undefined) { //Get results from cache
-
             const result = this.state.cachedResults.filter((elem) => {
                 if (elem.title.toLowerCase().indexOf(value.toLowerCase()) > -1 ) {
                     return true;
@@ -145,15 +136,12 @@ class MappingTesterPanel extends React.Component {
                 },
                 xhrFields: { withCredentials: true },
                 success: function (response) {
-
-
                     if (!response || !response.query ) {
                         self.setState({ cachedResults : [] }, () => {
                             self.loadSuggestions(value);
                         });
                     }
                     else {
-
                         //Decode responses
                         const res = response.query.embeddedin;
                         for (let i = 0; i < res.length; ++i) {
@@ -163,18 +151,10 @@ class MappingTesterPanel extends React.Component {
                             self.loadSuggestions(value);
                         });
                     }
-
-
-
                 }
             });
         }
-
-
-
-
     }
-
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.showModal !== this.props.showModal) {
@@ -200,9 +180,6 @@ class MappingTesterPanel extends React.Component {
 
     };
 
-
-
-
     // Autosuggest will call this function every time you need to clear suggestions.
     onSuggestionsClearRequested(){
         this.setState({
@@ -215,22 +192,17 @@ class MappingTesterPanel extends React.Component {
     }
 
     extract(){
-
         this.props.action(this.props.template,this.props.lang,this.props.rml,this.state.value,this.state.format);
 
     }
 
-
     render() {
-
-
         const  { suggestions } = this.state;
         const inputProps = {
             placeholder: 'Wikipedia page title...',
             value: this.state.value,
             onChange: this.onChange.bind(this)
         };
-
 
         /*const tableBody = [];
         if (this.props.dump) {
@@ -242,9 +214,7 @@ class MappingTesterPanel extends React.Component {
         }*/
 
         return (
-
             <div className="panel panel-default">
-
                 <div className="panel-heading">
                     <h3 className="panel-title text-center"><b>Mapping test</b></h3>
                 </div>
@@ -274,7 +244,6 @@ class MappingTesterPanel extends React.Component {
 
                             <div className="row">
                                 <div className="col-sm-12">
-
                                     {this.state.format !== 'rdf-json' &&
                                         <Editor content={this.state.dump}
                                                 ref="editor"
@@ -301,17 +270,13 @@ class MappingTesterPanel extends React.Component {
                                         showGutter={false}
                                         editorProps={ { $blockScrolling: true } }
                                     />
-
                                     }
-
                                 </div>
                             </div>
                             <div className="row">
                             </div>
                             <div className="row">
                                 <div className="col-sm-12">
-
-
 {/*
                                     <textarea rows="20" value={this.state.dump} style={{ width: '100%', height:'90%',resize:'none' }}></textarea>
 */}
@@ -378,6 +343,5 @@ class MappingTesterPanel extends React.Component {
         );
     }
 }
-
 MappingTesterPanel.propTypes = propTypes;
 module.exports = MappingTesterPanel;

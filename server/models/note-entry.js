@@ -2,9 +2,7 @@
 const Joi = require('joi');
 const MongoModels = require('mongo-models');
 
-
 class NoteEntry extends MongoModels {}
-
 
 NoteEntry.schema = Joi.object().keys({
     data: Joi.string().required(),
@@ -14,6 +12,5 @@ NoteEntry.schema = Joi.object().keys({
         name: Joi.string().lowercase().required()
     }).required()
 });
-
 
 module.exports = NoteEntry;

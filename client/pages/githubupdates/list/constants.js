@@ -1,7 +1,6 @@
 'use strict';
 const FluxConstant = require('flux-constant');
 
-
 module.exports = FluxConstant.set([
     'GET_MAPPINGS_RESULTS',
     'GET_MAPPINGS_RESULTS_RESPONSE',

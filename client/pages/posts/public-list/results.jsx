@@ -7,18 +7,13 @@ const propTypes = {
     data: PropTypes.array
 };
 
-
 class Results extends React.Component {
     render() {
-
         const rows = this.props.data.map((record) => {
-
             return (
                 <tr key={record._id}>
-
                     <td><a href={'/posts/view/' + record.postId}>{record.title}</a></td>
                     <td>{record.lastEdition.username}, on {Moment(record.lastEdition.time).format('DD/MM hh:mm:ss') }</td>
-
                 </tr>
             );
         });
@@ -28,12 +23,8 @@ class Results extends React.Component {
                 <table className="table table-striped table-results">
                     <thead>
                         <tr>
-
                             <th>Title</th>
-
                             <th>Edited</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -44,8 +35,5 @@ class Results extends React.Component {
         );
     }
 }
-
 Results.propTypes = propTypes;
-
-
 module.exports = Results;

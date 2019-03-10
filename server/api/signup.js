@@ -5,15 +5,11 @@ const Config = require('../../config');
 const Joi = require('joi');
 const WebProtege = require('../../scripts/githubOntology/webprotegeDatabase');
 
-
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const Account = server.plugins['hapi-mongo-models'].Account;
     const Session = server.plugins['hapi-mongo-models'].Session;
-
 
     server.route({
         method: 'POST',
@@ -165,19 +161,13 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
-
     server.dependency(['mailer', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'signup'

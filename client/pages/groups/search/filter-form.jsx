@@ -5,14 +5,12 @@ const React = require('react');
 const SelectControl = require('../../../components/form/select-control.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     linkInputState: PropTypes.func,
     linkSelectState: PropTypes.func,
     onSubmitFilters: PropTypes.func,
     loading: PropTypes.bool,
     state: PropTypes.object
-
 };
 const defaultValues = {
     name: '',
@@ -21,10 +19,8 @@ const defaultValues = {
     page: '1'
 };
 
-
 class FilterForm extends React.Component {
     render() {
-
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -40,8 +36,6 @@ class FilterForm extends React.Component {
                                     value={this.props.state.sort}
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
-
-
                                     <option value="name">name &#9650;</option>
                                     <option value="-name">name &#9660;</option>
                                 </SelectControl>
@@ -86,8 +80,5 @@ class FilterForm extends React.Component {
         );
     }
 }
-
 FilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(FilterForm, defaultValues);

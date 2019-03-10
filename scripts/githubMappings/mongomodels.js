@@ -9,21 +9,17 @@ const Mapping = require('../../server/models/mapping.js');
 const MappingHistory = require('../../server/models/mapping-history.js');
 const URI = Config.get('/hapiMongoModels/mongodb/uri');
 
-
 let dbConnection;
 /**
  * Function to connect to DB. Reuses the same connection always.
  */
 const connectToDB = function (){
-
     if (dbConnection){
         return  Promise.resolve(dbConnection);
     }
 
     return new Promise((resolve,reject) => {
-
         MongoModels.connect(URI,{}, (err,db) => {
-
             if (err){
                 reject(err);
             }
@@ -36,49 +32,34 @@ const connectToDB = function (){
 
 };
 
-
 const setMappingStatus = function (template,lang,error,message){
-
     const query = { _id: { template,lang } };
     const update = { $set: { status: { error,message } } };
 
     return connectToDB()
         .then(() => {
-
             return new Promise((resolve,reject) => {
-
                 Mapping.findOneAndUpdate(query,update,(err,res) => {
-
                     if (err) {
                         return reject('Error updating mapping status');
                     }
-
-
                     //Mapping may be not found, maybe it was archived in the meanwhile... OK
                     return resolve('Mapping status updated');
-
                 });
             });
         });
-
-
-
 };
 /**
  * Deletes a mapping.
  */
 const deleteMapping = function (template,lang) {
-
     const query = { _id: { template, lang } };
     const username = 'GithubScript';
 
     return connectToDB()
         .then(() => {
-
             return new Promise((resolve,reject) => {
-
                 Mapping.findOne(query, (err, mapping) => {
-
                     if (err) {
                         return reject('Error retrieving mapping');
                     }
@@ -97,8 +78,6 @@ const deleteMapping = function (template,lang) {
 
                         resolve('OK');
                     });
-
-
                 });
             });
         });
@@ -108,19 +87,12 @@ const deleteMapping = function (template,lang) {
  * Creates a mapping. When imported from github, its status is set to OK
  */
 const createMapping = function (template,lang,rml,statsToInsert) {
-
     const comment = 'Imported from Github';
     const username = 'GithubScript';
-
-
     return connectToDB()
         .then(() => {
-
             return new Promise((resolve, reject) => {
-
                 Mapping.create(template,lang, rml, username,comment, (err, mapping) => {
-
-
                     if (err) {
                         return reject(err);
                     }
@@ -145,31 +117,24 @@ const createMapping = function (template,lang,rml,statsToInsert) {
                             resolve('OK');
                         }
                     });
-
-
                 });
             });
         });
-
 };
 
 /**
  * Updates or creates a mapping.
  */
 const updateOrCreate = function (template,lang,rml,statsToInsert) {
-
     return connectToDB()
         .then(() => {
-
             const _id = {
                 template,
                 lang
             };
 
             return new Promise((resolve,reject) => {
-
                 Mapping.findOne({ _id }, (err,mapping) => {
-
                     if (err){
                         return reject('Error while finding mapping');
                     }
@@ -189,7 +154,6 @@ const updateOrCreate = function (template,lang,rml,statsToInsert) {
                                 resolve();
                             });
                     }
-
                     resolve();
 
                 });
@@ -203,15 +167,11 @@ const updateOrCreate = function (template,lang,rml,statsToInsert) {
  * Searchs on active mappings. If deleted, searchs on history. If not found, no info.
  */
 const getChangeInfo = function (template,lang,deleted){
-
     return connectToDB()
         .then(() => {
-
             if (!deleted){
                 return new Promise((resolve, reject) => {
-
                     Mapping.findOne({ _id: { template, lang } }, (err, mapping) => {
-
                         if (err) {
                             return reject({ code: 'ERROR_GETTING_CHANGE_MESSAGE', msg: err });
                         }
@@ -248,45 +208,29 @@ const getChangeInfo = function (template,lang,deleted){
                         }
 
                         resolve({ username: mapping.deletion.username, message: 'Deleted mapping' });
-
                     });
-
-
                 });
-
             });
-
         });
-
-
 };
 
 /**
  * Updates a mapping
  */
 const updateMapping = function (template,lang,rml) {
-
     const comment = 'Updated from Github';
     const username = 'GithubScript';
-
-
     return connectToDB()
         .then(() => {
-
             return new Promise((resolve, reject) => {
-
                 const _id = {
                     template,
                     lang
                 };
                 const update = { rml };
 
-
-
                 /* First, find the document */
                 Mapping.findOne({ _id }, (err,mapping) => {
-
-
                     if (err){
                         return reject('Error while finding mapping');
                     }
@@ -318,17 +262,11 @@ const updateMapping = function (template,lang,rml) {
 
                                 return resolve(res2);
                             });
-
-
-
-
                         });
-
                     });
                 });
             });
         });
-
 };
 
 module.exports = {

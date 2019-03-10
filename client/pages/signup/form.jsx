@@ -4,57 +4,41 @@ const Alert = require('../../components/alert.jsx');
 const Button = require('../../components/form/button.jsx');
 const ControlGroup = require('../../components/form/control-group.jsx');
 const MappingLangSelector = require('../../components/mapping-lang-selector.jsx');
-
 const React = require('react');
 const Spinner = require('../../components/form/spinner.jsx');
 const Store = require('./store');
 const TextControl = require('../../components/form/text-control.jsx');
 
-
 class Form extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.input = {};
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
         if (this.input.name) {
             this.input.name.focus();
         }
-
         this.setState({ mappingsLang:'en' });
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     handleNewLanguage(newLang){
-
         this.setState( { mappingsLang:newLang } );
-
     }
 
-
     handleSubmit(event) {
-
-
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.sendRequest({
             name: this.input.name.value(),
             username: this.input.username.value(),
@@ -65,9 +49,7 @@ class Form extends React.Component {
     }
 
     render() {
-
         let alert = [];
-
         if (this.state.success) {
             alert = <Alert
                 type="success"
@@ -118,16 +100,10 @@ class Form extends React.Component {
                     help={this.state.help.password}
                     disabled={this.state.loading}
                 />
-
-
                 <MappingLangSelector
                     selectedLang={this.state.mappingsLang}
                     disabled={this.state.loading}
                     callback={this.handleNewLanguage.bind(this)}/>
-
-
-
-
                 <ControlGroup hideLabel={true} hideHelp={true}>
                     <Button
                         type="submit"
@@ -152,6 +128,4 @@ class Form extends React.Component {
         );
     }
 }
-
-
 module.exports = Form;

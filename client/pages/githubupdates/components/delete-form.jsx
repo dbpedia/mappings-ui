@@ -6,31 +6,24 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 
-
 const propTypes = {
     action: PropTypes.func,
     error: PropTypes.string,
     loading: PropTypes.bool
 };
 
-
 class DeleteForm extends React.Component {
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         if (!window.confirm('Are you sure?')) {
             return;
         }
-
         this.props.action();
     }
 
     render() {
-
         let alert;
-
         if (this.props.error) {
             alert = <Alert type="danger" message={this.props.error} />;
         }
@@ -67,8 +60,5 @@ class DeleteForm extends React.Component {
         );
     }
 }
-
 DeleteForm.propTypes = propTypes;
-
-
 module.exports = DeleteForm;

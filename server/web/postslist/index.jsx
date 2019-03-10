@@ -3,16 +3,12 @@ const Layout = require('../layouts/default.jsx');
 const React = require('react');
 const PropTypes = require('prop-types');
 
-
 const propTypes = {
-
     credentials: PropTypes.object
-
 };
 
 class PostsList extends React.Component {
     render() {
-
         const neck = [
             <link key="layout" rel="stylesheet" href="/public/layouts/default.min.css" />,
             <link key="page" rel="stylesheet" href="/public/pages/posts.min.css" />
@@ -33,8 +29,5 @@ class PostsList extends React.Component {
         );
     }
 }
-
-
 PostsList.propTypes = propTypes;
-
 module.exports = PostsList;

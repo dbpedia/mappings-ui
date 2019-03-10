@@ -3,14 +3,12 @@ const Actions = require('./actions');
 const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const ControlGroup = require('../../../components/form/control-group.jsx');
-
 const LinkState = require('../../../helpers/link-state.js');
 const Modal = require('../../../components/modal.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
-
 
 const propTypes = {
     error: PropTypes.string,
@@ -21,15 +19,11 @@ const propTypes = {
     show: PropTypes.bool,
     title: PropTypes.string,
     visible: PropTypes.bool
-
 };
-
 
 class CreateNewForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             title: '',
@@ -37,26 +31,19 @@ class CreateNewForm extends React.Component {
         };
     }
 
-
     componentDidUpdate() {
-
         if (this.props.show && this.state.title.length === 0 ) {
             this.els.title.focus();
         }
     }
 
-
     onVisibleChange(event){
-
         this.setState({ visible: event.target.value });
     }
 
-
     onSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.createNew({
             title: this.state.title,
             visible: this.state.visible,
@@ -65,9 +52,7 @@ class CreateNewForm extends React.Component {
     }
 
     render() {
-
         let alert;
-
         if (this.props.error) {
             alert = <Alert
                 type="danger"
@@ -87,7 +72,6 @@ class CreateNewForm extends React.Component {
                 help={this.props.help.title}
                 disabled={this.props.loading}
             />
-
 
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <b>Status:</b>
@@ -123,8 +107,5 @@ class CreateNewForm extends React.Component {
         );
     }
 }
-
 CreateNewForm.propTypes = propTypes;
-
-
 module.exports = CreateNewForm;

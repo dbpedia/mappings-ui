@@ -8,7 +8,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 
-
 const propTypes = {
     accountId: PropTypes.string,
     error: PropTypes.string,
@@ -18,12 +17,9 @@ const propTypes = {
     enabled: PropTypes.bool
 };
 
-
 class PermissionsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             permissions: props.permissions,
@@ -32,15 +28,12 @@ class PermissionsForm extends React.Component {
     }
 
     handleNewPermission() {
-
         const newPermission = this.els.newPermission.value.trim();
-
         if (!newPermission) {
             return;
         }
 
         const updatedPermissions = this.state.permissions;
-
         updatedPermissions[newPermission] = true;
 
         this.setState({
@@ -50,7 +43,6 @@ class PermissionsForm extends React.Component {
     }
 
     onEnterNewPermission(event) {
-
         if (event.which === 13) {
             event.preventDefault();
             event.stopPropagation();
@@ -60,44 +52,33 @@ class PermissionsForm extends React.Component {
     }
 
     handleTogglePermission(key) {
-
         const updatedPermissions = this.state.permissions;
-
         updatedPermissions[key] = !updatedPermissions[key];
-
         this.setState({
             permissions: updatedPermissions
         });
     }
 
     handleDeletePermission(key) {
-
         const updatedPermissions = this.state.permissions;
-
         delete updatedPermissions[key];
-
         this.setState({
             permissions: updatedPermissions
         });
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const id = this.props.accountId;
         const data = {
             permissions: this.state.permissions
         };
-
         Actions.savePermissions(id, data);
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -221,8 +202,5 @@ class PermissionsForm extends React.Component {
         );
     }
 }
-
 PermissionsForm.propTypes = propTypes;
-
-
 module.exports = PermissionsForm;

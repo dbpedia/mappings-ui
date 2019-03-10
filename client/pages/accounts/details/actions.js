@@ -4,11 +4,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
-
     static getDetails(id) {
-
         ApiActions.get(
             `/api/accounts/${id}`,
             undefined,
@@ -19,7 +16,6 @@ class Actions {
     }
 
     static getGroupOptions() {
-
         ApiActions.get(
             '/api/account-groups?limit=0',
             undefined,
@@ -29,17 +25,11 @@ class Actions {
         );
     }
 
-
-
     static getStatusOptions() {
-
-
         const query = {
             pivot: 'Account',
             limit: 99
         };
-
-
         ApiActions.get(
             '/api/statuses',
             query,
@@ -50,7 +40,6 @@ class Actions {
     }
 
     static saveDetails(id, data) {
-
         ApiActions.put(
             `/api/accounts/${id}`,
             data,
@@ -61,7 +50,6 @@ class Actions {
     }
 
     static changeActive(id, data) {
-
         ApiActions.put(
             `/api/accounts/${id}/active`,
             data,
@@ -72,14 +60,12 @@ class Actions {
     }
 
     static hideDetailsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_DETAILS_SAVE_SUCCESS
         });
     }
 
     static linkUser(id, data) {
-
         ApiActions.put(
             `/api/accounts/${id}/user`,
             data,
@@ -90,7 +76,6 @@ class Actions {
     }
 
     static unlinkUser(id) {
-
         ApiActions.delete(
             `/api/accounts/${id}/user`,
             undefined,
@@ -101,14 +86,12 @@ class Actions {
     }
 
     static hideUserSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_USER_SAVE_SUCCESS
         });
     }
 
     static saveGroups(id, data) {
-
         ApiActions.put(
             `/api/accounts/${id}/groups`,
             data,
@@ -119,14 +102,12 @@ class Actions {
     }
 
     static hideGroupsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_GROUPS_SAVE_SUCCESS
         });
     }
 
     static savePermissions(id, data) {
-
         ApiActions.put(
             `/api/accounts/${id}/permissions`,
             data,
@@ -137,14 +118,12 @@ class Actions {
     }
 
     static hidePermissionsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_PERMISSIONS_SAVE_SUCCESS
         });
     }
 
     static newStatus(id, data) {
-
         if (data.status === data.current.id) {
             return Store.dispatch({
                 type: Constants.NEW_STATUS_RESPONSE,
@@ -156,7 +135,6 @@ class Actions {
         }
 
         delete data.current;
-
         ApiActions.post(
             `/api/accounts/${id}/status`,
             data,
@@ -167,14 +145,12 @@ class Actions {
     }
 
     static hideStatusSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_STATUS_SAVE_SUCCESS
         });
     }
 
     static savePassword(id, data) {
-
         if (data.password !== data.passwordConfirm) {
             return Store.dispatch({
                 type: Constants.SAVE_PASSWORD_RESPONSE,
@@ -197,18 +173,15 @@ class Actions {
     }
 
     static hidePasswordSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_PASSWORD_SAVE_SUCCESS
         });
     }
 
     static newNote(id, newNote) {
-
         const data = {
             data: newNote
         };
-
         ApiActions.post(
             `/api/accounts/${id}/notes`,
             data,
@@ -219,14 +192,12 @@ class Actions {
     }
 
     static hideNoteSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_NOTE_SAVE_SUCCESS
         });
     }
 
     static delete(id, history) {
-
         ApiActions.delete(
             `/api/accounts/${id}`,
             undefined,
@@ -244,6 +215,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

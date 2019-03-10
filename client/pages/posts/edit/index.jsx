@@ -16,67 +16,44 @@ const propTypes = {
     user: PropTypes.object
 };
 
-
 class EditPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         Actions.getDetails(this.props.match.params.id);
-
         this.state = Store.getState();
-
-
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
-
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
-
         this.setState(Store.getState());
         const path = `/posts/edit/${this.state.details.postId}`;
         this.changeShownURL(path);
-
     }
 
-
-    changeShownURL(newPath){
-
+    changeShownURL(newPath) {
         if (this.props.history){
             this.props.history.replace(newPath);
         }
     }
 
     //Go to the view
-    cancelEditing(){
-
+    cancelEditing() {
         window.confirm('Are you sure? All unsaved changes will be lost.') &&
         this.props.history.push(`/posts/view/${this.state.details.postId}`);
-
     }
 
-
-
-
     remove(postId) {
-
         window.confirm('Are you sure? This action cannot be undone.') && Actions.delete(postId,this.props.history);
     }
 
-
     render() {
-
         if (!this.state.details.hydrated) {
             return (
                 <section className="container">
@@ -130,7 +107,6 @@ class EditPage extends React.Component {
                 <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}/>
                     <h1 >
-
                         <Link to="/posts">Posts</Link> / <Link to={'/posts/view/' + this.state.details.postId}>{title}</Link>
                     </h1>
                     {this.state.details.hydrated && <span>Last edited on { Moment(this.state.details.lastEdition.time).format('DD/MM/YYYY, HH:mm:ss') } by { this.state.details.lastEdition.username}</span>}
@@ -139,16 +115,11 @@ class EditPage extends React.Component {
 
                 <div className="row">
                     <div className="col-sm-8">
-
-
                         <DetailsForm {...this.state.details}/>
-
-
                     </div>
                     <div className="col-sm-4">
                         <h3 className="text-center"><i className="fa fa-info-circle fa-2x"></i></h3>
                         <p className="lead-little">
-
                             <br/>
                             Edit the post using the <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown language</a> and/or HTML. You can preview it clicking on the "Preview" tab without having to save.<br/>
                             <br/>When done, click "Save Changes", or click "Cancel" to discard your current changes.
@@ -161,8 +132,5 @@ class EditPage extends React.Component {
         );
     }
 }
-
 EditPage.propTypes = propTypes;
-
-
 module.exports = EditPage;

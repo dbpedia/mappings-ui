@@ -11,7 +11,6 @@ const ReactRouter = require('react-router-dom');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const Link = ReactRouter.Link;
 const propTypes = {
     accountId: PropTypes.string,
@@ -24,19 +23,15 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool
 };
 
-
 class UserForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             username: ''
         };
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
 
@@ -44,9 +39,7 @@ class UserForm extends React.Component {
             if (!window.confirm('Are you sure?')) {
                 return;
             }
-
             Actions.unlinkUser(this.props.accountId);
-
             this.setState({ username: '' });
         }
         else {
@@ -60,9 +53,7 @@ class UserForm extends React.Component {
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -147,8 +138,5 @@ class UserForm extends React.Component {
         );
     }
 }
-
 UserForm.propTypes = propTypes;
-
-
 module.exports = UserForm;

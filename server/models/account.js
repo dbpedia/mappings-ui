@@ -6,26 +6,19 @@ const Bcrypt = require('bcrypt');
 const Async = require('async');
 const NoteEntry = require('./note-entry');
 
-
 class Account extends MongoModels {
-
     static generatePasswordHash(password, callback) {
-
         Async.auto({
             salt: function (done) {
-
                 Bcrypt.genSalt(10, done);
             },
             hash: ['salt', function (results, done) {
-
                 Bcrypt.hash(password, results.salt, done);
             }]
         }, (err, results) => {
-
             if (err) {
                 return callback(err);
             }
-
             callback(null, {
                 password,
                 hash: results.hash
@@ -33,18 +26,13 @@ class Account extends MongoModels {
         });
     }
 
-
     //Receives the completa nem, username, password and email
     static create(completename,username, password, email, mappingsLang, callback) {
-
         const self = this;
-
         const nameParts = completename.trim().split(/\s/);
-
         Async.auto({
             passwordHash: this.generatePasswordHash.bind(this, password),
             newUser: ['passwordHash', function (results, done) {
-
                 const document = {
                     isActive: true,
                     username: username.toLowerCase(),
@@ -136,38 +124,28 @@ class Account extends MongoModels {
         });
     }
 
-
-
     constructor(attrs) {
-
         super(attrs);
-
         Object.defineProperty(this, '_groups', {
             writable: true,
             enumerable: false
         });
     }
 
-
     isMemberOf(group) {
-
         if (!this.groups) {
             return false;
         }
-
         return this.groups.hasOwnProperty(group);
     }
-
 
     //Retrieves the group objects from the database and returns them
     //Only if not cached
     hydrateGroups(callback) {
-
         if (!this.groups) {
             this._groups = {};
             return callback(null, this._groups);
         }
-
         if (this._groups) {
             return callback(null, this._groups);
         }
@@ -175,36 +153,27 @@ class Account extends MongoModels {
         const tasks = {};
 
         Object.keys(this.groups).forEach((group) => {
-
             tasks[group] = function (done) {
-
                 AccountGroup.findById(group, done);
             };
         });
 
-
         Async.auto(tasks, (err, results) => {
-
             if (err) {
                 return callback(err);
             }
-
             this._groups = results;
-
-
             callback(null, this._groups);
         });
     }
 
     //Returns whether the account has 'permission', either individual or because of a group
     hasPermissionTo(permission, callback) {
-
         if (this.permissions && this.permissions.hasOwnProperty(permission)) {
             return callback(null, this.permissions[permission]);
         }
 
         this.hydrateGroups((err) => {
-
             if (err) {
                 return callback(err);
             }
@@ -225,8 +194,6 @@ class Account extends MongoModels {
 
     //This functions puts all the permissions from the groups inside the permission attribute, for easy manipulating
     populatePermissionsFromGroups(callback) {
-
-
         this.hydrateGroups((err) => {
 
             if (err) {
@@ -250,13 +217,9 @@ class Account extends MongoModels {
             callback(null,this.permissions);
         });
     }
-
-
 }
 
-
 Account.collection = 'accounts';
-
 
 Account.schema = Joi.object().keys({
     _id: Joi.object(),
@@ -284,12 +247,10 @@ Account.schema = Joi.object().keys({
     })
 });
 
-
 Account.indexes = [
     { key: { _id: 1 } },
     { key: { username: 1, unique:1 } },
     { key: { email:1, unique:1 } }
 ];
-
 
 module.exports = Account;

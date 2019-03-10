@@ -7,7 +7,6 @@ as react-ace, as react-ace does not support turtle yet.
 const PropTypes = require('prop-types');
 const React = require('react');
 const ScriptLoader = require('react-async-script-loader').default;
-
 const propTypes = {
     content: PropTypes.string,
     onChange: PropTypes.func,
@@ -21,8 +20,6 @@ const propTypes = {
 };
 
 class Editor extends React.Component {
-
-
     constructor(){
         super();
         this.state = {};
@@ -33,14 +30,11 @@ class Editor extends React.Component {
             if (nextProps.isScriptLoadSucceed) {
                 this.initEditor();
             }
-
         }
 
         if (nextProps.content && nextProps.content !== this.props.content){
             this.setText(nextProps.content);
         }
-
-
     }
 
     setText(text) {
@@ -48,7 +42,6 @@ class Editor extends React.Component {
             this.state.editor.session.doc.setValue(text,0);
         }
     }
-
 
     initEditor(){
         const editor = ace.edit(this.props.id);
@@ -66,9 +59,6 @@ class Editor extends React.Component {
             highlightActiveLine: !this.props.readOnly
         };
 
-
-
-
         editor.getSession().on('change', () => {
             this.props.onChange(editor.getSession().getValue());
         });
@@ -84,17 +74,11 @@ class Editor extends React.Component {
         if (this.props.onLoad){
             this.props.onLoad(editor);
         }
-
     }
 
     render() {
-
-
-
         return (
-
             <div>
-
                 { !this.props.canExternallyChange &&
                     <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{this.props.content}</div>
                 }
@@ -102,20 +86,14 @@ class Editor extends React.Component {
                     <div className="editor" id={this.props.id} style={{ visibility: this.state.initialized ? 'visible' : 'hidden' }}>{}</div>
                 }
                     <i style={{ visibility: !this.state.initialized ? 'visible' : 'hidden' }}>Loading editor...</i>
-
-
             </div>
-
         );
     }
 }
-
-
 Editor.propTypes = propTypes;
 module.exports = ScriptLoader(
     [
         '/public/ace/ace.js'
-
     ],
     '/public/ace/mode-turtle.js',
     '/public/ace/ext-language_tools.js'

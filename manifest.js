@@ -2,11 +2,9 @@
 const Confidence = require('confidence');
 const Config = require('./config.js');
 
-
 const criteria = {
     env: process.env.NODE_ENV
 };
-
 
 const manifest = {
     $meta: 'This file defines the plot device.',
@@ -225,17 +223,12 @@ const manifest = {
     ]
 };
 
-
 const store = new Confidence.Store(manifest);
 
-
 exports.get = function (key) {
-
     return store.get(key, criteria);
 };
 
-
 exports.meta = function (key) {
-
     return store.meta(key, criteria);
 };

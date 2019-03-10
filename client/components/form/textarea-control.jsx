@@ -5,7 +5,6 @@ const ObjectAssign = require('object-assign');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     disabled: PropTypes.bool,
     hasError: PropTypes.bool,
@@ -19,20 +18,16 @@ const propTypes = {
     value: PropTypes.string
 };
 
-
 class TextareaControl extends React.Component {
     focus() {
-
         return this.input.focus();
     }
 
     value() {
-
         return this.input.value;
     }
 
     render() {
-
         const inputClasses = ClassNames(ObjectAssign({
             'form-control': true
         }, this.props.inputClasses));
@@ -57,8 +52,5 @@ class TextareaControl extends React.Component {
         );
     }
 }
-
 TextareaControl.propTypes = propTypes;
-
-
 module.exports = TextareaControl;

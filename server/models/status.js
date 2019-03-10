@@ -3,10 +3,8 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 const Slug = require('slug');
 
-
 class Status extends MongoModels {
     static create(pivot, name, callback) {
-
         const document = {
             _id: Slug(pivot + ' ' + name).toLowerCase(),
             pivot,
@@ -14,7 +12,6 @@ class Status extends MongoModels {
         };
 
         this.insertOne(document, (err, docs) => {
-
             if (err) {
                 return callback(err);
             }
@@ -24,12 +21,9 @@ class Status extends MongoModels {
     }
 }
 
-
 Status.collection = 'statuses';
 
-
 Status._idClass = String;
-
 
 Status.schema = Joi.object().keys({
     _id: Joi.string(),
@@ -37,11 +31,9 @@ Status.schema = Joi.object().keys({
     name: Joi.string().required()
 });
 
-
 Status.indexes = [
     { key: { pivot: 1 } },
     { key: { name: 1 } }
 ];
-
 
 module.exports = Status;

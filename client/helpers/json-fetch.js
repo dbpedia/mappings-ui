@@ -4,9 +4,7 @@ const Cookie = require('cookie');
 const Qs = require('qs');
 const Xhr = require('xhr');
 
-
 const jsonFetch = function (options, callback) {
-
     const cookies = Cookie.parse(document.cookie);
     const config = {
         url: options.url,
@@ -37,7 +35,6 @@ const jsonFetch = function (options, callback) {
     }
 
     Xhr(config, (err, response, body) => {
-
         if (err) {
             return callback(err);
         }
@@ -66,8 +63,5 @@ const jsonFetch = function (options, callback) {
     });
 };
 
-
 window.jsonFetch = jsonFetch;
-
-
 module.exports = jsonFetch;

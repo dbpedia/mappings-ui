@@ -5,7 +5,6 @@ const Template = require('./reducers/template');
 const Test = require('./reducers/test');
 const Redux = require('redux');
 
-
 module.exports = Redux.createStore(
     Redux.combineReducers({
         delete: Delete,

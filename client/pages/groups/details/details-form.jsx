@@ -9,7 +9,6 @@ const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     _id: PropTypes.string,
     error: PropTypes.string,
@@ -20,39 +19,31 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool
 };
 
-
 class DetailsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             name: props.name
         };
     }
 
     componentWillReceiveProps(nextProps) {
-
         this.setState({
             name: nextProps.name
         });
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const id = this.props._id;
         const data = {
             name: this.state.name
         };
-
         Actions.saveDetails(id, data);
     }
 
     render() {
-
         const alerts = [];
 
         if (this.props.showSaveSuccess) {
@@ -103,8 +94,5 @@ class DetailsForm extends React.Component {
         );
     }
 }
-
 DetailsForm.propTypes = propTypes;
-
-
 module.exports = DetailsForm;

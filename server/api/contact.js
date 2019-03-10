@@ -2,12 +2,9 @@
 const Config = require('../../config');
 const Joi = require('joi');
 
-
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     server.route({
         method: 'POST',
         path: '/contact',
@@ -43,19 +40,13 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
-
     server.dependency('mailer', internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'contact'

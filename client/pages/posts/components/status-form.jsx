@@ -7,7 +7,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 
-
 const propTypes = {
     current: PropTypes.object,
     error: PropTypes.string,
@@ -22,34 +21,26 @@ const propTypes = {
     successCloseAction: PropTypes.func
 };
 
-
 class StatusForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             newStatus: props.newStatus
         };
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const data = {
             current: this.props.current,
             status: this.state.newStatus
         };
-
         this.props.saveAction(data);
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -58,7 +49,6 @@ class StatusForm extends React.Component {
                 message="Success. Changes have been saved."
             />);
         }
-
         if (this.props.error) {
             alerts.push(<Alert
                 key="danger"
@@ -68,7 +58,6 @@ class StatusForm extends React.Component {
         }
 
         const statusOptions = this.props.options.map((status) => {
-
             return (
                 <option key={status._id} value={status._id}>
                     {status.name}
@@ -77,9 +66,7 @@ class StatusForm extends React.Component {
         });
 
         const statusHistory = this.props.log.map((status) => {
-
             const moment = Moment(status.timeCreated);
-
             return (
                 <li key={status.timeCreated} className="list-group-item">
                     <span
@@ -138,8 +125,5 @@ class StatusForm extends React.Component {
         );
     }
 }
-
 StatusForm.propTypes = propTypes;
-
-
 module.exports = StatusForm;

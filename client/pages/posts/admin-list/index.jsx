@@ -11,19 +11,15 @@ const Results = require('./results.jsx');
 const Store = require('./store');
 const Qs = require('qs');
 
-
 const propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
     user: PropTypes.object
 };
 
-
 class SearchPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         const query = Qs.parse(this.props.location.search.substring(1));
 
         //Get results from backend
@@ -34,51 +30,40 @@ class SearchPage extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         const query = Qs.parse(nextProps.location.search.substring(1));
-
         Actions.getResults(query);
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
         document.title = 'Post list | DBpedia Mappings UI';
-
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     onFiltersChange(event) {
-
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
-
         Actions.changeSearchQuery(this.els.filters.state, this.props.history);
     }
 
     onPageChange(page) {
-
         this.els.filters.changePage(page);
     }
 
     onNewClick() {
-
         Actions.showCreateNew();
     }
 
     render() {
-
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-plus" aria-hidden="true"></i>&nbsp;New Post</span>,
@@ -89,7 +74,6 @@ class SearchPage extends React.Component {
 
         return (
             <section className="container">
-
                 <div className="page-header">
                     <ButtonGroup float='right' buttons={buttons}  />
 
@@ -129,8 +113,5 @@ class SearchPage extends React.Component {
         );
     }
 }
-
 SearchPage.propTypes = propTypes;
-
-
 module.exports = SearchPage;

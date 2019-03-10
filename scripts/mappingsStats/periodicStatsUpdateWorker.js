@@ -15,7 +15,6 @@ let database;
  * Returns a database db object and the webprotege dbpedia project _id.
  */
 const connectToDB = function (){
-
     if (database){
         return Promise.resolve(database);
     }
@@ -23,29 +22,20 @@ const connectToDB = function (){
     //Returns a promise when everything is finished
     return MongoClient.connect(URI)
         .then((db) => {
-
             database = db; //Store database object
             return db;
-
         });
-
 };
 
-
-
 const updateStats = function (lang,content){
-
     //1. Connect to DB
     //2. For each one, update or insert, replacing
     return connectToDB()
         .then((db) => {
-
             const collection = db.collection('mappings');
             return collection;
-
         })
         .then((col) => {
-
             const promises = [];
             content.forEach((item) => {
 
@@ -73,33 +63,22 @@ const updateStats = function (lang,content){
             console.log(err);
             throw err;
         });
-
 };
 
-
 const doAction = function () {
-
     const updateDate = Moment(new Date()).format('DD/MM hh:mm:ss');
     console.log('* Starting stats update at ' + updateDate);
-
     const promises = [];
-
     Languages.forEach((lang) => {
-
         const p =
             EFInteraction.getStatistics(lang.tag)        //1.- Retrieve updated stats data from EF
                 .then((res) => {
-
                     return updateStats(lang.tag,res.statistics);
                 })
                 .catch(() => {
-
                 });
-
         promises.push(p);
     });
-
-
     return Promise.all(promises);
 };
 

@@ -10,7 +10,6 @@ const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     _id: PropTypes.string,
     error: PropTypes.string,
@@ -25,12 +24,9 @@ const propTypes = {
     mappingsLang: PropTypes.string
 };
 
-
 class DetailsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             name: props.name,
             username: props.username,
@@ -40,19 +36,13 @@ class DetailsForm extends React.Component {
         };
     }
 
-
     handleNewLanguage(newLang){
-
         this.setState( { mappingsLang:newLang } );
-
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
-
         const data = {
             name: this.state.name,
             email: this.state.email,
@@ -63,7 +53,6 @@ class DetailsForm extends React.Component {
     }
 
     render() {
-
         const alerts = [];
         const groups = [];
 
@@ -72,7 +61,6 @@ class DetailsForm extends React.Component {
                 groups.push(<span className="badge group-badge" key={key}>{this.props.groups[key]}</span>);
             }
         }
-
 
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
@@ -94,7 +82,6 @@ class DetailsForm extends React.Component {
         const formElements = <fieldset>
             <legend>Details</legend>
             {alerts}
-
             <TextControl
                 name="username"
                 label="Username"
@@ -146,12 +133,9 @@ class DetailsForm extends React.Component {
                 disabled={this.props.loading}
                 callback={this.handleNewLanguage.bind(this)}/>
 
-
             <ControlGroup hideLabel={true} hideHelp={true}>
             <span className="group-list"><b>Groups:</b> {groups}</span>
             </ControlGroup>
-
-
 
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
@@ -172,8 +156,5 @@ class DetailsForm extends React.Component {
         );
     }
 }
-
 DetailsForm.propTypes = propTypes;
-
-
 module.exports = DetailsForm;

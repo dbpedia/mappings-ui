@@ -7,27 +7,19 @@ const MongoModels = require('mongo-models');
  */
 class OntologyProperty extends MongoModels {
     static create(propertyObject,callback) { //propertyObject = {name,uri,range,domain}
-
-
         propertyObject.length = propertyObject.name.length;
-
         this.insertOne(propertyObject, (err, docs) => {
-
             if (err) {
                 return callback(err);
             }
-
             callback(null, docs[0]);
         });
     }
 }
 
-
 OntologyProperty.collection = 'ontologyProperties';
 
-
 OntologyProperty._idClass = String;
-
 
 OntologyProperty.schema = Joi.object().keys({
     name: Joi.string().required(),
@@ -41,15 +33,11 @@ OntologyProperty.schema = Joi.object().keys({
         name: Joi.string(),
         uri: Joi.string()
     })
-
 });
-
-
 
 OntologyProperty.indexes = [
     { key: { name: 1 } },
     { key: { uri: 1 } }
 ];
-
 
 module.exports = OntologyProperty;

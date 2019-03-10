@@ -5,7 +5,6 @@ const ObjectAssign = require('object-assign');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     children: PropTypes.node,
     defaultValue: PropTypes.string,
@@ -27,15 +26,12 @@ const defaultProps = {
     type: 'text'
 };
 
-
 class SelectControl extends React.Component {
     value() {
-
         return this.input.value;
     }
 
     render() {
-
         const inputClasses = ClassNames(ObjectAssign({
             'form-control': true
         }, this.props.inputClasses));
@@ -63,9 +59,6 @@ class SelectControl extends React.Component {
         );
     }
 }
-
 SelectControl.propTypes = propTypes;
 SelectControl.defaultProps = defaultProps;
-
-
 module.exports = SelectControl;

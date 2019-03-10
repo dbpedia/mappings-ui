@@ -54,5 +54,4 @@ const languages = [
     { tag: 'war', name: 'War' },
     { tag: 'zh', name: 'Chinese' }
 ];
-
 module.exports = languages;

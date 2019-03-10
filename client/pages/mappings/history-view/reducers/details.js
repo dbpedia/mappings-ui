@@ -3,7 +3,6 @@ const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
 
-
 const initialState = {
     hydrated: false,
     loading: false,
@@ -18,7 +17,6 @@ const initialState = {
     markdown: undefined
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_DETAILS) {
         return ObjectAssign({}, initialState, {
             hydrated: false,
@@ -28,8 +26,6 @@ const reducer = function (state = initialState, action) {
 
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const validation = ParseValidation(action.response);
-
-
         //oldComment will store the old comment, while edition.comment will store the new one
         const stateUpdates = {
             hydrated: true,
@@ -45,7 +41,6 @@ const reducer = function (state = initialState, action) {
             edition: action.response.edition
         };
 
-
         stateUpdates.edition.comment = '';
         return ObjectAssign({}, state, stateUpdates);
     }
@@ -57,13 +52,8 @@ const reducer = function (state = initialState, action) {
     }
 
     if (action.type === Constants.RESTORE_RESPONSE) {
-
         //TODO: Go to history of mapping
     }
-
-
     return state;
 };
-
-
 module.exports = reducer;

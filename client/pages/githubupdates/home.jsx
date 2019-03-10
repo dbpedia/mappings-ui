@@ -2,34 +2,26 @@
 const React = require('react');
 const Moment = require('moment');
 
-
 class HomePage extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = this.getThisMoment();
     }
 
     componentDidMount() {
-
         this.interval = setInterval(this.refreshTime.bind(this), 1000);
     }
 
     componentWillUnmount() {
-
         clearInterval(this.interval);
     }
 
     refreshTime() {
-
         this.setState(this.getThisMoment());
     }
 
     getThisMoment() {
-
         const thisMoment = Moment();
-
         return {
             second: thisMoment.format('ss'),
             minute: thisMoment.format('mm'),
@@ -41,7 +33,6 @@ class HomePage extends React.Component {
     }
 
     render() {
-
         return (
             <section className="section-home container">
                 <div className="row">
@@ -109,6 +100,4 @@ class HomePage extends React.Component {
         );
     }
 }
-
-
 module.exports = HomePage;

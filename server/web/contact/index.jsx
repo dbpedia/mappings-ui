@@ -3,18 +3,13 @@ const Layout = require('../layouts/default.jsx');
 const React = require('react');
 const PropTypes = require('prop-types');
 
-
 const propTypes = {
-
     credentials: PropTypes.object
-
 };
 
 class ContactPage extends React.Component {
     render() {
-
         const feet = <script src="/public/pages/contact.min.js"></script>;
-
         return (
             <Layout
                 title="Contact us"
@@ -39,6 +34,5 @@ class ContactPage extends React.Component {
         );
     }
 }
-
 ContactPage.propTypes = propTypes;
 module.exports = ContactPage;

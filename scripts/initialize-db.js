@@ -21,24 +21,17 @@ const editMappingsPage = 'This is a test page. Contents are used to illustrate h
 const editOntologyPage = 'This is an example page. Text is used to illustrate how help pages work.\r\n\r\n\r\n### How to add an ontology class\r\n---\r\n* Find a list of existing ontology classes via the sidebar (Ontology Classes) or have a look at the class hierarchy.\r\n* If you like to add a new ontology class, create a wiki page in the OntologyClass namespace. The page name has to be upper camel case.\r\n* Write a Class template defining the ontology class properties like label, super class etc..\r\n\r\n### How to add an ontology property\r\n---\r\n* Find a list of existing ontology properties via the sidebar (Ontology Properties).\r\n* If you like to add a new ontology property, create a wiki page in the OntologyProperty namespace. The page name has to be upper camel case.\r\n* Write a DatatypeProperty template or ObjectProperty template defining the ontology property.\r\n\r\n';
 
 Async.auto({
-
     testMongo: (done) => {
-
         Mongodb.MongoClient.connect(process.env.MONGODB_URI, {}, (err, db) => {
-
             if (err) {
                 console.error('Failed to connect to Mongodb.');
                 return done(err);
             }
-
             db.close();
             done(null, true);
         });
     },
     setupRootUser: ['testMongo',(results, done) => {
-
-
-
         const Account = require('../server/models/account');
         const AccountGroup = require('../server/models/account-group');
         const AuthAttempt = require('../server/models/auth-attempt');
@@ -47,7 +40,6 @@ Async.auto({
         const Post = require('../server/models/post');
         Async.auto({
             connect: function (done) {
-
                 MongoModels.connect(process.env.MONGODB_URI, {}, done);
             },
             clean: ['connect', (dbResults, done) => {
@@ -63,25 +55,17 @@ Async.auto({
             }],
 
             adminGroup: ['clean', function (dbResults, done) {
-
                 //Admin group has 111111111111111111111111 id
-
                 const document = {
                     _id: Account.ObjectId('111111111111111111111111'),
                     name: 'Admin'
                 };
-
                 AccountGroup.insertOne(document, (err, docs) => {
-
                     done(err, docs && docs[0]);
                 });
             }],
-
-
             accountGroup: ['clean', function (dbResults, done) {
-
                 //Account group has 000000000000000000000000 id
-
                 const document = {
                     _id: Account.ObjectId('000000000000000000000000'),
                     name: 'Account'
@@ -94,20 +78,15 @@ Async.auto({
             }],
             postEditorGroup: ['clean', function (dbResults, done) {
                 //Group with all needed permissions to operate with help posts
-
                 const document = {
                     name: 'Post Editors',
                     permissions: { 'can-list-posts':true,'can-create-posts':true,'can-remove-posts':true,'can-edit-posts':true }
                 };
-
                 AccountGroup.insertOne(document, (err, docs) => {
-
                     done(err, docs && docs[0]);
                 });
             }],
-
             homePost: ['clean', function (dbResults, done) {
-
                 const d = {
                     title: 'Home',
                     markdown: homePageText,
@@ -119,12 +98,8 @@ Async.auto({
 
                     done(err, docs);
                 });
-
-
-
             }],
             editOntologyPost: ['clean', function (dbResults, done) {
-
                 const d = {
                     title: 'How to edit the DBpedia ontology',
                     markdown: editOntologyPage,
@@ -133,15 +108,10 @@ Async.auto({
                 };
 
                 Post.create(d.title,d.markdown,d.username,d.visible, (err,docs) => {
-
                     done(err, docs);
                 });
-
-
-
             }],
             editMappingsPost: ['clean', function (dbResults, done) {
-
                 const d = {
                     title: 'How to edit DBpedia mappings',
                     markdown: editMappingsPage,
@@ -153,13 +123,9 @@ Async.auto({
 
                     done(err, docs);
                 });
-
-
-
             }],
 
             rootUser: ['clean', function (dbResults, done) {
-
                 Async.auto({
                     passwordHash: Account.generatePasswordHash.bind(this, rootpass)
                 }, (err, passResults) => {
@@ -198,30 +164,17 @@ Async.auto({
                 });
             }],
            /* addRootToWP: ['rootUser', function (dbResults, done) {
-
-
-
                 WPDatabase.addUser('admin','Admin',rootmail,rootpass)
                     .then((res) => {
-
                         console.log('Admin user added to WebProtege');
-
                         return WPDatabase.setAdmin('admin',true);
-
                     })
                     .then((res) => {
-
                         console.log('Admin user granted admin permissions in WebProtege');
                         done(undefined,res.result);
                     });
-
-
-
-
             }],*/
             regularUser: ['rootUser', function (dbResults, done) {
-
-
                 Async.auto({
                     passwordHash: Account.generatePasswordHash.bind(this, 'dbpedia')
                 }, (err, passResults) => {
@@ -250,38 +203,30 @@ Async.auto({
                         }
                     };
 
-
                     Account.insertOne(document, (err, docs) => {
-
                         if (!err){
                             console.error('Regular user added to normal DB');
                         }
-
                         done(err, docs && docs[0]);
                     });
                 });
             }]
         }, (err, dbResults) => {
-
             //console.log(dbResults);
-
             if (err) {
                 console.error(err);
                 console.error('Failed to setup root user.');
                 return done(err);
             }
-
             done(null, true);
         });
     }]
 }, (err, results) => {
-
     if (err) {
         console.error('Setup failed.');
         console.error(err);
         return process.exit(1);
     }
-
     console.error('Setup complete.');
     process.exit(0);
 });

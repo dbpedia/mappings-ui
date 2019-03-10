@@ -12,7 +12,6 @@ const Autosuggest = require('react-autosuggest');
 const JsonFetch = require('../../helpers/json-fetch');
 const Debounce = require('lodash').debounce;
 
-
 const theme = {
     container: {
         position: 'relative',
@@ -57,11 +56,8 @@ const theme = {
     }
 };
 
-
 const getSuggestionValue = (suggestion) => suggestion.name;
-
 const renderSuggestion = (suggestion) => (
-
     <div>
         <b>{suggestion.name}</b>
     </div>
@@ -74,25 +70,19 @@ const propTypes = {
     className: PropTypes.string,
     id: PropTypes.string
 };
+
 class ClassSearcherInput extends React.Component {
-
-
     constructor(){
         super();
-
         this.state = {
             value: '',
             suggestions: [],
             loading: false
         };
-
         this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),300);
-
-
     }
 
     loadSuggestions(value) {
-
         this.setState({
             isLoading: true
         });
@@ -100,7 +90,6 @@ class ClassSearcherInput extends React.Component {
         let result = [];
         const request = { method: 'GET', url: '/api/search/classes', query: { name: value } };
         JsonFetch(request, (err, response) => {
-
             if (err || !response){
                 result = [];
             }
@@ -114,29 +103,21 @@ class ClassSearcherInput extends React.Component {
                 suggestions: result
             });
         });
-
     }
-
 
     //Calls parent onChange with a simulated input event,
     //to mimic a normal input box
-    onChange(event, { newValue }){
-
-
+    onChange(event, {newValue}){
         const e = {
             target: {
                 value: newValue
             }
         };
-
         this.props.onChange(e);
-
     };
 
-
-    onSuggestionsFetchRequested({ value }){
+    onSuggestionsFetchRequested({value}){
         this.loadSuggestions(value);
-
     };
 
     // Autosuggest will call this function every time you need to clear suggestions.
@@ -146,9 +127,7 @@ class ClassSearcherInput extends React.Component {
         });
     };
 
-
     render() {
-
         theme.input = this.props.className;
 
         const  { suggestions } = this.state;
@@ -157,7 +136,6 @@ class ClassSearcherInput extends React.Component {
             value: this.props.value,
             onChange: this.onChange.bind(this)
         };
-
 
         return (
                 <Autosuggest

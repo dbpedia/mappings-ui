@@ -5,14 +5,8 @@ const Slug = require('slug');
 
 //Represents a Text Post written in markdown
 class Post extends MongoModels {
-
-
-
-
     //Receives the title, markdown, username, visible.
     static create(title,markdown, username, visible, callback) {
-
-
         const creationDate = new Date();
         if (!markdown){
             markdown = '';
@@ -39,41 +33,27 @@ class Post extends MongoModels {
             if (err) {
                 return callback(err);
             }
-
             callback(null, docs[0]);
         });
-
-
     }
-
-
 
     //Find by title. For that, uses the id and first slugs it.
     static findByTitle(title, callback) {
-
-
         const id = Slug(title).toLowerCase();
         const query = { 'postId': id };
-
         this.findOne(query, callback);
     }
 
     static idFromTitle(title){
-
         return Slug(title).toLowerCase();
 
     }
     constructor(attrs) {
-
         super(attrs);
     }
-
-
 }
 
-
 Post.collection = 'posts';
-
 
 Post.schema = Joi.object().keys({
     _id: Joi.object(),
@@ -91,12 +71,10 @@ Post.schema = Joi.object().keys({
     visible: Joi.boolean()
 });
 
-
 Post.indexes = [
     { key: { _id: 1 } },
     { key: { postId: 1, unique: 1 } },
     { key: { title: 1, unique:1 } }
 ];
-
 
 module.exports = Post;

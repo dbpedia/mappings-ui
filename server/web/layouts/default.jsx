@@ -3,7 +3,6 @@ const Navbar = require('./navbar.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     activeTab: PropTypes.string,
     children: PropTypes.node,
@@ -14,16 +13,7 @@ const propTypes = {
 };
 
 class DefaultLayout extends React.Component {
-
-
-
-
-
-
-
     render() {
-
-
         const userInfo = this.props.credentials ? this.props.credentials.user : undefined;
         //This inserts, in addition to the children, a hidden span with the JSON of user information
         //used to personalize the interface.
@@ -35,8 +25,6 @@ class DefaultLayout extends React.Component {
                 {this.props.children}
                 <span id="userInformation" style={ { display: 'none' } }>{JSON.stringify(userInfo)}</span>
             </div>;
-
-
 
         const year = new Date().getFullYear();
 
@@ -82,8 +70,5 @@ class DefaultLayout extends React.Component {
         );
     }
 }
-
 DefaultLayout.propTypes = propTypes;
-
-
 module.exports = DefaultLayout;

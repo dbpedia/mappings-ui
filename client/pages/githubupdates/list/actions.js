@@ -4,10 +4,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
     static getMappingsResults(data) {
-
         ApiActions.get(
             '/api/github-updates/mappings',
             data,
@@ -18,7 +16,6 @@ class Actions {
     }
 
     static getOntologyResults(data) {
-
         ApiActions.get(
             '/api/github-updates/ontology',
             data,
@@ -29,7 +26,6 @@ class Actions {
     }
 
     static clearHistory(history){
-
         ApiActions.delete(
             '/api/github-updates',
             {},
@@ -45,12 +41,9 @@ class Actions {
                 }
             }
         );
-
     }
 
     static changeMappingsSearchQuery(page,limit, history) {
-
-
         ApiActions.get(
             '/api/github-updates/mappings',
             { page,limit },
@@ -58,13 +51,10 @@ class Actions {
             Constants.GET_MAPPINGS_RESULTS,
             Constants.GET_MAPPINGS_RESULTS_RESPONSE
         );
-
         window.scrollTo(0, 0);
     }
 
     static changeOntologySearchQuery(page,limit, history) {
-
-
         ApiActions.get(
             '/api/github-updates/ontology',
             { page,limit },
@@ -72,13 +62,10 @@ class Actions {
             Constants.GET_ONTOLOGY_RESULTS,
             Constants.GET_ONTOLOGY_RESULTS_RESPONSE
         );
-
         window.scrollTo(0, 0);
     }
 
-
     static showDetailedError(record) {
-
         Store.dispatch({
             type: Constants.SHOW_DETAILED_ERROR,
             record
@@ -86,14 +73,12 @@ class Actions {
     }
 
     static hideDetailedError() {
-
         Store.dispatch({
             type: Constants.HIDE_DETAILED_ERROR
         });
     }
 
     static createNew(data, history) {
-
         ApiActions.post(
             '/api/posts',
             data,
@@ -115,6 +100,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

@@ -4,14 +4,12 @@ const Alert = require('../../../components/alert.jsx');
 const Button = require('../../../components/form/button.jsx');
 const ControlGroup = require('../../../components/form/control-group.jsx');
 const MappingLangSelector = require('../../../components/mapping-lang-selector.jsx');
-
 const LinkState = require('../../../helpers/link-state.js');
 const Modal = require('../../../components/modal.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 const Spinner = require('../../../components/form/spinner.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
-
 
 const propTypes = {
     error: PropTypes.string,
@@ -22,15 +20,11 @@ const propTypes = {
     show: PropTypes.bool,
     template: PropTypes.string,
     lang: PropTypes.string
-
 };
-
 
 class CreateNewForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
         this.state = {
             template: '',
@@ -38,27 +32,20 @@ class CreateNewForm extends React.Component {
         };
     }
 
-
     componentDidUpdate() {
-
         if (this.props.show && this.state.template.length === 0 ) {
             this.els.template.focus();
         }
     }
 
-
     onLangChange(event){
-
         this.setState({ lang: event.target.value });
     }
 
-
     onSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
         const templateName = this.state.template.replace(/ /g, '-');
-
         Actions.createNew({
             template: templateName,
             lang: this.state.lang,
@@ -68,9 +55,7 @@ class CreateNewForm extends React.Component {
     }
 
     render() {
-
         let alert;
-
         if (this.props.error) {
             alert = <Alert
                 type="danger"
@@ -91,16 +76,13 @@ class CreateNewForm extends React.Component {
                 disabled={this.props.loading}
             />
 
-
             <MappingLangSelector
                 selectedLang={this.state.lang}
                 disabled={this.state.loading}
                 disableAll={true}
                 onChange={this.onLangChange.bind(this)}/>
 
-
             <ControlGroup hideLabel={true} hideHelp={true}>
-
                 <Button
                     type="submit"
                     inputClasses={{ 'btn-primary': true }}
@@ -125,8 +107,5 @@ class CreateNewForm extends React.Component {
         );
     }
 }
-
 CreateNewForm.propTypes = propTypes;
-
-
 module.exports = CreateNewForm;

@@ -22,14 +22,8 @@ const defaultValues = {
     page: '1'
 };
 
-
 class FilterForm extends React.Component {
-
-
     render() {
-
-
-
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -45,15 +39,12 @@ class FilterForm extends React.Component {
                                     value={this.props.state.sort}
                                     onChange={this.props.linkSelectState}
                                     disabled={this.props.loading}>
-
                                     <option value="_id.template">name &#9650;</option>
                                     <option value="-_id.template">name &#9660;</option>
                                     <option value="_id.lang">language &#9650;</option>
                                     <option value="-_id.lang">language &#9660;</option>
                                     <option value="status.message">status &#9650;</option>
                                     <option value="-status.message">status &#9660;</option>
-
-
                                 </SelectControl>
                             </div>
 
@@ -106,17 +97,10 @@ class FilterForm extends React.Component {
                                 </SelectControl>
                             </div>
                         </div>
-
-
-
-
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <button type="button" className="btn btn-primary btn-block" onClick={this.props.onSubmitFilters} disabled={this.props.loading}>Apply Filters</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -124,8 +108,5 @@ class FilterForm extends React.Component {
         );
     }
 }
-
 FilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(FilterForm, defaultValues);

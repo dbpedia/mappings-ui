@@ -10,19 +10,15 @@ const Results = require('./results.jsx');
 const Store = require('./store');
 const Qs = require('qs');
 
-
 const propTypes = {
     history: PropTypes.object,
     location: PropTypes.object,
     user: PropTypes.object
 };
 
-
 class SearchPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         const query = Qs.parse(this.props.location.search.substring(1));
 
         //Get results from backend
@@ -33,81 +29,64 @@ class SearchPage extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         Actions.getMappingsResults();
         Actions.getOntologyResults();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     onMappingsFiltersChange(event) {
-
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
 
         this.setState({ mappingsQuery:this.els.mappingsFilters.state }, () => {
-
-            Actions.changeMappingsSearchQuery(this.state.mappingsQuery.page,
-                this.state.mappingsQuery.limit, this.props.history);
+            Actions.changeMappingsSearchQuery(this.state.mappingsQuery.page,this.state.mappingsQuery.limit,
+            this.props.history);
         });
-
-
     }
 
     onOntologyFiltersChange(event) {
-
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
-
         this.setState({ ontologyQuery:this.els.ontologyFilters.state }, () => {
-
-            Actions.changeOntologySearchQuery(this.state.ontologyQuery.page,
-                this.state.ontologyQuery.limit, this.props.history);
+            Actions.changeOntologySearchQuery(this.state.ontologyQuery.page,this.state.ontologyQuery.limit,
+            this.props.history);
         });
 
     }
 
     onMappingsPageChange(page) {
-
         this.els.mappingsFilters.changePage(page);
     }
 
     onOntologyPageChange(page) {
-
         this.els.ontologyFilters.changePage(page);
     }
 
     onDetailedErrorClick(record) {
-
-
         Actions.showDetailedError(record);
     }
 
     onClearClick(){
-
         window.confirm('Are you sure? This cannot be undone') &&
         Actions.clearHistory(this.props.history);
     }
 
     render() {
-
         const buttons = [
             { type: 'btn-danger',
                 text: <span><i className="fa fa-trash" aria-hidden="true"></i>&nbsp;Clear updates history</span>,
@@ -172,8 +151,5 @@ class SearchPage extends React.Component {
         );
     }
 }
-
 SearchPage.propTypes = propTypes;
-
-
 module.exports = SearchPage;

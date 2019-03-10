@@ -10,10 +10,7 @@ const propTypes = {
     loading: PropTypes.bool
 };
 class AddTemplatePanel extends React.Component {
-
-
     constructor(){
-
         super();
         this.state = {
             showModal: false,
@@ -22,8 +19,6 @@ class AddTemplatePanel extends React.Component {
             successAlert: false,
             loading: false
         };
-
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -39,27 +34,19 @@ class AddTemplatePanel extends React.Component {
         if (nextProps.loading !== this.props.loading) {
             this.setState({ loading: nextProps.loading });
         }
-
     }
 
     setAutoremoveAlert(){
-
-
-
-
         const self = this;
         setTimeout(() => {
             self.setState({ errorAlert:false, successAlert: false });
         },5000);
-
     }
     selectHandler(event){
-
         this.setState({ templateType:event.target.value });
     }
 
     showTemplateModal(){
-
         this.setState({ showModal:true });
     }
 
@@ -70,7 +57,6 @@ class AddTemplatePanel extends React.Component {
     }
 
     onTemplateFinish(save,childType,content){
-
         //Here, I have to hide the error
         this.setState({errorAlert:false,successAlert:false});
 
@@ -83,19 +69,10 @@ class AddTemplatePanel extends React.Component {
             this.refs.child.eraseState();
             this.setState({showModal: false});
         }
-
-
-
-
     }
 
-
-
     render() {
-
-
         return (
-
             <div className="panel panel-default">
                 <div className="templateModalWrapper">
                     <Modal
@@ -118,9 +95,7 @@ class AddTemplatePanel extends React.Component {
                                         ref: 'child',
                                         childLevel: 0 })
                             };
-
                         </div>
-
                     </Modal>
                 </div>
                 <div className="panel-heading">
@@ -164,6 +139,5 @@ class AddTemplatePanel extends React.Component {
         );
     }
 }
-
 AddTemplatePanel.propTypes = propTypes;
 module.exports = AddTemplatePanel;

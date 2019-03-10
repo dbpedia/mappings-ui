@@ -3,16 +3,12 @@ const Layout = require('../layouts/default.jsx');
 const React = require('react');
 const PropTypes = require('prop-types');
 
-
 const propTypes = {
-
     credentials: PropTypes.object
-
 };
 
 class GithubUpdates extends React.Component {
     render() {
-
         const neck = [
             <link key="layout" rel="stylesheet" href="/public/layouts/default.min.css" />,
             <link key="page" rel="stylesheet" href="/public/pages/githubupdates.min.css" />
@@ -34,7 +30,5 @@ class GithubUpdates extends React.Component {
     }
 }
 
-
 GithubUpdates.propTypes = propTypes;
-
 module.exports = GithubUpdates;

@@ -15,7 +15,6 @@ const propTypes = {
     content: PropTypes.object,
     isFallback: PropTypes.bool
 };
-
 const name = 'ConditionalTemplate';
 const required = ['property','value','operator'];
 const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','StartDateTemplate', 'EndDateTemplate','ConstantTemplate'];
@@ -24,24 +23,17 @@ const possibleChildren = ['SimplePropertyTemplate','GeocoordinateTemplate','Star
  * Possible children: PropertyMapping, IntermediateNodeMapping, CustomMapping
  */
 class RowConditionalTemplate extends React.Component {
-
-
     //this.state.content has TemplateMapping content
     constructor(props){
-
         super(props);
         this.state = this.getNewState();
-
-
         //In edit mode
         if (this.props.content) {
             this.state.content = this.props.content;
         }
-
     }
 
     getNewState(){
-
         return  {
             content: {
                 name,
@@ -71,12 +63,10 @@ class RowConditionalTemplate extends React.Component {
         };
     }
 
-
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters[attribute] = value;
@@ -85,21 +75,17 @@ class RowConditionalTemplate extends React.Component {
     }
 
     handleOperatorChange(event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters.condition.operator = value;
         this.setState({ content });
-
     }
 
     handleConditionParametersChange(attribute,event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters.condition.parameters[attribute] = value;
         this.setState({ content });
-
     }
 
     /**
@@ -107,40 +93,31 @@ class RowConditionalTemplate extends React.Component {
      * Called by: this method.
      */
     showChild(type){
-
         this.setState({ hasChild:true,childType:type,isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
 
     showEditChild(type,index){
-
         this.setState({ hasChild:true,childType:type,editingChild:index,isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
 
     showFallbackChild(){
-
         this.setState({ hasChild:true,hasFallback: true,childType:'ConditionalTemplate',isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
 
     editFallbackChild(){
-
-        this.setState({ hasChild:true,hasFallback: true, editingFallback: true,childType:'ConditionalTemplate',isCollapsed: true });
+        this.setState({ hasChild:true,hasFallback: true, editingFallback: true,childType:'ConditionalTemplate',
+            isCollapsed: true });
         //When hasChild = true, the div is disabled
-
     }
-
 
     /**
      * Returns the current child component, and empty if none.
      * Called by: this method.
      */
     currentChild(){
-
         if (!this.state.hasChild){
             return undefined;
         }
@@ -154,9 +131,9 @@ class RowConditionalTemplate extends React.Component {
                     childLevel: this.props.childLevel + 1,
                     content: this.state.content.parameters.fallback });
             }
-            return React.createFactory(require('./' + this.state.childType))({ isFallback: true, onClose: this.onFallbackChildClose.bind(this), ref: 'child',childLevel: this.props.childLevel + 1 });
+            return React.createFactory(require('./' + this.state.childType))({ isFallback: true,
+             onClose: this.onFallbackChildClose.bind(this), ref: 'child',childLevel: this.props.childLevel + 1 });
         }
-
 
         if (this.state.editingChild >= 0){
             return React.createFactory(require('./' + this.state.childType))({
@@ -166,14 +143,9 @@ class RowConditionalTemplate extends React.Component {
                 content: this.state.content.parameters.templates[this.state.editingChild]
             });
         }
-
-        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this),  ref: 'child',childLevel: this.props.childLevel + 1 });
-
-
+        return React.createFactory(require('./' + this.state.childType))({ onClose: this.onChildClose.bind(this),
+         ref: 'child',childLevel: this.props.childLevel + 1 });
     }
-
-
-
 
     /**
      * Called when child saves it state, so we incorporate its state into ours.
@@ -193,11 +165,9 @@ class RowConditionalTemplate extends React.Component {
         c.isCollapsed = false;
         this.setState(c);                   //Set state
         this.refs.child.eraseState();
-
     }
 
     onEditedChildClose(index,save,childType,content){
-
         const c = { ...this.state.content };
         if (save){
             c.parameters.templates[index] = content;       //Add child content as mapping
@@ -209,13 +179,9 @@ class RowConditionalTemplate extends React.Component {
         c.childType = undefined;            //Erase child type
         this.refs.child.eraseState();
         this.setState(c);                   //Set state
-
     }
 
-
-
     onFallbackChildClose(save,childType,content){
-
         const c = { ...this.state.content };
         if (save){
             c.parameters.fallback = content;       //Add child content as mapping
@@ -226,12 +192,9 @@ class RowConditionalTemplate extends React.Component {
         c.childType = undefined;            //Erase child type
         this.setState(c);                   //Set state
         this.refs.child.eraseState();
-
     }
 
-
     createAlias(){
-
         return name + ' (' + this.state.content.parameters.class + ')';
     }
 
@@ -240,17 +203,15 @@ class RowConditionalTemplate extends React.Component {
      * Called by: this component.
      */
     onMeClose(save){
-
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
-
             const fieldName = required[i];
             if (this.state.content.parameters.condition.operator === 'IsSet' && fieldName === 'value'){
                 continue;
             }
-
-            if (this.state.content.parameters.condition.operator === 'Otherwise' && (fieldName === 'value' || fieldName === 'property')){
+            if (this.state.content.parameters.condition.operator === 'Otherwise' && (fieldName === 'value'
+                    || fieldName === 'property')){
                 continue;
             }
             let field = this.state.content.parameters[fieldName];
@@ -277,43 +238,33 @@ class RowConditionalTemplate extends React.Component {
             }
         }
 
-
-
-
         this.setState({ errors });
         if (save && hasError){
             console.log('returning');
             return;
         }
 
-
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
-
         //Todo: Check certain conditions, such as put condition to null when empty, check that if operator is set,
         //then other things have to be set...
         const c = { ...this.state.content };
         c._alias = this.createAlias();
         this.props.onClose(save,name,c);
-
-
     }
 
     /**
      * Removes a template from the children template list
      */
     removeTemplate(index){
-
         const c = { ...this.state.content };
         c.parameters.templates.splice(index,1);
         this.setState({ content:c });
     }
 
     removeFallback(){
-
         const allowed = window.confirm('Are you sure? Fallback data can\'t be recovered.');
-
         if (!allowed) {
             return;
         }
@@ -323,16 +274,13 @@ class RowConditionalTemplate extends React.Component {
     }
 
     toggleCollapse(){
-
         this.setState({ isCollapsed: !this.state.isCollapsed });
     }
 
     operatorSelectHandler(event){
-
         const content = { ...this.state.content };
         content.parameters.condition.operator = event.target.value;
         this.setState({ content });
-
     }
 
     eraseState(){
@@ -340,7 +288,6 @@ class RowConditionalTemplate extends React.Component {
     }
 
     render(){
-
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
@@ -356,13 +303,10 @@ class RowConditionalTemplate extends React.Component {
             }
         ];
 
-
         return (
-
             <div style={ { marginLeft: this.props.childLevel * 5 + 'px' } }>
                 <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
-
                             <h5 className="panel-title pull-left" style={{ paddingTop: '7.5px' }}>
                                 {
                                     this.state.hasChild &&
@@ -375,11 +319,7 @@ class RowConditionalTemplate extends React.Component {
                                     !this.state.hasChild &&
                                     <span>Conditional Template</span>
                                 }
-
                             </h5>
-
-
-
                         <ButtonGroup float='right' buttons={buttons}  />
                     </div>
                     <Collapse in={!this.state.isCollapsed}>
@@ -431,18 +371,16 @@ class RowConditionalTemplate extends React.Component {
 
                         </div>
 
-
-
                         <hr/>
                         <div className="row">
-
                             {/* Condition */}
                             <div className="col-sm-6">
-
                                 <h4>Condition</h4>
                                 <form className="form-horizontal" onSubmit={(event) => event.preventDefault()}>
                                     <div className="form-group">
-                                        <label className="control-label col-sm-2" htmlFor="operator">Operator{required.indexOf('operator') > -1 ? '*' : ''}</label>
+                                        <label className="control-label col-sm-2" htmlFor="operator">
+                                            Operator{required.indexOf('operator') > -1 ? '*' : ''}
+                                        </label>
                                         <div className="col-sm-10">
                                             <select
                                                 className={'form-control ' + (this.state.errors.operator ? 'error' : '')}
@@ -452,7 +390,8 @@ class RowConditionalTemplate extends React.Component {
                                                     <option value="IsSet">IsSet</option>
                                                     <option value="Equals">Equals</option>
                                                     <option value="Contains">Contains</option>
-                                                    { this.props.isFallback && <option value="Otherwise">Otherwise</option> }
+                                                    { this.props.isFallback && <option value="Otherwise">
+                                                        Otherwise</option> }
                                             </select>
                                         </div>
                                     </div>
@@ -486,7 +425,6 @@ class RowConditionalTemplate extends React.Component {
                                         </div>
                                     }
 
-
                                 </form>
                             </div>
 
@@ -508,15 +446,8 @@ class RowConditionalTemplate extends React.Component {
                 </div>
                 {this.currentChild()}
             </div>
-
-
         );
     }
-
-
 }
-
 RowConditionalTemplate.propTypes = propTypes;
-
-
 module.exports = RowConditionalTemplate;

@@ -12,14 +12,8 @@ const propTypes = {
     credentials: PropTypes.object
 };
 
-
-
-
 class Navbar extends React.Component {
-
-
     constructor(props){
-
         super(props);
         this.state = {
             isAuthenticated: this.props.credentials && this.props.credentials.user,
@@ -27,43 +21,30 @@ class Navbar extends React.Component {
             isAdmin: this.props.credentials && this.props.credentials.user && '111111111111111111111111' in this.props.credentials.user.groups,
             permissions: this.props.credentials && this.props.credentials.user && this.props.credentials.user.permissions,
             language: this.props.credentials && this.props.credentials.user && this.props.credentials.user.mappingsLang
-
         };
-
-
     }
 
-
     tabClass(tab) {
-
         return ClassNames({
             active: this.props.activeTab === tab
         });
     }
 
-
-
     getUserLanguage(){
-
         if (this.state.isAuthenticated){
             if (!this.state.language){
                 return '';
             }
             return this.state.language;
         }
-
         return 'en';
-
     }
 
     hasPermission(perm){
-
         return this.state.permissions && this.state.permissions[perm];
     }
 
     render() {
-
-
         return (
             <div className="navbar navbar-default navbar-fixed-top">
 
@@ -143,8 +124,5 @@ class Navbar extends React.Component {
         );
     }
 }
-
 Navbar.propTypes = propTypes;
-
-
 module.exports = Navbar;

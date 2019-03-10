@@ -5,16 +5,12 @@ const Boom = require('boom');
 const Config = require('../../config');
 const Joi = require('joi');
 
-
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const AuthAttempt = server.plugins['hapi-mongo-models'].AuthAttempt;
     const Session = server.plugins['hapi-mongo-models'].Session;
     const Account = server.plugins['hapi-mongo-models'].Account;
-
 
     server.route({
         method: 'POST',
@@ -29,47 +25,36 @@ internals.applyRoutes = function (server, next) {
             pre: [{
                 assign: 'abuseDetected',
                 method: function (request, reply) {
-
                     const ip = request.info.remoteAddress;
                     const username = request.payload.username;
-
                     AuthAttempt.abuseDetected(ip, username, (err, detected) => {
-
                         if (err) {
                             return reply(err);
                         }
-
                         if (detected) {
                             return reply(Boom.badRequest('Maximum number of auth attempts reached. Please try again later.'));
                         }
-
                         reply();
                     });
                 }
             }, {
                 assign: 'user',
                 method: function (request, reply) {
-
                     const username = request.payload.username;
                     const password = request.payload.password;
-
                     Account.findByCredentials(username, password, (err, user) => {
-
                         if (err) {
                             return reply(err);
                         }
-
                         reply(user);
                     });
                 }
             }, {
                 assign: 'logAttempt',
                 method: function (request, reply) {
-
                     if (request.pre.user) {
                         return reply();
                     }
-
                     const ip = request.info.remoteAddress;
                     const username = request.payload.username;
 
@@ -310,14 +295,10 @@ internals.applyRoutes = function (server, next) {
     next();
 };
 
-
 exports.register = function (server, options, next) {
-
     server.dependency(['mailer', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'login'

@@ -9,40 +9,31 @@ const Store = require('./store');
 const TextControl = require('../../components/form/text-control.jsx');
 const TextareaControl = require('../../components/form/textarea-control.jsx');
 
-
 class Form extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.input = {};
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
         if (this.input.name) {
             this.input.name.focus();
         }
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.sendMessage({
             name: this.input.name.value(),
             email: this.input.email.value(),
@@ -51,7 +42,6 @@ class Form extends React.Component {
     }
 
     render() {
-
         let alert = [];
 
         if (this.state.success) {
@@ -120,6 +110,4 @@ class Form extends React.Component {
         );
     }
 }
-
-
 module.exports = Form;

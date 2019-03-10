@@ -2,8 +2,6 @@
 const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
-
-
 const initialState = {
     loading: false,
     showSaveSuccess: false,
@@ -45,9 +43,6 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

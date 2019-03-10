@@ -2,12 +2,8 @@
 const Gulp = require('gulp');
 const Nodemon = require('gulp-nodemon');
 
-
-
 Gulp.task('nodemon', () => {
-
     const nodeArgs = ['--inspect'];
-
     if (process.env.DEBUGGER) {
         nodeArgs.push('--debug');
     }
@@ -24,7 +20,6 @@ Gulp.task('nodemon', () => {
         nodeArgs
     })
     .on('restart', (files) => {
-
         console.log('change detected:', files);
     });
 });

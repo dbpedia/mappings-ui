@@ -6,12 +6,8 @@ const Joi = require('joi');
 const WebProtege = require('../../scripts/githubOntology/webprotegeDatabase');
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const Account = server.plugins['hapi-mongo-models'].Account;
-
-
     server.route({
         method: 'GET',
         path: '/accounts',
@@ -31,11 +27,9 @@ internals.applyRoutes = function (server, next) {
                     limit: Joi.number().default(20),
                     page: Joi.number().default(1)
                 }
-
             }
         },
         handler: function (request, reply) {
-
             const query = {};
             if (request.query.username) {
                 query.username = new RegExp('^.*?' + EscapeRegExp(request.query.username) + '.*$', 'i');
@@ -63,27 +57,19 @@ internals.applyRoutes = function (server, next) {
                     query['name.middle'] = new RegExp('^.*?' + EscapeRegExp(nameParts[1]) + '.*$', 'i');
                     query['name.last'] = new RegExp('^.*?' + EscapeRegExp(nameParts[2]) + '.*$', 'i');
                 }
-
-
             }
-
-
             const fields = Account.fieldsAdapter('_id isActive username name email timeCreated timeLastLogin groups permissions mappingsLang');
             const sort = request.query.sort;
             const limit = request.query.limit;
             const page = request.query.page;
-
             Account.pagedFind(query, fields, sort, limit, page, (err, results) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 reply(results);
             });
         }
     });
-
 
     server.route({
         method: 'GET',
@@ -95,10 +81,8 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
             const fields = Account.fieldsAdapter('_id isActive username name email timeCreated timeLastLogin groups permissions mappingsLang');
             Account.findById(request.params.id, fields, (err, account) => {
-
                 if (err) {
                     return reply(err);
                 }
@@ -112,7 +96,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'GET',
         path: '/accounts/my',
@@ -123,10 +106,8 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
             const id = request.auth.credentials.user._id.toString();
             const fields = Account.fieldsAdapter('username name email timeCreated timeLastLogin groups mappingsLang');
-
             Account.findById(id, fields, (err, account) => {
 
                 if (err) {
@@ -141,7 +122,6 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
 
     /*
      * Create a new account. Requires username, email, password, and name
@@ -285,7 +265,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     /**
      * Modify groups of an account
      */
@@ -343,12 +322,9 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(err);
                     });
-
-
             });
         }
     });
-
 
     /**
      * Modify email, username,  name of an account (Modifiable by admin).
@@ -432,9 +408,6 @@ internals.applyRoutes = function (server, next) {
         },
 
         handler: function (request, reply) {
-
-
-
             const id = request.params.id;
             const update = {
                 $set: {
@@ -443,7 +416,6 @@ internals.applyRoutes = function (server, next) {
                     mappingsLang: request.payload.mappingsLang
                 }
             };
-
 
             Account.findByIdAndUpdate(id, update, (err, account) => {
 
@@ -474,7 +446,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     /**
      * Update account info, but by the account itself. Only can update name and email, not username.
      */
@@ -498,7 +469,6 @@ internals.applyRoutes = function (server, next) {
                 }
             },
             pre: [
-
                 {
                     assign: 'emailCheck',
                     method: function (request, reply) {
@@ -507,8 +477,6 @@ internals.applyRoutes = function (server, next) {
                             email: request.payload.email,
                             _id: { $ne: request.auth.credentials.user._id }
                         };
-
-
 
                         Account.findOne(conditions, (err, user) => {
 
@@ -525,11 +493,8 @@ internals.applyRoutes = function (server, next) {
                     }
                 }
             ]
-
         },
-
         handler: function (request, reply) {
-
             const id = request.auth.credentials.user._id.toString();
             const update = {
                 $set: {
@@ -546,21 +511,16 @@ internals.applyRoutes = function (server, next) {
                 }
 
                 const name = request.payload.name.first + ' ' + request.payload.name.last;
-
                 WebProtege.updateUserDetails(account.username,name,request.payload.email)
                     .then( (success) => {
-
                         reply(account);
                     })
                     .catch( (error) => {
-
                         return reply(error);
                     });
-
             });
         }
     });
-
 
     /**
      * Update password by admin. Root password cannot be modified here.
@@ -623,12 +583,9 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(error);
                     });
-
-
             });
         }
     });
-
 
     /**
      * A user changes her password
@@ -690,11 +647,9 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(error);
                     });
-
             });
         }
     });
-
 
     server.route({
         method: 'PUT',
@@ -714,7 +669,6 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
             const id = request.params.id;
             const update = {
                 $set: {
@@ -723,7 +677,6 @@ internals.applyRoutes = function (server, next) {
             };
 
             Account.findByIdAndUpdate(id, update, (err, account) => {
-
                 if (err) {
                     return reply(err);
                 }
@@ -740,12 +693,9 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(error);
                     });
-
             });
         }
     });
-
-
 
     server.route({
         method: 'POST',
@@ -788,8 +738,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
-
     server.route({
         method: 'DELETE',
         path: '/accounts/{id}',
@@ -828,25 +776,16 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(error);
                     });
-
-
-
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
-
     server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'account'

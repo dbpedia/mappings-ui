@@ -285,28 +285,17 @@ internals.applyRoutes = function (server, next) {
 
                         return reply(null,res);
                     });
-
-
                 });
-
-
             });
-
-
         }
     });
     next();
 };
 
-
-
 exports.register = function (server, options, next) {
-
     server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'mappings-history'

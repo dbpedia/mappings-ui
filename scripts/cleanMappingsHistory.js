@@ -11,24 +11,19 @@ const MongoClient = require('mongodb').MongoClient;
 const Config = require('../config');
 const Promptly = require('promptly');
 const Moment = require('moment');
-
 const URI = Config.get('/hapiMongoModels/mongodb/uri');
 
 let database;
 MongoClient.connect(URI)
     .then((db) => {
-
         database = db;
         return Promptly.prompt('Do you want to permanently erase deleted mappings? [y/N]: ');
     })
     .then((value) => {
-
         const response = value.toLowerCase();
         if (response === 'y'){
-
             return Promptly.prompt('\tDate from which delete mappings [Type * to delete ALL, leave empty to skip]: ')
                 .then((value) => {
-
                     const response = value.toLowerCase();
                     if (response === '*'){
                         return database.collection('mappingsHistory').deleteMany({ deleted:true });
@@ -44,17 +39,13 @@ MongoClient.connect(URI)
         return Promise.resolve();
     })
     .then(() => {
-
         return Promptly.prompt('Do you want to permanently erase archived mappings? [y/N]: ');
     })
     .then((value) => {
-
         const response = value.toLowerCase();
         if (response === 'y'){
-
             return Promptly.prompt('\tDate from which delete mappings [Type * to delete ALL, leave empty to skip]: ')
                 .then((value) => {
-
                     const response = value.toLowerCase();
                     if (response === '*'){
                         return database.collection('mappingsHistory').deleteMany({ deleted:true });
@@ -71,6 +62,5 @@ MongoClient.connect(URI)
         return Promise.resolve();
     })
     .then(() => {
-
         console.log('Done!');
     });

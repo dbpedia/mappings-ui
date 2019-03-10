@@ -7,11 +7,8 @@ const Config = require('../../config');
 
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const Post = server.plugins['hapi-mongo-models'].Post;
-
     const charLimit = Config.get('/posts/charLimit');
 
     server.route({
@@ -37,8 +34,6 @@ internals.applyRoutes = function (server, next) {
             pre: [AuthPlugin.preware.ensureHasPermissions('can-list-posts')]
         },
         handler: function (request, reply) {
-
-
             const query = {};
             if (request.query.title) {
                 query.title = new RegExp('^.*?' + EscapeRegExp(request.query.title) + '.*$', 'i');
@@ -74,7 +69,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'GET',
         path: '/posts/public',
@@ -96,15 +90,12 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
-
             const query = {};
             if (request.query.title) {
                 query.title = new RegExp('^.*?' + EscapeRegExp(request.query.title) + '.*$', 'i');
             }
 
             query.visible = true;
-
 
             //Don't return markdown text in the list...
             const fields = Post.fieldsAdapter('postId title lastEdition');
@@ -124,7 +115,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'GET',
         path: '/posts/{id}',
@@ -138,8 +128,6 @@ internals.applyRoutes = function (server, next) {
                 //Check if page is visible. If not visible and user is not in admin groups -> error
                 assign: 'postRetrieve',
                 method: function (request, reply) {
-
-
                     //Retrieve the post
                     const query = { postId: request.params.id };
                     Post.findOne(query, (err, post) => {
@@ -173,7 +161,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'POST',
         path: '/posts',
@@ -200,15 +187,10 @@ internals.applyRoutes = function (server, next) {
                         if (request.payload.markdown.length > charLimit){
                             return reply(Boom.conflict('Markdown size must be at most ' + charLimit + ' characters long'));
                         }
-
                         const newPostId = Post.idFromTitle(request.payload.title);
-
-
                         const conditions = {
                             postId: newPostId
                         };
-
-
                         Post.findOne(conditions, (err, user) => {
 
                             if (err) {
@@ -221,32 +203,23 @@ internals.applyRoutes = function (server, next) {
 
                             reply(true);
                         });
-
-
-
-
                     }
                 }
             ]
         },
         handler: function (request, reply) {
-
             const title = request.payload.title;
             const markdown = request.payload.markdown;
             const visible = request.payload.visible;
             const username = request.auth.credentials.user.username;
-
             Post.create(title,markdown, username, visible, (err, accountGroup) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 reply(accountGroup);
             });
         }
     });
-
 
     server.route({
         method: 'PUT',
@@ -267,7 +240,6 @@ internals.applyRoutes = function (server, next) {
                 {
                     assign: 'postIdCheck',
                     method: function (request, reply) {
-
                         if (request.payload.markdown.length > charLimit){
                             return reply(Boom.conflict('Markdown size must be at most ' + charLimit + ' characters long'));
                         }
@@ -301,8 +273,6 @@ internals.applyRoutes = function (server, next) {
                             });
 
                         }
-
-
                     }
                 }
             ]
@@ -312,7 +282,6 @@ internals.applyRoutes = function (server, next) {
             const title = request.payload.title;
             const newId = Post.idFromTitle(request.payload.title);
             const visible = request.payload.visible;
-
 
             const update = {
                 $set: {
@@ -332,7 +301,6 @@ internals.applyRoutes = function (server, next) {
             }
 
             const query = { postId: request.params.id };
-
             Post.findOneAndUpdate(query, update, (err, post) => {
 
                 if (err) {
@@ -348,10 +316,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
-
-
-
     server.route({
         method: 'DELETE',
         path: '/posts/{id}',
@@ -359,7 +323,6 @@ internals.applyRoutes = function (server, next) {
             auth: {
                 strategy: 'session'
             },
-
             pre: [AuthPlugin.preware.ensureHasPermissions('can-remove-posts'),
                 (request,reply) => {
 
@@ -371,32 +334,22 @@ internals.applyRoutes = function (server, next) {
                     }
                 }
             ]
-
         },
         handler: function (request, reply) {
-
-
-
             const query = { postId: request.params.id };
             Post.findOneAndDelete(query, (err, post) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 if (!post) {
                     return reply(Boom.notFound('Document not found.'));
                 }
-
                 reply({ success: true });
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
 
@@ -404,7 +357,6 @@ exports.register = function (server, options, next) {
 
     next();
 };
-
 
 exports.register.attributes = {
     name: 'posts'

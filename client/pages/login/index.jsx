@@ -4,20 +4,15 @@ const App = require('./app.jsx');
 const ReactDOM = require('react-dom');
 const React = require('react');
 
-
 class Page {
     static blastoff() {
-
         this.mainElement = ReactDOM.render(
             <App/>,
             window.document.getElementById('app-mount')
         );
     }
 }
-
-
 module.exports = Page;
-
 
 /* $lab:coverage:off$ */
 if (!module.parent) {

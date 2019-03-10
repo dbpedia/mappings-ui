@@ -21,11 +21,8 @@ const required = ['ontologyProperty','property'];
  * Possible children: None
  */
 class RowStartDateTemplate extends React.Component {
-
-
     //this.state.content has TemplateMapping content
     constructor(props){
-
         super(props);
         this.state = this.getNewState();
 
@@ -33,11 +30,9 @@ class RowStartDateTemplate extends React.Component {
         if (this.props.content) {
             this.state.content = this.props.content;
         }
-
     }
 
     getNewState(){
-
         return  {
             content: {
                 name,
@@ -48,32 +43,25 @@ class RowStartDateTemplate extends React.Component {
                 _alias: 'Empty' //This attribute should be removed before POST
             },
             errors: {
-
             }
-
         };
-
     }
 
     /**
      * To handle inputs.
      */
     handleChange(attribute,event){
-
         const value = event.target.value;
         const content = { ...this.state.content };
         content.parameters[attribute] = value;
         this.setState({ content });
-
     }
-
 
     eraseState(){
         this.setState(this.getNewState());
     }
 
     createAlias(){
-
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
@@ -82,8 +70,6 @@ class RowStartDateTemplate extends React.Component {
      * Called by: this component.
      */
     onMeClose(save){
-
-
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
@@ -103,13 +89,11 @@ class RowStartDateTemplate extends React.Component {
             }
         }
 
-
         this.setState({ errors });
 
         if (save && hasError){
             return;
         }
-
 
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
@@ -118,13 +102,9 @@ class RowStartDateTemplate extends React.Component {
         const c = { ...this.state.content };
         c._alias = this.createAlias();
         this.props.onClose(save,name,c);
-
-
     }
 
-
     render(){
-
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
@@ -140,9 +120,7 @@ class RowStartDateTemplate extends React.Component {
             }
         ];
 
-
         return (
-
             <div style={{ marginLeft: this.props.childLevel * 5 + 'px' }}>
                 <div className={'templateEditRow panel panel-default'}>
                     <div className="panel-heading clearfix">
@@ -184,25 +162,14 @@ class RowStartDateTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'property')}/>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
-
-
         );
     }
-
-
 }
-
 RowStartDateTemplate.propTypes = propTypes;
-
-
 module.exports = RowStartDateTemplate;

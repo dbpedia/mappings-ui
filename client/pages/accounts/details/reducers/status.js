@@ -2,8 +2,6 @@
 const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
-
-
 const initialState = {
     loading: false,
     error: undefined,
@@ -16,10 +14,8 @@ const initialState = {
     newStatus: ''
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const stateUpdates = ObjectAssign({}, initialState);
-
         stateUpdates.accountId = action.response._id;
         stateUpdates.options = state.options;
 
@@ -28,17 +24,14 @@ const reducer = function (state = initialState, action) {
             stateUpdates.log = action.response.status.log.reverse();
             stateUpdates.newStatus = action.response.status.current.id;
         }
-
         return ObjectAssign({}, stateUpdates);
     }
 
     if (action.type === Constants.GET_STATUS_OPTIONS_RESPONSE) {
         const stateUpdates = {};
-
         if (action.response.hasOwnProperty('data')) {
             stateUpdates.options = action.response.data;
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -64,7 +57,6 @@ const reducer = function (state = initialState, action) {
             stateUpdates.log = action.response.status.log.reverse();
             stateUpdates.newStatus = action.response.status.current.id;
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -73,9 +65,6 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

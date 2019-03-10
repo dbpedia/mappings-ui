@@ -46,8 +46,6 @@ const validateSyntax = function (template,lang,dump){
 
         });
     });
-
-
 };
 
 /**
@@ -89,20 +87,14 @@ const extractDump = function (template,language,dump,wikititle,format){
 
         });
     });
-
-
-
 };
-
 
 /**
  * Gets a list of templates from RML code.
  * Uses /rml/templates endpoint
  */
 const templatesFromRML = function (name,language,dump){
-
     const encodedName = encodeURIComponent(name);
-
     const apiRequest = {
         mapping: {
             name: encodedName,
@@ -149,7 +141,6 @@ const RMLFromTemplate = function (name,language,dump,templateContent,templateTyp
             dump
         }
     };
-
 
     let path = '';
     switch (templateType) {
@@ -330,37 +321,26 @@ const getProperties = function (){
     });
 };
 
-
 const getStatistics = function (lang){
-
     return new Promise((resolve, reject) => {
-
         Request.get({
             url: efURL + '/server/rml/' + lang + '/statistics/',
             json: true
         }, (err, res, payload) => {
-
-
             if (err) {
                 return reject(err);
             }
-
             if (res && res.statusCode >= 400){
                 return reject('No stats available for language ' + lang);
             }
-
             resolve(payload);
 
         });
     });
-
 };
 
-
 const getInfoboxesOfPage = function (lang,title){
-
     return new Promise((resolve, reject) => {
-
         Request.get({
             url: efURL + '/server/rml/' + lang + '/wiki/' + encodeURIComponent(title) + '/templates',
             json: true
@@ -370,18 +350,14 @@ const getInfoboxesOfPage = function (lang,title){
                 return reject(err);
             }
 
-
             if (res && res.statusCode >= 400){
                 return reject('"' + title + '" page does not have any infoboxes.');
             }
-
             resolve(payload.templates);
 
         });
     });
-
 };
-
 
 module.exports = {
     validateSyntax,

@@ -3,7 +3,6 @@
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
-
     server.route({
         method: 'GET',
         path: '/about',
@@ -20,16 +19,11 @@ internals.applyRoutes = function (server, next) {
             reply.view('about/index', { credentials: request.auth.credentials });
         }
     });
-
-
     next();
 };
 
-
 exports.register = function (server, options, next) {
-
     server.dependency(['auth'], internals.applyRoutes);
-
     next();
 };
 

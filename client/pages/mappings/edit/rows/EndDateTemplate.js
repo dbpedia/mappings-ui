@@ -22,10 +22,8 @@ const required = ['ontologyProperty','property'];
  */
 class RowEndDateTemplate extends React.Component {
 
-
     //this.state.content has TemplateMapping content
     constructor(props){
-
         super(props);
         this.state = this.getNewState();
 
@@ -33,11 +31,9 @@ class RowEndDateTemplate extends React.Component {
         if (this.props.content) {
             this.state.content = this.props.content;
         }
-
     }
 
     getNewState(){
-
         return  {
             content: {
                 name,
@@ -48,7 +44,6 @@ class RowEndDateTemplate extends React.Component {
                 _alias: 'Empty' //This attribute should be removed before POST
             },
             errors: {
-
             }
 
         };
@@ -66,10 +61,7 @@ class RowEndDateTemplate extends React.Component {
 
     }
 
-
-
     createAlias(){
-
         return name + ' (' + this.state.content.parameters.property + ')';
     }
 
@@ -78,7 +70,6 @@ class RowEndDateTemplate extends React.Component {
      * Called by: this component.
      */
     onMeClose(save){
-
         const errors = {};
         let hasError = false;
         for (let i = 0; i < required.length; ++i){
@@ -103,7 +94,6 @@ class RowEndDateTemplate extends React.Component {
             return;
         }
 
-
         if (!save) {
             return window.confirm('Are you sure? Data can\'t be recovered.') && this.props.onClose(save,name,this.state.content);
         }
@@ -111,17 +101,13 @@ class RowEndDateTemplate extends React.Component {
         const c = { ...this.state.content };
         c._alias = this.createAlias();
         this.props.onClose(save,name,c);
-
-
     }
 
     eraseState(){
         this.setState(this.getNewState());
     }
 
-
     render(){
-
         const buttons = [
             { type: 'btn-success',
                 text: <span><i className="fa fa-check" aria-hidden="true"></i>&nbsp;{this.props.childLevel === 0 ? 'Save' : 'OK'}</span>,
@@ -180,25 +166,14 @@ class RowEndDateTemplate extends React.Component {
                                                    onChange={this.handleChange.bind(this,'property')}/>
                                         </div>
                                     </div>
-
                                 </form>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
-
-
         );
     }
-
-
 }
-
 RowEndDateTemplate.propTypes = propTypes;
-
-
 module.exports = RowEndDateTemplate;

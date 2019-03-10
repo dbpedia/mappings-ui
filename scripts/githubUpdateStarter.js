@@ -4,16 +4,11 @@
 'use strict';
 const MappingsUpdater = require('./githubMappings/periodicMappingUpdateWorker');
 const OntologyUpdater = require('./githubOntology/periodicOntologyUpdateWorker');
-
 const Config = require('../config');
 const Await = require('asyncawait/await');
 const Async = require('asyncawait/async');
-
 const UPDATE_FREQUENCY_MINUTES = Config.get('/github/updateFrequencyMinutes');
-
-
 const sleep = function (time) {
-
     return new Promise((resolve) => setTimeout(resolve, time));
 };
 
@@ -22,7 +17,6 @@ let currentTime;
 let timeLeft;
 
 const start = Async((runMappings,runOntology) => {
-
     if (!runMappings && !runOntology) {
         console.log('[ERROR] Please specify at least one update to run');
     }
@@ -48,11 +42,7 @@ const start = Async((runMappings,runOntology) => {
         console.log('*[INFO] Waiting ' + timeLeft / 1000 + ' s. for next update');
         Await(sleep(timeLeft));
     }
-
-
-
 });
-
 
 module.exports = {
     start

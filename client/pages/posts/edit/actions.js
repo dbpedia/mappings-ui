@@ -4,10 +4,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
     static getDetails(id) {
-
         ApiActions.get(
             `/api/posts/${id}`,
             undefined,
@@ -18,7 +16,6 @@ class Actions {
     }
 
     static saveDetails(id, data,history) {
-
         ApiActions.put(
             `/api/posts/${id}`,
             data,
@@ -29,17 +26,12 @@ class Actions {
     }
 
     static hideDetailsSaveSuccess() {
-
         Store.dispatch({
             type: Constants.HIDE_DETAILS_SAVE_SUCCESS
         });
     }
 
-
-
-
     static delete(id, history) {
-
         ApiActions.delete(
             `/api/posts/${id}`,
             undefined,
@@ -47,7 +39,6 @@ class Actions {
             Constants.DELETE,
             Constants.DELETE_RESPONSE,
             (err, response) => {
-
                 if (!err) {
                     history.push('/posts');
 
@@ -57,6 +48,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

@@ -3,12 +3,7 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 
 class OntologyUpdateStatus extends MongoModels {
-
-
-
     static create(callback){
-
-
         const document =
             {
                 startDate: new Date(),
@@ -28,15 +23,10 @@ class OntologyUpdateStatus extends MongoModels {
         });
     }
 
-
     constructor(attrs) {
-
         super(attrs);
     }
-
-
 }
-
 
 OntologyUpdateStatus.collection  = 'ontologyUpdateStatus';
 
@@ -50,14 +40,10 @@ OntologyUpdateStatus.schema = Joi.object().keys({
         message: Joi.string(),
         long_message: Joi.string()
     })
-
 });
-
-
 
 OntologyUpdateStatus.indexes = [
     { key: { _id: 1 } }
 ];
-
 
 module.exports = OntologyUpdateStatus;

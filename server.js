@@ -16,20 +16,15 @@ Composer((err, server) => {
 
     if (runServer){
         server.start(() => {
-
             console.log('Started the server on port ' + server.info.port);
-
         });
     }
 
     if (runMappingsUpdater || runOntologyUpdater ) {
-
         GithubUpdater.start(runMappingsUpdater,runOntologyUpdater);
-
     }
 
     if (runStatsUpdater) {
         StatsUpdater.start();
     }
-
 });

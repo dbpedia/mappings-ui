@@ -24,14 +24,8 @@ const defaultValues = {
     page: '1'
 };
 
-
 class FilterForm extends React.Component {
-
-
     render() {
-
-
-
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -132,17 +126,7 @@ class FilterForm extends React.Component {
                                     disabled={this.props.loading}
                                 />
                             </div>
-
-
-
-
                         </div>
-
-
-
-
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <button type="button" className="btn btn-primary btn-block" onClick={this.props.onSubmitFilters} disabled={this.props.loading}>Apply Filters</button>
@@ -155,8 +139,5 @@ class FilterForm extends React.Component {
         );
     }
 }
-
 FilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(FilterForm, defaultValues);

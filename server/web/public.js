@@ -1,8 +1,6 @@
 'use strict';
 
-
 exports.register = function (server, options, next) {
-
     server.route({
         method: 'GET',
         path: '/public/{param*}',
@@ -13,11 +11,8 @@ exports.register = function (server, options, next) {
             }
         }
     });
-
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'public'

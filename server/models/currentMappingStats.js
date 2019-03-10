@@ -3,17 +3,12 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 
 class CurrentMappingStats extends MongoModels {
-
-
-
     static create(template,lang,
                   numOcurrences,
                   numProperties,numMappedProperties,
                   numPropertyOcurrences,numMappedPropertyOcurrences,
                   numPropertiesNotFound,
                   callback){
-
-
         const document = {
             _id: {
                 template,
@@ -37,15 +32,10 @@ class CurrentMappingStats extends MongoModels {
         });
     }
 
-
     constructor(attrs) {
-
         super(attrs);
     }
-
-
 }
-
 
 CurrentMappingStats.collection  = 'currentMappingStats';
 
@@ -63,11 +53,8 @@ CurrentMappingStats.schema = Joi.object().keys({
     numPropertiesNotFound: Joi.number()
 });
 
-
-
 CurrentMappingStats.indexes = [
     { key: { _id: 1 } }
 ];
-
 
 module.exports = CurrentMappingStats;

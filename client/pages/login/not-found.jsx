@@ -1,14 +1,10 @@
 'use strict';
 const React = require('react');
 const ReactRouter = require('react-router-dom');
-
-
 const Link = ReactRouter.Link;
-
 
 class NotFoundPage extends React.Component {
     render() {
-
         return (
             <section className="container">
                 <h1 className="page-header">Not Found</h1>
@@ -18,6 +14,4 @@ class NotFoundPage extends React.Component {
         );
     }
 }
-
-
 module.exports = NotFoundPage;

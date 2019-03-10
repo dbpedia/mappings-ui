@@ -12,7 +12,6 @@ const Autosuggest = require('react-autosuggest');
 const JsonFetch = require('../../helpers/json-fetch');
 const Debounce = require('lodash').debounce;
 
-
 const theme = {
     container: {
         position: 'relative',
@@ -57,11 +56,8 @@ const theme = {
     }
 };
 
-
 const getSuggestionValue = (suggestion) => suggestion.name;
-
 const renderSuggestion = (suggestion) => (
-
     <div>
         <b>{suggestion.name}</b>
     </div>
@@ -75,24 +71,17 @@ const propTypes = {
     id: PropTypes.string
 };
 class DatatypeSearcherInput extends React.Component {
-
-
     constructor(){
         super();
-
         this.state = {
             value: '',
             suggestions: [],
             loading: false
         };
-
         this.onSuggestionsFetchRequested = Debounce(this.onSuggestionsFetchRequested.bind(this),300);
-
-
     }
 
     loadSuggestions(value) {
-
         this.setState({
             isLoading: true
         });
@@ -114,29 +103,22 @@ class DatatypeSearcherInput extends React.Component {
                 suggestions: result
             });
         });
-
     }
 
 
     //Calls parent onChange with a simulated input event,
     //to mimic a normal input box
     onChange(event, { newValue }){
-
-
         const e = {
             target: {
                 value: newValue
             }
         };
-
         this.props.onChange(e);
-
     };
-
 
     onSuggestionsFetchRequested({ value }){
         this.loadSuggestions(value);
-
     };
 
     // Autosuggest will call this function every time you need to clear suggestions.
@@ -146,18 +128,14 @@ class DatatypeSearcherInput extends React.Component {
         });
     };
 
-
     render() {
-
         theme.input = this.props.className;
-
-        const  { suggestions } = this.state;
+        const  {suggestions} = this.state;
         const inputProps = {
             placeholder: this.props.placeholder,
             value: this.props.value,
             onChange: this.onChange.bind(this)
         };
-
 
         return (
                 <Autosuggest

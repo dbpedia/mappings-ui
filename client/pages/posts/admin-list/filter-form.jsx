@@ -5,7 +5,6 @@ const React = require('react');
 const SelectControl = require('../../../components/form/select-control.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     linkInputState: PropTypes.func,
     linkSelectState: PropTypes.func,
@@ -23,22 +22,15 @@ const defaultValues = {
     visible: ''
 };
 
-
 class FilterForm extends React.Component {
     render() {
-
-
-
-
         return (
             <div className="panel panel-default">
-
                 <div className="panel-heading">
                     <h3 className="panel-title text-center"><b>Filters</b></h3>
                 </div>
                 <div className="panel-body">
                     <div>
-
                         <div className="row">
                             <div className="col-sm-6">
                                 <SelectControl
@@ -111,8 +103,6 @@ class FilterForm extends React.Component {
                                 />
                             </div>
                         </div>
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <SelectControl
@@ -128,10 +118,6 @@ class FilterForm extends React.Component {
                                 </SelectControl>
                             </div>
                         </div>
-
-
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <button type="button" className="btn btn-primary btn-block" onClick={this.props.onSubmitFilters} disabled={this.props.loading}>Apply Filters</button>
@@ -144,8 +130,5 @@ class FilterForm extends React.Component {
         );
     }
 }
-
 FilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(FilterForm, defaultValues);

@@ -6,12 +6,11 @@ const Config = require('../../config');
 const AuthPlugin = require('../auth');
 const internals = {};
 const EFInteraction = require('../efInteraction/calls.js');
-const cleanObject = function (obj){
 
+const cleanObject = function (obj){
     if (obj._alias){
         delete obj._alias;
     }
-
 
     //Each parameter that is an empty string is converted to null
     for (const property in obj) {
@@ -27,7 +26,6 @@ const cleanObject = function (obj){
 };
 
 internals.applyRoutes = function (server, next) {
-
     const Mapping = server.plugins['hapi-mongo-models'].Mapping;
     const charLimit = Config.get('/mappings/charLimit');
 
@@ -85,7 +83,6 @@ internals.applyRoutes = function (server, next) {
                 else {
                     query['stats.mappedPercentage'] = { $gte: '' + request.query.minCompletion };
                 }
-
             }
 
             if (request.query.maxCompletion && request.query.maxCompletion < 100) {
@@ -95,9 +92,7 @@ internals.applyRoutes = function (server, next) {
                 else {
                     query['stats.mappedPercentage'] = { $lte: '' + request.query.maxCompletion };
                 }
-
             }
-
 
             if (request.query.errored) {
                 query['status.error'] = request.query.errored === 'true';
@@ -107,18 +102,13 @@ internals.applyRoutes = function (server, next) {
             const sort = request.query.sort;
             const limit = request.query.limit;
             const page = request.query.page;
-
             Mapping.pagedFind(query, fields, sort, limit, page, (err, results) => {
-
                 if (err){
                     return reply(err);
                 }
-
                 if (!results.data){
                     return reply(results);
                 }
-
-
                 reply(results);
 
 
@@ -245,8 +235,6 @@ internals.applyRoutes = function (server, next) {
             }
 
             Mapping.create(templateName,lang, rml, username,comment, (err, mapping) => {
-
-
                 if (err) {
                     return reply(err);
                 }
@@ -343,9 +331,7 @@ internals.applyRoutes = function (server, next) {
                         }
 
                         return reply(request.pre.checkSyntax);
-
                     });
-
                 });
             });
         }
@@ -390,7 +376,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'POST',
         path: '/mappings/rml',
@@ -410,8 +395,6 @@ internals.applyRoutes = function (server, next) {
             }
         },
         handler: function (request, reply) {
-
-
             const name = request.payload.mappingName;
             const lang = request.payload.mappingLang;
             const dump = request.payload.mappingDump;
@@ -422,14 +405,11 @@ internals.applyRoutes = function (server, next) {
 
             EFInteraction.RMLFromTemplate(name,lang,dump,content,type)
                 .then((res) => {
-
                     return reply(null,res);
                 })
                 .catch((err) => {
-
                     return reply(Boom.badRequest(err));
                 });
-
         }
     });
 
@@ -512,25 +492,16 @@ internals.applyRoutes = function (server, next) {
 
                 })
                 .then((res) => {
-
                     return reply(null,res);
                 })
                 .catch((err) => {
-
                     console.log(err);
                     return reply(Boom.badRequest(err));
                 });
-
-
-
         }
     });
-
-
     next();
 };
-
-
 
 exports.register = function (server, options, next) {
 
@@ -538,7 +509,6 @@ exports.register = function (server, options, next) {
 
     next();
 };
-
 
 exports.register.attributes = {
     name: 'mappings'

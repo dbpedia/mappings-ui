@@ -3,10 +3,8 @@ const ApiActions = require('../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
     static sendMessage(data) {
-
         ApiActions.post(
             '/api/contact',
             data,
@@ -16,6 +14,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

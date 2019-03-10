@@ -1,35 +1,27 @@
 'use strict';
 const PropTypes = require('prop-types');
 const React = require('react');
-
-
 const propTypes = {
     items: PropTypes.object,
     onChange: PropTypes.func,
     pages: PropTypes.object
 };
 
-
 class Paging extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.els = {};
     }
 
     onPrevPage() {
-
         this.props.onChange(this.props.pages.prev);
     }
 
     onNextPage() {
-
         this.props.onChange(this.props.pages.next);
     }
 
     render() {
-
         return (
             <div className="well">
                 <div className="btn-group pull-left">
@@ -69,8 +61,5 @@ class Paging extends React.Component {
         );
     }
 }
-
 Paging.propTypes = propTypes;
-
-
 module.exports = Paging;

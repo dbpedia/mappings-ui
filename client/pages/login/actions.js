@@ -8,10 +8,8 @@ const LogoutStore = require('./logout/store');
 const Qs = require('qs');
 const ResetStore = require('./reset/store');
 
-
 class Actions {
     static forgot(data) {
-
         ApiActions.post(
             '/api/login/forgot',
             data,
@@ -22,7 +20,6 @@ class Actions {
     }
 
     static login(data) {
-
         ApiActions.post(
             '/api/login',
             data,
@@ -49,7 +46,6 @@ class Actions {
     }
 
     static logout() {
-
         ApiActions.delete(
             '/api/logout',
             undefined,
@@ -60,7 +56,6 @@ class Actions {
     }
 
     static reset(data) {
-
         ApiActions.post(
             '/api/login/reset',
             data,
@@ -70,6 +65,4 @@ class Actions {
         );
     }
 }
-
-
 module.exports = Actions;

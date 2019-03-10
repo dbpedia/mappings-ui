@@ -2,15 +2,10 @@
 const Boom = require('boom');
 const Joi = require('joi');
 
-
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
-
     const AuthAttempt = server.plugins['hapi-mongo-models'].AuthAttempt;
-
-
     server.route({
         method: 'GET',
         path: '/auth-attempts',
@@ -50,7 +45,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'GET',
         path: '/auth-attempts/{id}',
@@ -80,7 +74,6 @@ internals.applyRoutes = function (server, next) {
         }
     });
 
-
     server.route({
         method: 'DELETE',
         path: '/auth-attempts/{id}',
@@ -94,7 +87,6 @@ internals.applyRoutes = function (server, next) {
             ]
         },
         handler: function (request, reply) {
-
             AuthAttempt.findByIdAndDelete(request.params.id, (err, authAttempt) => {
 
                 if (err) {
@@ -109,19 +101,13 @@ internals.applyRoutes = function (server, next) {
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
-
     server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
     next();
 };
-
 
 exports.register.attributes = {
     name: 'auth-attempts'

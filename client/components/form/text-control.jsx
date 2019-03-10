@@ -5,7 +5,6 @@ const ObjectAssign = require('object-assign');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     autoCapitalize: PropTypes.string,
     disabled: PropTypes.bool,
@@ -24,20 +23,16 @@ const defaultProps = {
     autoCapitalize: 'off'
 };
 
-
 class TextControl extends React.Component {
     focus() {
-
         return this.input.focus();
     }
 
     value() {
-
         return this.input.value;
     }
 
     render() {
-
         const inputClasses = ClassNames(ObjectAssign({
             'form-control': true
         }, this.props.inputClasses));
@@ -66,6 +61,4 @@ class TextControl extends React.Component {
 
 TextControl.propTypes = propTypes;
 TextControl.defaultProps = defaultProps;
-
-
 module.exports = TextControl;

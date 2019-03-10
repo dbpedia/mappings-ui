@@ -3,7 +3,6 @@ const FilterFormHoc = require('../components/filter-form-hoc.jsx');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     linkInputState: PropTypes.func,
     linkSelectState: PropTypes.func,
@@ -17,12 +16,8 @@ const defaultValues = {
     page: '1'
 };
 
-
 class MappingsFilterForm extends React.Component {
-
-
     render() {
-
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -35,8 +30,5 @@ class MappingsFilterForm extends React.Component {
         );
     }
 }
-
 MappingsFilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(MappingsFilterForm, defaultValues);

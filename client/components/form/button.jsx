@@ -4,7 +4,6 @@ const ObjectAssign = require('object-assign');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     children: PropTypes.node,
     disabled: PropTypes.bool,
@@ -18,10 +17,8 @@ const defaultProps = {
     type: 'button'
 };
 
-
 class Button extends React.Component {
     render() {
-
         const inputClasses = ClassNames(ObjectAssign({
             'btn': true
         }, this.props.inputClasses));
@@ -43,6 +40,4 @@ class Button extends React.Component {
 
 Button.propTypes = propTypes;
 Button.defaultProps = defaultProps;
-
-
 module.exports = Button;

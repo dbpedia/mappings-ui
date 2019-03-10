@@ -4,10 +4,8 @@ const ApiActions = require('../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
     static sendRequest(data) {
-
         ApiActions.post(
             '/api/signup',
             data,
@@ -15,7 +13,6 @@ class Actions {
             Constants.REGISTER,
             Constants.REGISTER_RESPONSE,
             (err, response) => {
-
                 if (!err) {
                     window.location.href = '/profile';
                 }
@@ -23,6 +20,4 @@ class Actions {
         );
     }
 };
-
-
 module.exports = Actions;

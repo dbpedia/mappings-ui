@@ -2,7 +2,6 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     children: PropTypes.node,
     feet: PropTypes.node,
@@ -12,7 +11,6 @@ const propTypes = {
 
 class PlainLayout extends React.Component {
     render() {
-
         return (
             <html>
                 <head>
@@ -31,8 +29,5 @@ class PlainLayout extends React.Component {
         );
     }
 }
-
 PlainLayout.propTypes = propTypes;
-
-
 module.exports = PlainLayout;

@@ -10,11 +10,9 @@ const propTypes = {
 };
 
 const calculatePercentage = function (record){
-
     if (!record.stats || Object.keys(record.stats).length === 0 ) {
         return '-';
     }
-
     return (record.stats.numMappedProperties * 100 / record.stats.numProperties).toFixed(2);
 };
 
@@ -26,9 +24,7 @@ const calculatePercentage = function (record){
  * Ignored: gray
  */
 const progressBarClass = function (record){
-
     const percentage = calculatePercentage(record);
-
     if (record.status.error){
         return 'progress-bar-danger';
     }
@@ -44,19 +40,15 @@ const progressBarClass = function (record){
     if (percentage >= 40){
         return 'progress-bar-info';
     }
-
     if (percentage < 40) {
         return 'progress-bar-warning';
     }
-
 };
 
 const rowBackground = function (record){
-
     if (record.ignore) {
         return 'row-disabled';
     }
-
     if (record.status.error) {
         return 'danger';
     }
@@ -77,27 +69,22 @@ const rowBackground = function (record){
         return 'warning';
     }
 */
-
     return '';
 };
 
-
 const statsExist = function (record){
-
     return record.stats && Object.keys(record.stats).length > 0;
 };
+
 class Results extends React.Component {
     render() {
-
         const rows = this.props.data.map((record) => {
-
             return (
                 <tr key={record._id.template} className={ rowBackground(record) }>
                     <td>{record._id.lang}</td>
                     <td><a href={`mappings/view/${record._id.template}/${record._id.lang}`}>{record.templateFullName}</a></td>
                     <td className="hidden-xs hidden-sm">{statsExist(record) ? record.stats.numOcurrences : '-'}</td>
                     <td className="hidden-xs hidden-sm">{statsExist(record) ? record.stats.numProperties : '-'}</td>
-
                     <td>
                         <div className="progress">
                             <div className={'progress-bar ' + progressBarClass(record)} style={{ width:  calculatePercentage(record) + '%' }}>
@@ -120,10 +107,7 @@ class Results extends React.Component {
                             <i className="fa fa-eye" aria-hidden="true"></i>
                         </Link>
                     </td>
-
-
                 </tr>
-
             );
         });
 
@@ -132,22 +116,13 @@ class Results extends React.Component {
                 <table className="table  table-results">
                     <thead>
                         <tr>
-
                             <th>Lang</th>
-
                             <th>Name</th>
-
                             <th className="hidden-xs hidden-sm">Ocurrences</th>
-
                             <th className="hidden-xs hidden-sm">Properties</th>
-
                             <th>Completed</th>
-
                             <th>Status</th>
-
                             <th>Actions</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -158,8 +133,5 @@ class Results extends React.Component {
         );
     }
 }
-
 Results.propTypes = propTypes;
-
-
 module.exports = Results;

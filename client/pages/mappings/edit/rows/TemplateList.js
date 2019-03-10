@@ -13,21 +13,15 @@ const propTypes = {
 };
 
 class TemplateList extends React.Component {
-
     constructor(props){
-
         super(props);
         this.state = {
             selectValue: this.props.possibleOptions[0]
         };
-
-
     }
 
     selectHandler(event){
-
         this.setState({ selectValue:event.target.value });
-
     }
 
     eraseState(){
@@ -35,10 +29,8 @@ class TemplateList extends React.Component {
     }
 
     render(){
-
         const mappingListItems = [];
         this.props.templates.forEach((map,i) => {
-
             mappingListItems.push(
                 <li className="list-group-item" key={i}>
                     {map._alias}
@@ -62,7 +54,6 @@ class TemplateList extends React.Component {
 
         const options = [];
         this.props.possibleOptions.forEach((opt) => {
-
             options.push(<option key={opt} >{opt}</option>);
         });
         mappingListItems.push(
@@ -89,14 +80,7 @@ class TemplateList extends React.Component {
                 </ul>
             </div>
         );
-
-
     }
-
-
 }
-
 TemplateList.propTypes = propTypes;
-
-
 module.exports = TemplateList;

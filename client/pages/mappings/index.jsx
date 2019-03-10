@@ -6,7 +6,6 @@ const React = require('react');
 
 const Page = {
     blastoff: function () {
-
         this.mainElement = ReactDOM.render(
             <App/>,
             window.document.getElementById('app-mount')
@@ -14,9 +13,7 @@ const Page = {
     }
 };
 
-
 module.exports = Page;
-
 
 /* $lab:coverage:off$ */
 if (!module.parent) {

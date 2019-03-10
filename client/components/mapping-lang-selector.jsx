@@ -4,7 +4,6 @@
 const PropTypes = require('prop-types');
 const React = require('react');
 const ControlGroup = require('./form/control-group.jsx');
-
 const propTypes = {
     selectedLang: PropTypes.string, //Value selected now
     callback: PropTypes.func,        //Will be called with new value,
@@ -14,13 +13,8 @@ const propTypes = {
     disableAll: PropTypes.bool //To hide 'all languages' if true
 };
 
-
 class MappingLangSelector extends React.Component {
-
-
-
     value() {
-
         return this.input.value;
     }
 
@@ -37,8 +31,6 @@ class MappingLangSelector extends React.Component {
     }
 
     render() {
-
-
         const languages = [
             { tag: 'ar', name: 'Arabic' },
             { tag: 'az', name: 'Azeri' },
@@ -95,7 +87,6 @@ class MappingLangSelector extends React.Component {
             languages.unshift({ tag: '', name: 'All languages' });
         }
 
-
         const optionElems = [];
         languages.forEach( (elem) => {
             if (elem.tag && elem.tag.length > 0 ){
@@ -104,25 +95,19 @@ class MappingLangSelector extends React.Component {
             else {
                 optionElems.push(<option value={elem.tag} key={elem.tag}>{elem.name}</option>);
             }
-
         });
 
         return (
-
-        <ControlGroup hideLabel={true} hideHelp={true}>
-            <b>Mapping language:</b>
-
-            <select  ref={(c) => (this.input = c)} name={this.props.name} disabled={this.props.disabled ? 'disabled' : undefined} className="form-control language-select" value={this.props.selectedLang} onChange={(ev) => this.selectHandler(ev)}>
+            <ControlGroup hideLabel={true} hideHelp={true}>
+                <b>Mapping language:</b>
+                <select  ref={(c) => (this.input = c)} name={this.props.name} disabled={this.props.disabled ?
+                    'disabled' : undefined} className="form-control language-select" value={this.props.selectedLang}
+                    onChange={(ev) => this.selectHandler(ev)}>
                 {optionElems}
-            </select>
-        </ControlGroup>
-
-
+                </select>
+            </ControlGroup>
         );
     }
 }
-
 MappingLangSelector.propTypes = propTypes;
-
-
 module.exports = MappingLangSelector;

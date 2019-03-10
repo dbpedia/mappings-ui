@@ -3,17 +3,12 @@ const Layout = require('../layouts/default.jsx');
 const React = require('react');
 const PropTypes = require('prop-types');
 
-
 const propTypes = {
-
     credentials: PropTypes.object
-
 };
-
 
 class ProfilePage extends React.Component {
     render() {
-
         const neck = [
             <link key="layout" rel="stylesheet" href="/public/layouts/default.min.css" />,
             <link key="page" rel="stylesheet" href="/public/pages/profile.min.css" />
@@ -33,7 +28,5 @@ class ProfilePage extends React.Component {
         );
     }
 }
-
 ProfilePage.propTypes = propTypes;
-
 module.exports = ProfilePage;

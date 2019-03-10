@@ -5,7 +5,6 @@ const React = require('react');
 const SelectControl = require('../../../components/form/select-control.jsx');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const propTypes = {
     linkInputState: PropTypes.func,
     linkSelectState: PropTypes.func,
@@ -24,14 +23,9 @@ const defaultValues = {
     isActive: ''
 };
 
-
 class FilterForm extends React.Component {
     render() {
-
-
-
         const groupOptions = this.props.groups.options.map((group) => {
-
             return (
                 <option
                     key={group._id}
@@ -133,9 +127,6 @@ class FilterForm extends React.Component {
                             </div>
                         </div>
 
-
-
-
                         <div className="row">
                             <div className="col-sm-12">
                                 <button type="button" className="btn btn-primary btn-block" onClick={this.props.onSubmitFilters} disabled={this.props.loading}>Apply Filters</button>
@@ -148,8 +139,5 @@ class FilterForm extends React.Component {
         );
     }
 }
-
 FilterForm.propTypes = propTypes;
-
-
 module.exports = FilterFormHoc(FilterForm, defaultValues);

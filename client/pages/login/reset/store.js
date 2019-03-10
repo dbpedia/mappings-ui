@@ -4,7 +4,6 @@ const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../helpers/parse-validation');
 const Redux = require('redux');
 
-
 const initialState = {
     loading: false,
     success: false,
@@ -13,7 +12,6 @@ const initialState = {
     help: {}
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.RESET) {
         return ObjectAssign({}, state, {
             loading: true
@@ -31,9 +29,6 @@ const reducer = function (state = initialState, action) {
             help: validation.help
         });
     }
-
     return state;
 };
-
-
 module.exports = Redux.createStore(reducer);

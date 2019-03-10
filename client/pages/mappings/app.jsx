@@ -5,24 +5,18 @@ const MappingView = require('./view/index.jsx');
 const HistoryIndividualList = require('./history-individual-list/index.jsx');
 const HistoryView = require('./history-view/index.jsx');
 const HistoryDeletedList = require('./history-deleted-list/index.jsx');
-
 const NotFound = require('./not-found.jsx');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
-
 const Router = ReactRouter.BrowserRouter;
 const Route = ReactRouter.Route;
 const Switch = ReactRouter.Switch;
 const UserUtilities = require('../../helpers/user-utilities');
 
-
-
 class App extends React.Component {
     render(){
-
         const credentials = UserUtilities.parseUserFromHTML();
         //const canList = UserUtilities.hasPermission(credentials,'can-list-posts');
-
         return (
             <Router>
                 <div>
@@ -37,13 +31,7 @@ class App extends React.Component {
                     </Switch>
                 </div>
             </Router>
-
         );
-
     }
-
 }
-
-
-
 module.exports = App;

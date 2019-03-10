@@ -2,8 +2,6 @@
 const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
-
-
 const initialState = {
     loading: false,
     showSaveSuccess: false,
@@ -15,17 +13,13 @@ const initialState = {
     name: undefined
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const stateUpdates = ObjectAssign({}, initialState);
-
         stateUpdates.accountId = action.response._id;
-
         if (action.response.hasOwnProperty('user')) {
             stateUpdates.id = action.response.user.id;
             stateUpdates.name = action.response.user.name;
         }
-
         return ObjectAssign({}, stateUpdates);
     }
 
@@ -75,7 +69,6 @@ const reducer = function (state = initialState, action) {
             stateUpdates.id = action.response.user.id;
             stateUpdates.name = action.response.user.name;
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -84,9 +77,6 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

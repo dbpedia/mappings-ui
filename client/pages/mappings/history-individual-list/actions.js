@@ -4,12 +4,8 @@ const ApiActions = require('../../../actions/api');
 const Constants = require('./constants');
 const Store = require('./store');
 
-
 class Actions {
-
-
     static getResults(template,lang,data) {
-
         ApiActions.get(
             '/api/mappings-history/' + template + '/' + lang,
             data,
@@ -20,7 +16,6 @@ class Actions {
     }
 
     static restore(template,lang, version,history) {
-
         ApiActions.post(
             `/api/mappings-history/${template}/${lang}/${version}`,
             {},
@@ -28,7 +23,6 @@ class Actions {
             Constants.RESTORE,
             Constants.RESTORE_RESPONSE,
             (err, response) => {
-
                 if (!err) {
                     history.push('/mappings/view/' + template + '/' + lang);
 
@@ -37,8 +31,5 @@ class Actions {
             }
         );
     }
-
 }
-
-
 module.exports = Actions;

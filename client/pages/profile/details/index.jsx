@@ -7,46 +7,34 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
-
-
-
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
     match: PropTypes.object
 };
 
-
 class DetailsPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         Actions.getDetails(); //Get profile details from backend
         //Actions.getStatusOptions(); //Get status from backend
         //Actions.getGroupOptions();  //Get groups from backend
-
-
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     render() {
-
         if (!this.state.details.hydrated) {
             return (
                 <section className="section-account-details container">
@@ -95,8 +83,5 @@ class DetailsPage extends React.Component {
         );
     }
 }
-
 DetailsPage.propTypes = propTypes;
-
-
 module.exports = DetailsPage;

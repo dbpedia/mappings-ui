@@ -5,17 +5,13 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const ClassSearcher = require('./ontologySearcher/classSearcher.jsx');
 const PropertySearch = require('./ontologySearcher/propertySearcher.jsx');
-
 const propTypes = {
     onSubmit: PropTypes.func //To call when either class or property is submitted
 };
 
 class OntologySearchPanel extends React.Component {
-
-
     constructor(){
         super();
-
         this.state = {
             view: 'classes'
         };
@@ -36,14 +32,11 @@ class OntologySearchPanel extends React.Component {
         this.props.onSubmit(newValue);
     }
 
-
     changeView(newView){
-
         this.setState({ view: newView });
     }
 
     render() {
-
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
@@ -65,7 +58,5 @@ class OntologySearchPanel extends React.Component {
         );
     }
 }
-
-
 OntologySearchPanel.propTypes = propTypes;
 module.exports = OntologySearchPanel;

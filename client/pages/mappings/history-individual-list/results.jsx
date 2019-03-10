@@ -12,7 +12,6 @@ const propTypes = {
 };
 
 const rowBackground = function (record){
-
     if (record.ignore) {
         return 'row-disabled';
     }
@@ -24,14 +23,9 @@ const rowBackground = function (record){
     return '';
 };
 
-
 class Results extends React.Component {
-
-
     render() {
-
         const rows = this.props.data.map((record) => {
-
             return (
                 <tr key={record._id.version} className={ rowBackground(record) }>
                     <td>{record._id.version}</td>
@@ -39,8 +33,6 @@ class Results extends React.Component {
                     <td className="text" title={record.edition.comment}><span>{record.edition.comment}</span></td>
                     <td>{record.status.message}</td>
                     <td>
-
-
                         <Link
                             className="btn btn-default btn-sm btn-table"
                             to={`/mappings/history/view/${record._id.template}/${record._id.lang}/${record._id.version}`}>
@@ -54,12 +46,8 @@ class Results extends React.Component {
                                 <i className="fa fa-history" aria-hidden="true"></i>
                             </span>
                         }
-
                     </td>
-
-
                 </tr>
-
             );
         });
 
@@ -68,18 +56,11 @@ class Results extends React.Component {
                 <table className="table  table-results">
                     <thead>
                         <tr>
-
                             <th>Version</th>
-
                             <th>Created</th>
-
                             <th>Comment</th>
-
                             <th>Status</th>
-
                             <th>Actions</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
@@ -90,8 +71,5 @@ class Results extends React.Component {
         );
     }
 }
-
 Results.propTypes = propTypes;
-
-
 module.exports = Results;

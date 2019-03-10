@@ -8,19 +8,15 @@ const propTypes = {
     showDetailedError: PropTypes.func
 };
 
-
 const calculateDuration = function (record) {
-
     if (!record.endDate || !record.startDate) {
         return '-';
     }
-
     return Moment.utc(Moment(record.endDate).diff(Moment(record.startDate))).format('HH:mm:ss');
 
 };
 
 const rowBackground = function (record) {
-
     try {
         if (!record.startDate) {
             return 'danger';
@@ -42,7 +38,6 @@ const rowBackground = function (record) {
 };
 
 const statusIcon = function (record) {
-
     try {
         if (!record.startDate) {
             return <i className="fa fa-times" aria-hidden="true"></i>;
@@ -66,9 +61,7 @@ const statusIcon = function (record) {
 
 class Results extends React.Component {
     render() {
-
         const rows = this.props.data.map((record) => {
-
             return (
                 <tr key={record._id} className={ rowBackground(record) }>
 
@@ -107,8 +100,5 @@ class Results extends React.Component {
         );
     }
 }
-
 Results.propTypes = propTypes;
-
-
 module.exports = Results;

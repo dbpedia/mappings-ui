@@ -3,39 +3,29 @@ const Actions = require('../actions');
 const React = require('react');
 const ReactRouter = require('react-router-dom');
 const Store = require('./store');
-
-
 const Link = ReactRouter.Link;
-
 
 class LogoutPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.input = {};
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
         Actions.logout();
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     render() {
-
         const alerts = [];
 
         if (this.state.success) {
@@ -58,6 +48,4 @@ class LogoutPage extends React.Component {
         );
     }
 }
-
-
 module.exports = LogoutPage;

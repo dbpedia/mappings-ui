@@ -21,13 +21,10 @@ const connectToDB = function (){
     //Returns a promise when everything is finished
     return MongoClient.connect(URI)
         .then((db) => {
-
             database = db; //Store database object
             return db;
-
         })
         .catch((err) => {
-
             if (tries < maxTries){
                 tries++;
                 console.log('Sleeping. Retrying in 2000ms... ');
@@ -39,7 +36,6 @@ const connectToDB = function (){
             }
             throw err;
         });
-
 };
 
 const sleep = function (ms) {
@@ -48,24 +44,19 @@ const sleep = function (ms) {
 };
 
 const main = function (){
-
     return connectToDB()
         .then((db) => {
-
             const collection = db.collection('accounts');
             return collection.count();
         })
         .then((res) => {
-
             if (res === 0) {
                 throw '[INFO] DB not initialized, initializing...';
             }
             console.log('[OK] DB is already initialized.');
             return process.exit(0);     //If everything is correct, we return 0
-
         })
         .catch((err) => {           //In case of error, we return 1
-
             console.log(err);
             return process.exit(1);
            //console.log(err);

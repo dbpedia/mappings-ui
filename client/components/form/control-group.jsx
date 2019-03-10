@@ -4,7 +4,6 @@ const ObjectAssign = require('object-assign');
 const PropTypes = require('prop-types');
 const React = require('react');
 
-
 const propTypes = {
     children: PropTypes.node,
     groupClasses: PropTypes.object,
@@ -17,10 +16,8 @@ const propTypes = {
     labelClasses: PropTypes.object
 };
 
-
 class ControlGroup extends React.Component {
     render() {
-
         const groupClasses = ClassNames(ObjectAssign({
             'form-group': true,
             'has-error': this.props.hasError
@@ -59,8 +56,5 @@ class ControlGroup extends React.Component {
         );
     }
 }
-
 ControlGroup.propTypes = propTypes;
-
-
 module.exports = ControlGroup;

@@ -8,7 +8,6 @@ const Git = require('nodegit');
 const Gitkit = require('nodegit-kit');
 const Config = require('../../config');
 const Spawn = require('child_process').spawn;
-
 const FirstUpdate = require('../firstTimeGithubImport');
 const NAME = Config.get('/github/name');
 const EMAIL = Config.get('/github/email');
@@ -27,50 +26,35 @@ const startRepository = function (repo,destFolder){
         });
 };
 
-
 /**
  * Returns  a promise with a repository object. If it does not exist, the repository is cloned.
  */
 const getRepository = function (repoURL,destFolder){
-
-
     return Git.Repository.open(destFolder)
         .then((repo) => {
             //Repository exists, return it immediately
             return ({ repository: repo, cloned: false });
         })
         .catch((err) => {
-
             //Repo does not exist, clone it
             if (err && err.message.indexOf('failed to resolve path') > -1){
                 return FirstUpdate.start()
                     .then((repo) => {
-
                         return ({ repository: repo,cloned:true });
                     })
                     .catch( (err) => {
-
                         throw { code: 'ERROR_CLONING_REPOSITORY', msg: err };
                     });
             }
-
             throw { code: 'ERROR_CLONING_REPOSITORY', msg: err };  //Unknown error, throw it
-
-
         });
-
-
-
-
 };
 
 /**
  * Executes a custom git command using spawn. Used when nodegit does not provide enough flexibility.
  */
 const customGitCommand = (parameters,directory) => (
-
     new Promise((resolve, reject) => {
-
         const thread = Spawn('git', parameters,{ cwd:directory });
         const stdOut = [];
         const stdErr = [];
@@ -104,8 +88,6 @@ const localChanges = function (repo) {
     return Gitkit.status(repo);
 };
 
-
-
 /**
  * Returns the current commit.
  */
@@ -119,7 +101,6 @@ const getCurrentCommit = function (repoObject){
  * Pulls from remote, but keeping their changes.
  */
 const pullKeepTheirs = function (repoObject) {
-
     return repoObject.fetch('origin') //Fetch data
         .then((res) => {
 
@@ -129,15 +110,12 @@ const pullKeepTheirs = function (repoObject) {
 
             throw err; //Error is wrapped in updateFromRemoteAndGetDiffs
         });
-
-
 };
 
 /**
  * Returns diffs between two commits.
  */
 const diff = function (repoObject,commitA,commitB) {
-
     return Gitkit.diff(repoObject,commitA,commitB);
 
 };
@@ -146,18 +124,14 @@ const diff = function (repoObject,commitA,commitB) {
  * Discards unstaged changes, by stashing them and dropping the stash if any.
  */
 const discardUnstashedChanges = function (repoObject){
-
     return customGitCommand(['stash','save','--keep-index'],repoObject.workdir())
         .then(() => {
-
             return customGitCommand(['stash','drop'],repoObject.workdir());
         })
         .catch((err) => {
-
             if (err && err.msg.indexOf('No stash found') > -1) {
                 return 'OK';
             }
-
             throw err;
         });
 };
@@ -166,64 +140,49 @@ const discardUnstashedChanges = function (repoObject){
  * Updates repository from remote, keeping their changes, and returns the diffs.
  */
 const updateFromRemoteAndGetDiffs = function (repoObject){
-
     let startCommit;
     let endCommit;
     return getCurrentCommit(repoObject) //1.- Get commit before anything
     .then((commit1) => {
-
         startCommit = commit1;
         return pullKeepTheirs(repoObject); //2.- Sync with remote, keeping their changes in case of merge. We do not lost anything as it is saved on history.
     })
     .then(() => {
-
         return getCurrentCommit(repoObject); //3.- Get commit after update
     })
     .then((commit2) => {
-
         endCommit = commit2;
         return diff(repoObject, startCommit, endCommit); //4.- Get differences
     })
     .catch((err) => {
-
         throw err;
     });
 };
-
 
 /**
  * Pushes to Github the commited code. If error, returns error. In next iteration,
  * things will be pulled, so no problem, we don't loss anything.
  */
 const push = function (repoObject){
-
     let loginAttempts = 0;
-
     return repoObject.getRemote('origin') //Get origin remote
         .then((remote) => {
-
             return remote.push(['refs/heads/master:refs/heads/master'], {
                 callbacks: {
                     credentials: (url,userName) => {
-
                         console.log('\t[INFO] Authenticating to repository');
                         loginAttempts++;
                         if (loginAttempts > 10 || USERNAME === null || PASSWORD === null){
                             return Git.Cred.defaultNew();
                         }
-
                         return Git.Cred.userpassPlaintextNew(USERNAME,PASSWORD);
-
                     }
                 }
             });
         })
         .catch((err) => {
-
             throw { code: 'ERROR_PUSHING_COMMITS', msg: err };
-
         });
-
 };
 
 /**
@@ -231,8 +190,6 @@ const push = function (repoObject){
  * Distinguishes between deleted and modified/created files.
  */
 const addAndCommit = function (repo,index,path,deleted,message){
-
-
     let res;
     let lastCommit;
 
@@ -245,27 +202,21 @@ const addAndCommit = function (repo,index,path,deleted,message){
 
     return res
         .then(() => {   //Get current commit.
-
             return getCurrentCommit(repo,'master');
         })
         .then((com) => {    //Write changes to index
-
             lastCommit = com;
             return index.write();
         }).then(() => {
-
             return index.writeTree();
         })
         .then((oid) => {    //Create commit
-
             const author = Git.Signature.now(NAME, EMAIL);
             return repo.createCommit('HEAD',author,author,message,oid,[lastCommit]);
         })
         .catch((err) => {
-
             throw { code: 'ERROR_COMMITTING_FILE', msg: err };
         });
-
 };
 
 module.exports = {

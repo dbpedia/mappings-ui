@@ -14,9 +14,7 @@ const Page = {
     }
 };
 
-
 module.exports = Page;
-
 
 /* $lab:coverage:off$ */
 if (!module.parent) {

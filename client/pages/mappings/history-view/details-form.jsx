@@ -5,7 +5,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const Editor = require('../../../components/turtle-editor.jsx');
 
-
 const propTypes = {
     _id: PropTypes.object,
     rml: PropTypes.string,
@@ -20,13 +19,9 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool
 };
 
-
 class DetailsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
-
         this.state = {
             _id: props._id,
             version: props.version,
@@ -39,21 +34,16 @@ class DetailsForm extends React.Component {
     }
 
     onChange(newValue) {
-
         this.setState({ rml:newValue });
     }
 
     onVisibleChange(event){
-
-
         this.setState({ visible: event.target.value  === 'true' });
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const data = {
             rml: this.state.rml,
             comment: this.state.edition.comment
@@ -67,10 +57,7 @@ class DetailsForm extends React.Component {
         Actions.saveDetails(this.props._id.template,this.props._id.lang, data);
     }
 
-
-
     render() {
-
         const alerts = [];
 
         if (this.props.showSaveSuccess) {
@@ -90,21 +77,15 @@ class DetailsForm extends React.Component {
             />);
         }
 
-
         const editElements = <div>
 
             <Editor content={this.state.editedRml} id="mainEditor"
                     onChange={this.onChange.bind(this)} readOnly={true}/>
-
         </div>;
 
         const formElements = <fieldset>
-
             {alerts}
-
             {editElements}
-
-
         </fieldset>;
 
         return (
@@ -114,8 +95,5 @@ class DetailsForm extends React.Component {
         );
     }
 }
-
 DetailsForm.propTypes = propTypes;
-
-
 module.exports = DetailsForm;

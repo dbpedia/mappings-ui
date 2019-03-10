@@ -4,7 +4,6 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const ReactMarkdown = require('react-markdown');
 
-
 const propTypes = {
     postId: PropTypes.string,
     title: PropTypes.string,
@@ -15,24 +14,17 @@ const propTypes = {
     loading: PropTypes.bool
 };
 
-
 class DetailsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             title: props.title,
             markdown: props.markdown
         };
     }
 
-
     render() {
-
         const alerts = [];
-
-
         if (this.props.error) {
             alerts.push(<Alert
                 key="danger"
@@ -41,21 +33,12 @@ class DetailsForm extends React.Component {
             />);
         }
 
-
-
-
         const formElements = <fieldset>
-
             {alerts}
-
-
             <ReactMarkdown source={this.state.markdown ? this.state.markdown : ''} />
             { (!this.state.markdown || this.state.markdown.length === 0) &&
                 <i>This page is empty.</i>
             }
-
-
-
         </fieldset>;
 
         return (
@@ -65,8 +48,5 @@ class DetailsForm extends React.Component {
         );
     }
 }
-
 DetailsForm.propTypes = propTypes;
-
-
 module.exports = DetailsForm;

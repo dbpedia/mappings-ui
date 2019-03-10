@@ -12,46 +12,34 @@ const Store = require('./store');
 const GroupsForm = require('./groups-form.jsx');
 const PermissionsForm = require('./permissions-form.jsx');
 
-
-
 const Link = ReactRouter.Link;
 const propTypes = {
     history: PropTypes.object,
     match: PropTypes.object
 };
 
-
 class DetailsPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         Actions.getDetails(this.props.match.params.id); //Get profile details from backend
         Actions.getStatusOptions(); //Get status from backend
         Actions.getGroupOptions();  //Get groups from backend
-
-
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     render() {
-
-
         let canEdit = true;
         if (this.state.details._id){
             canEdit = this.state.details._id !== '111111111111111111111111';
@@ -85,9 +73,6 @@ class DetailsPage extends React.Component {
         if (name.last && name.last.length > 0) {
             fullName += ' ' + name.last;
         }
-
-
-
 
         const buttons = [
 
@@ -157,8 +142,5 @@ class DetailsPage extends React.Component {
         );
     }
 }
-
 DetailsPage.propTypes = propTypes;
-
-
 module.exports = DetailsPage;

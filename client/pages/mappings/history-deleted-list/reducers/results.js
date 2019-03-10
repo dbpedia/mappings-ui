@@ -2,7 +2,6 @@
 const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 
-
 const initialState = {
     hydrated: false,
     loading: false,
@@ -12,9 +11,7 @@ const initialState = {
     items: {}
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_RESULTS) {
-
         return ObjectAssign({}, state, {
             hydrated: false,
             loading: true
@@ -30,9 +27,6 @@ const reducer = function (state = initialState, action) {
             items: action.response.items
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

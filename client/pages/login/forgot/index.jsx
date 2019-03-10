@@ -7,53 +7,40 @@ const ReactRouter = require('react-router-dom');
 const Spinner = require('../../../components/form/spinner.jsx');
 const Store = require('./store');
 const TextControl = require('../../../components/form/text-control.jsx');
-
-
 const Link = ReactRouter.Link;
-
 
 class ForgotPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.input = {};
         this.state = Store.getState();
     }
 
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
         if (this.input.email) {
             this.input.email.focus();
         }
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.forgot({
             email: this.input.email.value()
         });
     }
 
     render() {
-
         const alerts = [];
-
         if (this.state.success) {
             alerts.push(<div key="success">
                 <div className="alert alert-success">
@@ -106,6 +93,4 @@ class ForgotPage extends React.Component {
         );
     }
 }
-
-
 module.exports = ForgotPage;

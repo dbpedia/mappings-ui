@@ -2,12 +2,9 @@
 const Layout = require('../layouts/default.jsx');
 const React = require('react');
 
-
 class LoginPage extends React.Component {
     render() {
-
         const feet = <script src="/public/pages/login.min.js"></script>;
-
         return (
             <Layout
                 title="Sign in"
@@ -21,8 +18,4 @@ class LoginPage extends React.Component {
         );
     }
 }
-
-
-
-
 module.exports = LoginPage;

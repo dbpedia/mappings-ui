@@ -9,46 +9,35 @@ const Spinner = require('../../../components/form/spinner.jsx');
 const Store = require('./store');
 const TextControl = require('../../../components/form/text-control.jsx');
 
-
 const Link = ReactRouter.Link;
 const propTypes = {
     match: PropTypes.object
 };
 
-
 class ResetPage extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.input = {};
         this.state = Store.getState();
     }
-
     componentDidMount() {
-
         this.unsubscribeStore = Store.subscribe(this.onStoreChange.bind(this));
-
         if (this.input.password) {
             this.input.password.focus();
         }
     }
 
     componentWillUnmount() {
-
         this.unsubscribeStore();
     }
 
     onStoreChange() {
-
         this.setState(Store.getState());
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         Actions.reset({
             email: this.props.match.params.email,
             key: this.props.match.params.key,
@@ -57,9 +46,7 @@ class ResetPage extends React.Component {
     }
 
     render() {
-
         const alerts = [];
-
         if (this.state.success) {
             alerts.push(<div key="success">
                 <div className="alert alert-success">
@@ -129,8 +116,5 @@ class ResetPage extends React.Component {
         );
     }
 }
-
 ResetPage.propTypes = propTypes;
-
-
 module.exports = ResetPage;

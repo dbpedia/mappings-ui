@@ -3,7 +3,6 @@ const Constants = require('../constants');
 const ObjectAssign = require('object-assign');
 const ParseValidation = require('../../../../helpers/parse-validation');
 
-
 const initialState = {
     hydrated: false,
     loading: false,
@@ -19,7 +18,6 @@ const initialState = {
     isActive: false
 };
 const reducer = function (state = initialState, action) {
-
     if (action.type === Constants.GET_DETAILS) {
         return ObjectAssign({}, initialState, {
             hydrated: false,
@@ -29,7 +27,6 @@ const reducer = function (state = initialState, action) {
 
     if (action.type === Constants.GET_DETAILS_RESPONSE) {
         const validation = ParseValidation(action.response);
-
         return ObjectAssign({}, state, {
             hydrated: true,
             loading: false,
@@ -77,7 +74,6 @@ const reducer = function (state = initialState, action) {
         if (action.response.hasOwnProperty('isActive')) {
             stateUpdates.isActive = action.response.isActive;
         }
-
         return ObjectAssign({}, state, stateUpdates);
     }
 
@@ -86,9 +82,6 @@ const reducer = function (state = initialState, action) {
             showSaveSuccess: false
         });
     }
-
     return state;
 };
-
-
 module.exports = reducer;

@@ -1,7 +1,6 @@
 'use strict';
 const ObjectAssign = require('object-assign');
 
-
 /**
  * To be used with `onChange` handlers for form elements. This
  * will handle setting deep state paths when `event.target.name`
@@ -10,13 +9,11 @@ const ObjectAssign = require('object-assign');
  * Usage: `onChange={LinkState.bind(this, [callback])}`
  */
 module.exports = function linkState(callback, event) {
-
     if (event === undefined) {
         [event, callback] = [callback, event];
     }
 
     const data = {};
-
     if (event.target.name.indexOf('.') === -1) {
         data[event.target.name] = event.target.value;
         this.setState(data, callback);

@@ -2,14 +2,9 @@
 const Boom = require('boom');
 const Joi = require('joi');
 
-
 const internals = {};
-
-
 internals.applyRoutes = function (server, next) {
-
     const Session = server.plugins['hapi-mongo-models'].Session;
-
 
     server.route({
         method: 'GET',
@@ -40,16 +35,13 @@ internals.applyRoutes = function (server, next) {
             const page = request.query.page;
 
             Session.pagedFind(query, fields, sort, limit, page, (err, results) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 reply(results);
             });
         }
     });
-
 
     server.route({
         method: 'GET',
@@ -64,22 +56,17 @@ internals.applyRoutes = function (server, next) {
             ]
         },
         handler: function (request, reply) {
-
             Session.findById(request.params.id, (err, session) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 if (!session) {
                     return reply(Boom.notFound('Document not found.'));
                 }
-
                 reply(session);
             });
         }
     });
-
 
     server.route({
         method: 'DELETE',
@@ -94,26 +81,19 @@ internals.applyRoutes = function (server, next) {
             ]
         },
         handler: function (request, reply) {
-
             Session.findByIdAndDelete(request.params.id, (err, session) => {
-
                 if (err) {
                     return reply(err);
                 }
-
                 if (!session) {
                     return reply(Boom.notFound('Document not found.'));
                 }
-
                 reply({ success: true });
             });
         }
     });
-
-
     next();
 };
-
 
 exports.register = function (server, options, next) {
 
@@ -121,7 +101,6 @@ exports.register = function (server, options, next) {
 
     next();
 };
-
 
 exports.register.attributes = {
     name: 'sessions'

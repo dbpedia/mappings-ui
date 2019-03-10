@@ -5,18 +5,12 @@ const MappingHistory = require('./mapping-history');
 
 //Represents a Mapping (basic information, without stats)
 class Mapping extends MongoModels {
-
-
     /**
      * Used to create a new mapping, not to update it.
      * Template is the name of the template according to Wikipedia
      */
     static create(templateFullName,lang,rml,username,comment,callback){
-
         Mapping.getLastVersion(templateFullName,lang, (err,res) => {
-
-
-
             if (err){
                 return callback(err);
             }
@@ -120,24 +114,14 @@ class Mapping extends MongoModels {
                 callback(null,-1);
 
             });
-
-
-
-
-
         });
-
     }
-
-
-
 
     /**
      * Creates a new mapping from a mapping history object.
      * Automatically sets the version.
      */
     static createFromHistory(doc,callback){
-
         Mapping.getLastVersion(doc._id.template,doc._id.lang, (err,res) => {
 
             if (err){
@@ -180,25 +164,17 @@ class Mapping extends MongoModels {
                     callback(null,docs[0]);
                 });*/
             });
-
         });
-
     }
 
     constructor(attrs) {
-
         super(attrs);
-
     }
 
     /*hydrateStats(callback) {
-
-
         if (this.stats) {
             return callback(null, this.stats);
         }
-
-
         CurrentMappingStats.findOne({ _id: { template:this._id.template ,lang: this._id.lang } }, (err,results) => {
 
             if (err) {
@@ -220,9 +196,6 @@ class Mapping extends MongoModels {
      * and incrementing the version in 1. Also sets the username and comment.
      */
     update(setChanges,username,comment,callback){
-
-
-
         const updateObject = {
             $set: setChanges
         };
@@ -239,13 +212,7 @@ class Mapping extends MongoModels {
         };
 
         Mapping.findOneAndUpdate({ _id: this._id }, updateObject, callback);
-
-
     };
-
-
-
-
 
     /**
      * Archives the mapping into the mappingHistory collection. Does not delete document from
@@ -253,9 +220,7 @@ class Mapping extends MongoModels {
      * In the callback, returns the created history object.
      */
     archive(deleted,username,callback){
-
         MappingHistory.create(this,deleted,username, (err,res) => {
-
             if (err){
                 return callback(err);
             }
@@ -265,20 +230,15 @@ class Mapping extends MongoModels {
             }
 
             Mapping.findOneAndDelete({ _id:{ template:this._id.template,lang:this._id.lang } }, (err,res2) => {
-
                 if (err){
                     return callback(err);
                 }
 
                 callback(null,res);
             });
-
-
         });
     }
-
 }
-
 
 Mapping.collection  = 'mappings';
 
@@ -311,13 +271,8 @@ Mapping.schema = Joi.object().keys({
     })
 });
 
-
-
-
-
 Mapping.indexes = [
     { key: { _id: 1 } }
 ];
-
 
 module.exports = Mapping;

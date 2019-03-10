@@ -11,7 +11,6 @@ const propTypes = {
 
 class AboutPage extends React.Component {
     render() {
-
         return (
             <Layout
                 title="About us"
@@ -85,7 +84,5 @@ class AboutPage extends React.Component {
         );
     }
 }
-
-
 AboutPage.propTypes = propTypes;
 module.exports = AboutPage;

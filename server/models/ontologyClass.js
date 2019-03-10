@@ -22,12 +22,9 @@ class OntologyClass extends MongoModels {
     }
 }
 
-
 OntologyClass.collection = 'ontologyClasses';
 
-
 OntologyClass._idClass = String;
-
 
 OntologyClass.schema = Joi.object().keys({
     name: Joi.string().required(),
@@ -35,12 +32,9 @@ OntologyClass.schema = Joi.object().keys({
     length: Joi.number().required()
 });
 
-
-
 OntologyClass.indexes = [
     { key: { name: 1 } },
     { key: { uri: 1 } }
 ];
-
 
 module.exports = OntologyClass;

@@ -14,7 +14,6 @@ const AceEditor = require('react-ace').default;
 require('brace/mode/markdown');
 require('brace/theme/github');
 
-
 const propTypes = {
     postId: PropTypes.string,
     title: PropTypes.string,
@@ -27,12 +26,9 @@ const propTypes = {
     showSaveSuccess: PropTypes.bool
 };
 
-
 class DetailsForm extends React.Component {
     constructor(props) {
-
         super(props);
-
         this.state = {
             title: props.title,
             visible: (props.visible),
@@ -42,41 +38,31 @@ class DetailsForm extends React.Component {
     }
 
     onChange(newValue) {
-
         this.setState({ markdown:newValue });
     }
 
     onVisibleChange(event){
-
-
         this.setState({ visible: event.target.value  === 'true' });
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
         event.stopPropagation();
-
         const id = this.props.postId;
         const data = {
             title: this.state.title,
             visible: this.state.visible,
             markdown: this.state.markdown
         };
-
         Actions.saveDetails(id, data);
     }
 
-
     changeEditing(newValue){
-
         this.setState({ editing:newValue });
     }
 
     render() {
-
         const alerts = [];
-
         if (this.props.showSaveSuccess) {
             alerts.push(<Alert
                 key="success"
@@ -98,7 +84,6 @@ class DetailsForm extends React.Component {
             <li className={this.state.editing ? 'active' : ''} onClick={this.changeEditing.bind(this,true)}><a href="#">Edit</a></li>
             <li className={!this.state.editing ? 'active' : ''} onClick={this.changeEditing.bind(this,false)}><a href="#">Preview</a></li>
         </ul>;
-
 
         const editElements = <div>
             <div className="row">
@@ -147,19 +132,11 @@ class DetailsForm extends React.Component {
             </div>;
 
         const formElements = <fieldset>
-
             {alerts}
-
-
             {tabs}
-
-
             {this.state.editing && editElements}
             {!this.state.editing && previewElements}
-
             <hr/>
-
-
             <ControlGroup hideLabel={true} hideHelp={true}>
                 <Button
                     type="submit"
@@ -179,8 +156,5 @@ class DetailsForm extends React.Component {
         );
     }
 }
-
 DetailsForm.propTypes = propTypes;
-
-
 module.exports = DetailsForm;

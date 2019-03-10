@@ -3,12 +3,7 @@ const Joi = require('joi');
 const MongoModels = require('mongo-models');
 
 class MappingUpdateStatus extends MongoModels {
-
-
-
     static create(callback){
-
-
         const document =
             {
                 startDate: new Date(),
@@ -19,24 +14,17 @@ class MappingUpdateStatus extends MongoModels {
                 }
             };
         this.insertOne(document, (err, docs) => {
-
             if (err) {
                 return callback(err);
             }
-
             callback(null, docs[0]);
         });
     }
 
-
     constructor(attrs) {
-
         super(attrs);
     }
-
-
 }
-
 
 MappingUpdateStatus.collection  = 'mappingUpdateStatus';
 
@@ -50,14 +38,10 @@ MappingUpdateStatus.schema = Joi.object().keys({
         message: Joi.string(),
         long_message: Joi.string()
     })
-
 });
-
-
 
 MappingUpdateStatus.indexes = [
     { key: { _id: 1 } }
 ];
-
 
 module.exports = MappingUpdateStatus;

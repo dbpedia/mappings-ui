@@ -5,13 +5,10 @@ const PropTypes = require('prop-types');
 const React = require('react');
 const PropertySearcherInput = require('./propertySearcherInput.jsx');
 
-
 const propTypes = {
     onSubmit: PropTypes.func //To call when button is clicked
 };
 class ClassSearcher extends React.Component {
-
-
     constructor(){
         super();
 
@@ -19,7 +16,6 @@ class ClassSearcher extends React.Component {
             value: ''
         };
     }
-
 
     onChange(event){
         this.setState({ value: event.target.value });
@@ -30,10 +26,7 @@ class ClassSearcher extends React.Component {
     }
 
     render() {
-
-
         return (
-
             <div>
                     <div className="row">
                         <div className="col-sm-12">
@@ -54,10 +47,8 @@ class ClassSearcher extends React.Component {
                         </div>
                     </div>
             </div>
-
         );
     }
 }
-
 ClassSearcher.propTypes = propTypes;
 module.exports = ClassSearcher;
